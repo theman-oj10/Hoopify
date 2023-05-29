@@ -1,4 +1,6 @@
-#Milestone 1 Submission
+https://docs.google.com/document/d/1S0BTIQ4QMQpytQ8v_hZvGcjbfrKoIT-vESrE1p1VEwA/edit
+
+Milestone 1 Submission
 
 Team Name
 
@@ -54,11 +56,6 @@ Progress: The current user interface (UI) includes basic components such as the 
 Overall Progress
 The development of the app is currently focused on the authentication functionality, specifically the sign-in and sign-out features. The ability to upload videos to Firebase storage has been implemented. However, significant work remains to be done to fulfill the objectives of video analysis, game visualization, customizable reports, and UI improvements.
 
-
-
-Proposed Program Flow
-
-
 Development Plan
 
 Tasks
@@ -66,7 +63,7 @@ Description
 Date
 Prepare Liftoff Poster and Video
 Create Liftoff Poster and slides, record presentation pitch.
-9 - 16 May 2022
+9 - 16 May 2023
 Pick up necessary skills
 Pick up necessary skills of:
 React Native
@@ -75,13 +72,13 @@ Open CV and Ultralytics
 Python Packages used to implement the computer vision features
 Firebase
 Hosting, database and authentication method.
-9 - 22 May 2022
+9 - 22 May 2023
 Prototype Creation
 Create a basic version of shot detection using Open CV and Ultralytics.
-16 - 22 May 2022
+16 - 22 May 2023
 Implement Authentication Method
 Integrate Firebase authentication to the React Native application. Add an email and password authentication method for milestone 1.
-23 - 29 May 2022
+23 - 29 May 2023
 Create feature pages
 Implement navigation and create a program flow of the application
 Add application design
@@ -95,52 +92,50 @@ Basic React Native design
 Publish user video to Firestore database
 Working Python Script.
 
-30 May 2022
+29 May 2023
 Build a functioning MVP
 Integrate Python Backend with Frontend React Native application.
-31 May - 5 June 2022
+31 May - 5 June 2023
 Build the hot zones feature
 Tracks player position and maps it onto a 2d image of a basketball court to prove insights into shooting hot zones.
-6 - 12 June 2022
+6 - 12 June 2023
 Implement Location Features
 Get location data so as to map the user's home court.
 Implement Leaderboard features
 Leaderboards based on the location of the court they practice at and their efficiency at different hot zones of the court.
-13 - 19 June 2022
+13 - 19 June 2023
 
 
 Implement new performance Metrics.
 Integrate the hot zones feature into the statistics page to provide better performance metrics.
 Testing and Debugging
 Provide basic testing in preparation for Milestone 2
-20 - 26 June 2022
+20 - 26 June 2023
 Deploy Application
 Host the application to ensure its availability to the public
 Milestone 2: First Working Prototype
-27 June 2022
+26 June 2023
 Implement Share Feature
 Button to share your statistics to social media
-28 June - 3 July 2022
+26 June - 3 July 2023
 Improve accuracy of shot tracking
 Use a model trained on custom data instead of the standard COCO Dataset.
-4 - 10 July 2022
+4 - 10 July 2023
 Polish application design
 Enhance the previous design in Milestone 2 
-11 - 17 July 2022
+11 - 17 July 2023
 Improve UI/UX features
 Provide more advanced features in improving user experience
 Further testing and debugging
 Perform in-depth unit, integration and system tests for the MVP
-18 - 24 July 2022
+18 - 24 July 2023
 Milestone 3: Minimum Viable Product
-25 July 2022
+24 July 2023
 Fix any issues or bugs
 Allocate time to fix any issues that arise during the deployment of the MVP
-26 July - 23 August 2022
+26 July - 23 August 2023
 Splashdown
-24 August 2022
-
-
+24 August 2023
 
 
 Proof Of Concept
@@ -149,7 +144,7 @@ Updated poster:
 https://www.canva.com/design/DAFiN0UdOxA/tNL6IklVD67tP9_bgCkIBA/edit?utm_content=DAFiN0UdOxA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 A walkthrough of our technical proof of concept is available through the following YouTube link:
-https://youtu.be/2ubNL8UoxPM
+https://youtu.be/NuqbF_l4Wg8
 
 Our code for the technical proof of concept is also readily available in the following github repository:
 https://github.com/theman-oj10/Hoopify
