@@ -1,27 +1,27 @@
 https://docs.google.com/document/d/1S0BTIQ4QMQpytQ8v_hZvGcjbfrKoIT-vESrE1p1VEwA/edit
 
-Milestone 1 Submission
+<h1>Milestone 1 Submission</h1>
 
-Team Name
+**Team Name**
 
 Hoopify
 
-Proposed Level of Achievement
+**Proposed Level of Achievement**
 
 Apollo 11
 
-Motivation
+**Motivation**
 
 Hoopify is solving the problem of limited access to comprehensive basketball shooting statistics and analysis for players. Traditionally, players have sought out coaches to improve their basketball skills who rely on subjective assessments to evaluate their shooting performance. Hoopify aims to revolutionize this by providing a platform where players can upload their game videos and receive detailed insights and statistics. By leveraging computer vision and data analysis techniques, Hoopify analyzes the uploaded videos to extract relevant information such as shooting accuracy and shot locations. This allows players to gain a deeper understanding of their shooting performance, identify areas for improvement, and track their progress over time. Hoopify empowers players with data-driven insights, enabling them to make informed decisions, enhance their skills, and ultimately elevate their basketball game.
 
-User Stories
+**User Stories**
 As a basketball player, I want to use the app to track my shooting performance during games and practices, so that I can identify my strengths and weaknesses and focus my training efforts accordingly.
 As a coach, I want to use the app to analyze my players' personal workout videos, so that I can track their shooting accuracy and provide personalized feedback and training recommendations.  
 As a basketball enthusiast, I want to use the app to track my performance and compare it with that of other players around the world, so that I can improve my game and become a better player. 
 As a fan of basketball, I want to use the app to compare my shooting skills with those of professional players, so that I can improve my game and learn from the best. 
 As a basketball team manager, I want to use the app to track the progress of my team members, so that I can provide them with personalized training recommendations and improve their overall performance on the court. 
 
-Scope of Project
+**Scope of Project**
 
 Hoopify is a mobile and web application designed to provide comprehensive basketball shooting statistics and analysis for players. The project scope includes the use of technologies such as React Native to build the cross-platform front-end, Firebase for database management, and Python frameworks such as OpenCV and Ultralytics for shot detection and other analysis of the video.
 
@@ -35,7 +35,8 @@ Share: Hoopify allows users to easily share their shooting clips and statistics 
 
 Sign Out: Users can sign out of their accounts.
 
-Features
+**Features**
+
 Video Analysis
 Objective: The app aims to analyze basketball game videos and track players' points, assists, and rebounds.
 Progress: The video analysis feature has been developed as the backend feature of the application using Python, mainly making use of ComputerVision and other relevant packages. Basic tracking and identification algorithms are working and the counting of scores during personal workouts do work too. Further developments to the video analysis will be done by taking into account various edge cases and catering to them with more training of the model.
@@ -56,11 +57,12 @@ Progress: The current user interface (UI) includes basic components such as the 
 Overall Progress
 The development of the app is currently focused on the authentication functionality, specifically the sign-in and sign-out features. The ability to upload videos to Firebase storage has been implemented. However, significant work remains to be done to fulfill the objectives of video analysis, game visualization, customizable reports, and UI improvements.
 
-Tech Stack:
+**Tech Stack:**
 React Native: We chose react native to build the frontend because we have prior experience with React.js and this felt like the natural succession in our learning pathway. We also wanted to gain skills that allowed us to build cross-platform apps with minimal fuss.
 Python: We used python for our backend because we have experience with it and it offered easy to use packages like OpenCv, Ultralytics, Tensorflow to design our computer vision algorithm. We also could use flask to create the backend application without having to use another language.
 
-Development Plan
+**Development Plan**
+
 | Tasks                             | Description                                                                                                     | Date                |
 |-----------------------------------|-----------------------------------------------------------------------------------------------------------------|---------------------|
 | Prepare Liftoff Poster and Video  | Create Liftoff Poster and slides, record presentation pitch.                                                    | 9 - 16 May 2023     |
@@ -96,7 +98,7 @@ Development Plan
 
 
 
-Proof Of Concept
+**Proof Of Concept:**
 
 Updated poster:
 https://www.canva.com/design/DAFiN0UdOxA/tNL6IklVD67tP9_bgCkIBA/edit?utm_content=DAFiN0UdOxA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
@@ -108,7 +110,7 @@ Our code for the technical proof of concept is also readily available in the fol
 https://github.com/theman-oj10/Hoopify
 
 
-Project Log
+**Project Log**
 
 Our project log is accessible through the following Google Sheets link:
 https://docs.google.com/spreadsheets/d/18b8qSRASHw2Y0e9sfyVT8wtEs0Cr7e72yYXiXN5Q5Z4/edit#gid=1299696737
