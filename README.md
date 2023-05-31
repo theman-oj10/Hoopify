@@ -92,7 +92,7 @@ Development Plan
 | Further testing and debugging     | Perform in-depth unit, integration and system tests for the MVP                                                 | 18 - 24 July 2023   |
 | **Milestone 3**: MVP              |                                                                                                                 | 24 July 2023        |
 | Fix any issues or bugs            | Allocate time to fix any issues that arise during the deployment of the MVP                                     | 26 July - 23 Aug 2023|
-| Splashdown                        |                                                                                                                 | 24
+| Splashdown                        |                                                                                                                 | 24 August
 
 
 
