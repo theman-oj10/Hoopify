@@ -68,5 +68,5 @@ def yoloTrack(path):
 # first find the co-ordinates of the middle of the net
 # checking if it crosses the rim
 
-yoloTrack("TestFootage/shotclip.mp4")
+#yoloTrack("TestFootage/shotclip.mp4")
 

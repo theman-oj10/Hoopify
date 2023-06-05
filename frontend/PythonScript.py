@@ -9,6 +9,8 @@ import math
 from sort import *
 import numpy as np
 import pyrebase
+from ShotTracker import YoloBallTracker
+
 
 app = Flask(__name__)
 load_dotenv()
@@ -38,70 +40,7 @@ basketCounted = False
 previousDetections = []
 
 def perform_video_analysis(video_path):
-    cap = cv2.VideoCapture(video_path)
-
-    myColorFinder = ColorFinder(False)
-    hsvVals = {'hmin': 3, 'smin': 105, 'vmin': 42, 'hmax': 10, 'smax': 255, 'vmax': 255}
-    cap.set(3, 1280)
-    cap.set(4, 720)
-
-    while True:
-        success, img = cap.read()
-        img = img[0:450, :]
-        basketCounted = False
-
-        results = model(img, stream=True)
-        cv2.line(img, (limits[0], limits[1]), (limits[2], limits[3]), (0, 0, 255), 5)
-        detections = np.empty((0, 5))
-        newDetections = []
-
-        for r in results:
-            boxes = r.boxes
-            for box in boxes:
-                x1, y1, x2, y2 = box.xyxy[0]
-                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-                w, h = x2 - x1, y2 - y1
-                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                conf = math.ceil((box.conf[0] * 100)) / 100
-                cls = int(box.cls[0])
-                currentClass = classNames[cls]
-
-                if currentClass == "person" and conf > 0.3:
-                    cvzone.cornerRect(img, (x1, y1, w, h), l=9, rt=5)
-                    imgColor, mask = myColorFinder.update(img, hsvVals)
-                    imgContours, contours = cvzone.findContours(img, mask, minArea=500)
-                    currentArray = np.array([x1, y1, x2, y2, conf])
-                    detections = np.vstack((detections, currentArray))
-
-                    if contours:
-                        cx, cy = contours[0]['center']
-                        cv2.circle(img, (cx, cy), 5, (0, 255, 0), cv2.FILLED)
-                        if limits[0] < cx < limits[2] and limits[1] - 40 < cy < limits[1] + 40:
-                            if not basketCounted:
-                                totalCount += 1
-                                basketCounted = True
-                    cvzone.putTextRect(img, f' Score: {totalCount}', (50, 50))
-
-        resultsTracker = tracker.update(detections)
-
-        for result in resultsTracker:
-            x1, y1, x2, y2, id = result
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-            w, h = x2 - x1, y2 - y1
-            cvzone.cornerRect(img, (x1, y1, w, h), l=9, rt=2, colorR=(255, 0, 0))
-            cvzone.putTextRect(img, f' {id}', (max(0, x1), max(35, y1)), scale=2, thickness=3, offset=10)
-
-        imgContours = cv2.resize(imgContours, (0, 0), None, 0.7, 0.7)
-        cv2.imshow("Image", img)
-        cv2.waitKey(1)
-
-        if cv2.waitKey(1) == ord('q'):
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-    return totalCount
+    return YoloBallTracker.yoloTrack(video_path)
 
 @app.route('/api/video-analysis', methods=['POST'])
 def video_analysis():
