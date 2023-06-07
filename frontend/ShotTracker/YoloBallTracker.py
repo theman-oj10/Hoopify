@@ -2,6 +2,7 @@ import cv2
 from ultralytics import YOLO
 import FindRim
 
+
 def intersect(ballX, ballY, x1, x2, y1, y2, x3, y3, x4, y4):
     # equation of rim line
     m = (y2 - y1)/(x2 - x1)
