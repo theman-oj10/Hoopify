@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Share } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Logo from '../SignInScreen/Images/Logo.png';
 
@@ -26,9 +26,16 @@ const StatsPage = () => {
     console.log('View Hot Zone');
   };
 
-  const handleShare = () => {
+  const handleShare = async() => {
     // Handle the action for sharing
-    console.log('Share');
+    const shareOptions = {
+      message: `I made ${totalShotsMade} / ${totalShotsTaken} shots today`,
+    }
+    try {
+      const ShareResponse = await Share.share(shareOptions);
+    } catch(error) {
+      console.log('Error => ', error);
+    }
   };
 
   return (
