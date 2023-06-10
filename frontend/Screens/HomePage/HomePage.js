@@ -121,6 +121,12 @@ const HomePage = () => {
         >
           <Text style={styles.buttonText}>Show My Stats</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.statsButton}
+          onPress={() => navigation.navigate('Leaderboard')}
+        >
+          <Text style={styles.buttonText}>Leaderboard</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -9,7 +9,7 @@ import math
 from sort import *
 import numpy as np
 from flask_cors import CORS
-from firebase_admin import credentials, initialize_app, storage, auth
+from firebase_admin import credentials, initialize_app, storage, auth, firestore
 import os
 from ShotTracker.YoloBallTracker import yoloTrack
 
@@ -19,7 +19,7 @@ app = Flask(__name__)
 load_dotenv()
 CORS(app)
 
-cred = credentials.Certificate('C:/Users/Adarsh/Desktop/hoopify/Hoopify-master/orbital-app-proto-firebase-adminsdk-4agc7-9fd8bd28f7.json')  # Path to your service account key file
+cred = credentials.Certificate('C:/Users/Adarsh/Desktop/hoopify main/Hoopify-main/Hoopify/frontend/orbital-app-proto-firebase-adminsdk-4agc7-e26b66be8d.json')  # Path to your service account key file
 initialize_app(cred, {
     'storageBucket': "orbital-app-proto.appspot.com"  
 })
@@ -37,13 +37,30 @@ def perform_video_analysis(video_path):
 def video_analysis():
     try:
         # Retrieve the video file from Firebase Storage
+        # Get the currently signed-in user's email
+        user_email = auth.current_user().email
+        
         bucket = storage.bucket()
-        blob = bucket.blob('hello@gmail.com/1HNMtHwFxYSPVc1FFMNX9bX4W7h1/Video3.mp4')
+        blob = bucket.blob('${user_email}/1HNMtHwFxYSPVc1FFMNX9bX4W7h1/Video3.mp4')
         temp_video_path = 'C:/Users/Adarsh/Desktop/hoopify/Hoopify-master/Videos/temp_video.mp4'  # Replace with the desired path for the temporary video file
         blob.download_to_filename(temp_video_path)
 
         # Analyze the video
         score = perform_video_analysis(temp_video_path)
+        
+        db = firestore.client()
+
+        # Retrieve the user based on the email
+        user = auth.get_user_by_email(user_email)
+
+        # Retrieve the userID
+        userID = user.uid
+        
+        # Create a document reference with the userID as the document ID
+        doc_ref = db.collection('scores').document(userID)
+
+        # Set the score value in the document
+        doc_ref.set({'score': score})
 
         # Delete the temporary video file
         os.remove(temp_video_path)
