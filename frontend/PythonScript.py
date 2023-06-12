@@ -19,7 +19,7 @@ app = Flask(__name__)
 load_dotenv()
 CORS(app)
 
-cred = credentials.Certificate('C:/Users/Adarsh/Desktop/hoopify main/Hoopify-main/Hoopify/frontend/orbital-app-proto-firebase-adminsdk-4agc7-e26b66be8d.json')  # Path to your service account key file
+cred = credentials.Certificate('./orbital-app-proto-firebase-adminsdk-4agc7-e26b66be8d.json')  # Path to your service account key file
 initialize_app(cred, {
     'storageBucket': "orbital-app-proto.appspot.com"  
 })
@@ -38,17 +38,17 @@ def video_analysis():
     try:
         # Retrieve the video file from Firebase Storage
         # Get the currently signed-in user's email
-        user_email = auth.current_user().email
+        #user_email = auth.current_user().email
         
         bucket = storage.bucket()
-        blob = bucket.blob('${user_email}/1HNMtHwFxYSPVc1FFMNX9bX4W7h1/Video3.mp4')
-        temp_video_path = 'C:/Users/Adarsh/Desktop/hoopify/Hoopify-master/Videos/temp_video.mp4'  # Replace with the desired path for the temporary video file
+        blob = bucket.blob('manoj@hoopify.com/odU7tBWDnqhcWq8qd1Xvs9CEcrQ2/shotclip.mp4')
+        temp_video_path = "/Users/manojnarender/Desktop/shotclip.mp4" # Replace with the desired path for the temporary video file
         blob.download_to_filename(temp_video_path)
 
         # Analyze the video
         score = perform_video_analysis(temp_video_path)
         
-        db = firestore.client()
+        ''' db = firestore.client()
 
         # Retrieve the user based on the email
         user = auth.get_user_by_email(user_email)
@@ -60,15 +60,15 @@ def video_analysis():
         doc_ref = db.collection('scores').document(userID)
 
         # Set the score value in the document
-        doc_ref.set({'score': score})
-
+        doc_ref.set({'score': score}) '''
+        
         # Delete the temporary video file
         os.remove(temp_video_path)
-
+        
         # Return the score as a response
         return f"Video analysis score: {score}"
     except Exception as e:
         return str(e)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
