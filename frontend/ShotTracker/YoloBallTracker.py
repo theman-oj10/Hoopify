@@ -1,7 +1,6 @@
 import cv2
 from ultralytics import YOLO
-import FindRim
-
+from . import FindRim
 
 def intersect(ballX, ballY, x1, x2, y1, y2, x3, y3, x4, y4):
     # equation of rim line
@@ -16,7 +15,8 @@ def yoloTrack(path):
     model.classes = ['person', 'sports ball']
 
     # recording the rim-cordinates
-    rim_coordinates = FindRim.find_rim(path)
+    #rim_coordinates = FindRim.find_rim(path)
+    rim_coordinates = [(577,91), (667, 91), (574, 207), (662, 211)]
     # checking shot attempts
     # in possesion => overlap between ball and person bbox
 
