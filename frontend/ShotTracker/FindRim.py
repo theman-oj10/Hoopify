@@ -1,13 +1,11 @@
 import cv2
+def getFirstFrame(path):
+    cap = cv2.VideoCapture(path)
+    success, img = cap.read()
+    cap.release()
+    return img
 def find_rim(path):
     rim = []
-
-    def getFirstFrame(path):
-        cap = cv2.VideoCapture(path)
-        success, img = cap.read()
-        cap.release()
-        return img
-
     frame = getFirstFrame(path)
 
     cv2.imshow('Select Rim', frame)
