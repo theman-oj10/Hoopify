@@ -16,23 +16,25 @@ def intersect(ballX, ballY, x1, y1, x2, y2, x3, y3, x4, y4):
     # check if ball intersects
     #return ballY == m*ballX + c
     return minX <= ballX <= maxX and minY <= ballY <= maxY
-def yoloTrack(path):
+def yoloTrack(path_to_video, path_to_court_img):
     model = YOLO('yolov8l.pt')
     # Filtering the classes: !Doesn't work still tracks everything
     model.classes = ['person', 'sports ball']
 
     # recording the rim-cordinates
-    rim_coordinates = FindRim.find_rim(path)
+    rim_coordinates = FindRim.find_rim(path_to_video)
     # checking shot attempts
     # in possesion => overlap between ball and person bbox
 
     #cv2.destroyAllWindows()
     print(f"rim coordinates: {rim_coordinates}")
-    results = model.predict(source=path, show=True, stream='True')
+    results = model.predict(source=path_to_video, show=True, stream='True')
     shots_taken = 0
     crossed_rim = False
     score = 0
     ball_coordinates = []
+    shot_attempts = []
+    made_shots = []
     def check_overlap(ball_bbox, ball_x, ball_y, person_bbox, person_x, person_y):
         ball_w = ball_bbox[2]
         ball_h = ball_bbox[3]
@@ -52,7 +54,7 @@ def yoloTrack(path):
     person_exists = False
     shot_tobeTaken = False
     # finding homography matrix:
-    matrix = pt.find_homography_matrix(path, "TestFootage/court_invert.png")
+    matrix = pt.find_homography_matrix(path_to_video, path_to_court_img)
     # each result is a frame
     for result in results:
         boxes = result.boxes
@@ -91,6 +93,8 @@ def yoloTrack(path):
                     shot_tobeTaken = False
                     print("Shot Taken")
                     shots_taken += 1
+                    curr_shot = (transformed_x, transformed_y)
+                    shot_attempts.append(curr_shot)
                     print(f"x-player: {transformed_x}")
                     print(f"y-player: {transformed_y}")
                     person_exists = False
@@ -112,12 +116,23 @@ def yoloTrack(path):
                 else:
                     if crossed_rim:
                         score +=1
+                        made_shots.append(curr_shot)
                         print(f"score: {score}")
                         crossed_rim = False
                         frame = 0
                 frame += 1
                     # (x,y) of left end of rim, (x,y) of right of rim, (x,y) of left of net, (x,y) of right of net
-
+    court = cv2.imread(path_to_court_img)
+    # hotzones
+    for i in shot_attempts:
+        if i in made_shots:
+            made_shots.remove(i)
+            cv2.circle(img=court, center=(int(i[0]), int(i[1])), radius=5, color=(0, 255, 0), thickness=5)
+        #print(i)
+        else:
+            cv2.circle(img=court, center=(int(i[0]), int(i[1])), radius=5, color=(0, 0, 255), thickness=5)
+    cv2.imshow("Hotzones", court)
+    cv2.waitKey(0)
     # returning the co-ordinates of the center of the ball
     print(f"Score: {score}")
     print(f"Shots: {shots_taken}")
@@ -129,5 +144,5 @@ def yoloTrack(path):
 # first find the co-ordinates of the middle of the net
 # checking if it crosses the rim
 
-yoloTrack("TestFootage/MAIN_TEST.mov")
+yoloTrack("TestFootage/MAIN_TEST.mov", "TestFootage/court_invert.png")
 

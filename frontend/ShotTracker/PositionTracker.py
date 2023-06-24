@@ -72,9 +72,9 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
     for p in range(0, len(pts_2D)):
         ax2.scatter(pts_2D[p][0], pts_2D[p][1], s=200, c='r')
 
-    ax1.imshow(frame)
-    ax2.imshow(court)
-    plt.show()
+    #ax1.imshow(frame)
+    #ax2.imshow(court)
+    #plt.show()
 
     # finding homography matrix:
     matrix, status = cv2.findHomography(pts_3D, pts_2D)
@@ -100,3 +100,8 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
 #             # Extract the x and y values of the normalized coordinate
 #             transformed_x = normalized_coord[0, 0]
 #             transformed_y = normalized_coord[1, 0]
+
+def show_hotzones(court_img, positions):
+    court = cv2.imRead(court_img)
+    for i in positions:
+        cv2.circle(img=court, center=(i[0], i[1]), radius=50, color=(0,255,0), thickness=5)
