@@ -1,13 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import 'firebase/auth';
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  orderBy,
-  query,
-  where,
-} from 'firebase/firestore';
+import { getFirestore, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { auth } from '../../firebase';
@@ -32,22 +25,25 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const leaderboardRef = collection(db, 'scores');
-        const querySnapshot = await getDocs(
-          query(
-            leaderboardRef,
-            orderBy('score', 'desc'),
-            where('location', '==', sortingLocation)
-          )
-        );
-        const fetchedData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          score: doc.data().score,
-          email: doc.data().email,
-          location: doc.data().location,
-        }));
-        setLeaderboardData(fetchedData);
-        setSortingLocation(sortingLocation || '');
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const userEmail = currentUser.email;
+
+          const snapshot = await getDocs(query(collection(db, 'scores'), orderBy('score', 'desc')));
+          const fetchedData = snapshot.docs
+            .filter(doc => doc.data().email === userEmail)
+            .map(doc => ({
+              id: doc.id,
+              score: doc.data().score,
+              email: doc.data().email,
+              location: doc.data().location
+            }));
+          setLeaderboardData(fetchedData);
+
+          if (fetchedData.length > 0) {
+            setSortingLocation(fetchedData[0].location);
+          }
+        }
       } catch (error) {
         console.log('Error fetching data:', error);
       }
@@ -69,9 +65,7 @@ const Leaderboard = () => {
       <Text style={styles.title}>Leaderboard</Text>
       <Text style={styles.sortingLocation}>Sorting by: {sortingLocation}</Text>
       <View style={styles.leaderboard}>
-        {leaderboardData.map((item, index) =>
-          renderLeaderboardItem(item, index)
-        )}
+        {leaderboardData.map((item, index) => renderLeaderboardItem(item, index))}
       </View>
     </View>
   );
