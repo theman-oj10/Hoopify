@@ -20,7 +20,7 @@ app = Flask(__name__)
 load_dotenv()
 CORS(app)
 
-cred = credentials.Certificate('C:/Users/Adarsh/Desktop/hoopify main/Hoopify-main/Hoopify/frontend/orbital-app-proto-firebase-adminsdk-4agc7-e26b66be8d.json')  # Path to your service account key file
+cred = credentials.Certificate('./orbital-app-proto-firebase-adminsdk-4agc7-e26b66be8d.json')  # Path to your service account key file
 initialize_app(cred, {
     'storageBucket': "orbital-app-proto.appspot.com"  
 })
@@ -41,9 +41,11 @@ def perform_video_analysis(video_path):
 def video_analysis():
     try:
         # Retrieve the video file from Firebase Storage
+
         bucket = storage.bucket()
         blob = bucket.blob('hello@gmail.com/1HNMtHwFxYSPVc1FFMNX9bX4W7h1/Video3.mp4')
         temp_video_path = 'C:/Users/Adarsh/Desktop/hoopify/Hoopify-master/Videos/temp_video.mp4'  # Replace with the desired path for the temporary video file
+ 
         blob.download_to_filename(temp_video_path)
 
         # Analyze the video
@@ -51,21 +53,26 @@ def video_analysis():
         score = 70
         # totalShots = 100
         
+
         db = firestore.client()
+
+    
+
         
         # Create a document reference with the userID as the document ID
         # doc_ref = db.collection('scores').document()
 
         # Set the score value in the document
+
         # doc_ref.set({'score': score})
 
         # Delete the temporary video file
         os.remove(temp_video_path)
-
+        
         # Return the score as a response
         return f"{score}"
     except Exception as e:
         return str(e)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

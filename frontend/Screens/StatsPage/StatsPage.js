@@ -1,7 +1,9 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Share } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Logo from '../SignInScreen/Images/Logo.png';
+
 
 const StatsPage = () => {
   const totalShotsTaken = 100;
