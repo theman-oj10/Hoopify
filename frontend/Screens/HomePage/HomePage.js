@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import { auth, storage, db } from '../../firebase';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { doc, setDoc } from 'firebase/firestore';
+import * as Location from 'expo-location';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc, collection } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import * as DocumentPicker from 'expo-document-picker';
+import { auth } from '../../firebase';
 
 import Logo from '../SignInScreen/Images/Logo.png';
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
+  authDomain: "orbital-app-proto.firebaseapp.com",
+  projectId: "orbital-app-proto",
+  storageBucket: "orbital-app-proto.appspot.com",
+  messagingSenderId: "965591983424",
+  appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
+  measurementId: "G-JV5TKFE1BX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 const HomePage = () => {
   const navigation = useNavigation();
@@ -17,20 +34,18 @@ const HomePage = () => {
     console.log(currentFile);
   };
 
-  const uploadToDatabase = (url) => {
+  const uploadToDatabase = async (url) => {
     const docData = {
       mostRecentUploadURL: url,
       username: auth.currentUser?.email,
     };
 
-    const userRef = doc(db, 'users', docData.username);
-    setDoc(userRef, docData, { merge: true })
-      .then(() => {
-        console.log('Successfully updated DB');
-      })
-      .catch((error) => {
-        console.log('Error:', error);
-      });
+    try {
+      await setDoc(doc(db, 'users', docData.username), docData, { merge: true });
+      console.log('Successfully updated DB');
+    } catch (error) {
+      console.log('Error:', error);
+    }
   };
 
   const handleClick = async () => {
@@ -94,19 +109,75 @@ const HomePage = () => {
       });
   };
 
+  async function GetCurrentLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+  
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission not granted',
+        'Allow the app to use location service.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
+      return;
+    }
+  
+    try {
+      let { coords } = await Location.getCurrentPositionAsync();
+  
+      if (coords) {
+        const { latitude, longitude } = coords;
+        let response = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+  
+        for (let item of response) {
+          let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+          alert(address);
+          console.log(address);
+  
+          try {
+            // Fetch the score value from the Flask web app
+            const scoreResponse = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            const scoreData = await scoreResponse.text();
+            const score = parseFloat(scoreData);
+  
+            // Upload the score, email, and location to Firestore
+            const collectionRef = collection(db, 'scores');
+            const documentId = auth.currentUser?.uid;
+            const data = {
+              email: auth.currentUser?.email,
+              location: address,
+              score: score
+            };
+  
+            await setDoc(doc(collectionRef, documentId), data);
+            console.log('Document added with ID:', documentId);
+          } catch (error) {
+            console.error('Error adding document:', error);
+          }
+        }
+      }
+    } catch (error) {
+      console.log('Error getting location:', error);
+    }
+  }
+  
+  
   return (
     <View style={styles.root}>
       <View style={styles.container}>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
         <Text style={styles.title}>Hoopify</Text>
         <Text style={styles.email}>Email: {auth.currentUser?.email}</Text>
-        
+
         <TouchableOpacity style={styles.uploadButton} onPress={handleClick}>
           <View style={styles.uploadButtonInner}>
             <Text style={styles.buttonText}>Upload File</Text>
           </View>
         </TouchableOpacity>
-        
+
         {uploadProgress > 0 && (
           <Text style={styles.uploadProgress}>Upload Progress: {Math.round(uploadProgress)}%</Text>
         )}
@@ -126,6 +197,9 @@ const HomePage = () => {
           onPress={() => navigation.navigate('Leaderboard')}
         >
           <Text style={styles.buttonText}>Leaderboard</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.statsButton} onPress={GetCurrentLocation}>
+          <Text style={styles.buttonText}>Show Location</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -188,12 +262,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginTop: 20,
+    marginTop: 10,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 15,
+    color: '#fff',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
