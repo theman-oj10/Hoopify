@@ -149,84 +149,40 @@ Based on our limited user testing, we learned that more than implementing a myri
 
 Development Plan
 
-Tasks
-Description
-Date
-Prepare Liftoff Poster and Video
-Create Liftoff Poster and slides, record presentation pitch.
-9 - 16 May 2023
-Pick up necessary skills
-Pick up necessary skills of:
-React Native
-Main framework that is used to build the application
-Open CV and Ultralytics 
-Python Packages used to implement the computer vision features
-Firebase
-Hosting, database and authentication method.
-9 - 22 May 2023
-Prototype Creation
-Create a basic version of shot detection using Open CV and Ultralytics.
-16 - 22 May 2023
-Implement Authentication Method
-Integrate Firebase authentication to the React Native application. Add an email and password authentication method for milestone 1.
-23 - 29 May 2023
-Create feature pages
-Implement navigation and create a program flow of the application
-Add application design
-Implement React Native styling to the application pages
-Milestone 1:
-- Ideation (Readme)
-- Proof of concept:
-Authentication method with email and password
-Navigation through different essential pages
-Basic React Native design
-Publish user video to Firestore database
-Working Python Script.
-
-29 May 2023
-Build a functioning MVP
-Integrate Python Backend with Frontend React Native application.
-31 May - 5 June 2023
-Implement Share Feature
-There will be sharing feature of the different features like reports and statistics from the workout.
-6 - 12 June 2023
-Implement Location Features
-Get location data so as to map the user's home court.
-Implement Leaderboard features
-Leaderboards based on the location of the court they practice at and their efficiency at different hot zones of the court.
-13 - 19 June 2023
-
-
-Build the Hotzones Feature
-Tracks player position and maps it onto a 2d image of a basketball court to prove insights into shooting hot zones.
-User Testing
-User Testing done and feedback was gathered on how to improve the app.
-20 - 26 June 2023
-Deploy Application
-Application was deployed but having some technical issues so to be fully deployed with no issues before milestone 3.
-Milestone 2: First Working Prototype
-26 June 2023
-Implement new performance Metrics.
-Integrate the hot zones feature into the statistics page to provide better performance metrics.
-26 June - 3 July 2023
-Improve accuracy of shot tracking
-Use a model trained on custom data instead of the standard COCO Dataset.
-4 - 10 July 2023
-Polish application design
-Enhance the previous design in Milestone 2 
-11 - 17 July 2023
-Improve UI/UX features
-Provide more advanced features in improving user experience
-Further testing and debugging
-Perform in-depth unit, integration, and system tests for the MVP
-18 - 24 July 2023
-Milestone 3: Minimum Viable Product
-24 July 2023
-Fix any issues or bugs
-Allocate time to fix any issues that arise during the deployment of the MVP
-26 July - 23 August 2023
-Splashdown
-24 August 2023
+| Tasks                           | Description                                                                                                      | Date                           |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| Prepare Liftoff Poster and Video| Create Liftoff Poster and slides, record presentation pitch.                                                     | 9 - 16 May 2023                |
+| Pick up necessary skills        | Pick up necessary skills of:                                                                                     | 9 - 22 May 2023                |
+|                                 | - React Native: Main framework that is used to build the application                                            |                                |
+|                                 | - OpenCV and Ultralytics: Python Packages used to implement the computer vision features                      |                                |
+|                                 | - Firebase: Hosting, database, and authentication method                                                       |                                |
+| Prototype Creation              | Create a basic version of shot detection using OpenCV and Ultralytics                                            | 16 - 22 May 2023               |
+| Implement Authentication Method | Integrate Firebase authentication to the React Native application. Add an email and password authentication method for milestone 1 | 23 - 29 May 2023               |
+| Create feature pages            | - Implement navigation and create a program flow of the application                                              |                                |
+|                                 | - Add application design                                                                                        |                                |
+|                                 | - Implement React Native styling to the application pages                                                       |                                |
+| Milestone 1                     | - Ideation (Readme)                                                                                              | 29 May 2023                    |
+|                                 | - Proof of concept:                                                                                             |                                |
+|                                 |   - Authentication method with email and password                                                               |                                |
+|                                 |   - Navigation through different essential pages                                                                |                                |
+|                                 |   - Basic React Native design                                                                                    |                                |
+|                                 |   - Publish user video to Firestore database                                                                    |                                |
+|                                 |   - Working Python Script                                                                                       |                                |
+| Build a functioning MVP         | Integrate Python Backend with Frontend React Native application                                                 | 31 May - 5 June 2023           |
+| Implement Share Feature         | There will be sharing feature of the different features like reports and statistics from the workout             | 6 - 12 June 2023               |
+| Implement Location Features     | - Get location data so as to map the user's home court                                                           | 13 - 19 June 2023              |
+|                                 | - Implement Leaderboard features                                                                                |                                |
+| Build the Hotzones Feature      | Tracks player position and maps it onto a 2D image of a basketball court to provide insights into shooting hot zones | 20 - 26 June 2023              |
+| User Testing                    | User Testing done and feedback was gathered on how to improve the app                                            |                                |
+| Deploy Application              | Application was deployed but having some technical issues, to be fully deployed with no issues before milestone 3  | Milestone 2: First Working Prototype (26 June 2023) |
+| Implement new performance Metrics| Integrate the hot zones feature into the statistics page to provide better performance metrics                   | 26 June - 3 July 2023          |
+| Improve accuracy of shot tracking| Use a model trained on custom data instead of the standard COCO Dataset                                         | 4 - 10 July 2023               |
+| Polish application design       | Enhance the previous design in Milestone 2                                                                       | 11 - 17 July 2023              |
+| Improve UI/UX features          | Provide more advanced features to improve user experience                                                       |                                |
+| Further testing and debugging    | Perform in-depth unit, integration, and system tests for the MVP                                                 | 18 - 24 July 2023              |
+| Milestone 3                     | Minimum Viable Product (24 July 2023)                                                                            |                                |
+| Fix any issues or bugs          | Allocate time to fix any issues that arise during the deployment of the MVP                                      | 26 July - 23 August 2023       |
+| Splashdown                      | 24 August 2023                                                                                                   |                                |
 
 
 Proof Of Concept
