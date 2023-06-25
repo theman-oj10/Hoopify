@@ -31,12 +31,12 @@ Sign Out: Users can sign out of their accounts.
 Features and Progress
 
 Authentication System
+
 Objective: Have users authenticated by email and password to secure their data and allow users to access and update their data.
 Progress: It works as required.
 
-
-
 Video Analysis
+
 Objective: The app aims to analyze basketball game videos and track players' points and field goal percentages.
 Progress and Problems faced: Since the previous milestone we have been able to develop the backend script such that now we can calculate the number of shot attempts. To do this we implemented an algorithm that checks if the bounding box of the ball overlaps with the bounding box of the person. When it no longer overlaps, we track it as a shot taken.
 
@@ -50,6 +50,7 @@ The above code works as its own module but we are yet to integrate this into our
 For another improvement, we hope to use a custom-trained model. We tried to do this but were unable to secure a computer with a high-end Nvidia graphics card. Training this on a regular computer could take unreasonable amounts of time. However, we believe performance will improve tremendously if we are able to do this.
 
 Hotzones
+
 Objective: Implement a detailed report which shows different shooting performances across the different regions of the court.
 
 Progress and Problems: We also managed to implement the hot zones feature in the backend. Our current backend is able to track the position of the player in the video, translate it to a position on a 2D plane and then plot that on an image of a court. We also managed to implement a way to differentiate the circles that are plotted such that green circles represent makes and red circles represent misses.
@@ -59,6 +60,7 @@ manipulation tools it was then easy to plot these points and vary their colors.
 The problem we faced was the accuracy of this approach and integrating this into the frontend. We were having trouble with writing this image to Firebase storage and retrieving it in the frontend. Once we figure this out, displaying it on the hotzones page (rendering it within a react native component) should be relatively easy. We also want to segment out the image of the court so that we can get more in-depth details about shooting efficiencies in different regions of the court and this is something we hope to achieve by milestone 3.
 
 Leaderboard
+
 Objective: The objective is to create a React Native component that fetches leaderboard data from a Firestore database and displays it in a leaderboard format, with the ability to filter the data based on the user's location.
 
 Progress:
@@ -72,18 +74,20 @@ Filtering by Location: The component includes logic to filter the leaderboard da
 By combining the Firebase integration, leaderboard data retrieval, filtering by location, and rendering of leaderboard items, this feature aims to provide a dynamic and customizable leaderboard experience for users.
 
 Customizable Reports
+
 Objective: The app should allow users to generate customizable reports based on data collected from personal workouts or pickup games. The reports should provide insights into an individual’s progress over time and give insightful statistics using the ‘hot zones’ as well.
 Progress: The customizable reports feature has not been implemented. Further development and data such as shooting efficiency in different regions of the court is necessary to create a reporting system that analyzes the collected data and presents it in a customizable format that is downloadable. 
 
 Share Feature
+
 Objective: We want to be able to share customized reports and leaderboard positions.
 Progress: We have implemented the share feature and we can currently share the workout score. Once we develop the customizable reports and fully develop the leaderboard we will integrate the share features into those as well.
 
 Location Feature
+
 Objective: Implement a feature to retrieve the user's current location and use it to fetch data from a Flask web app, store it in Firestore, and display the address.
 
 Progress:
-
 Permissions and Location Access: The function GetCurrentLocation starts by requesting foreground location permissions from the user using Location.requestForegroundPermissionsAsync. If the permission is not granted, an alert is displayed to the user.
 Obtaining Current Location: After permission is granted, the function uses Location.getCurrentPositionAsync to retrieve the user's current coordinates. The latitude and longitude values are extracted from the response.
 Reverse Geocoding: The Location.reverseGeocodeAsync function is used to obtain the address information based on the latitude and longitude values. The response is an array of address items.
@@ -93,6 +97,7 @@ Storing Data in Firestore: The function creates a document in the 'scores' colle
 
 
 Overall Progress
+
 We have almost fully implemented all the features except the hotzones feature which just needs some work on the frontend and the customizable report feature. Furthermore, the algorithm used to analyze the videos needs significant improvements as the accuracy is still lacking and we do not want that to compromise users’ experience. From user testing, we have gained valuable insight on which direction we should be headed towards and it has pointed us in the right way. Hence, there is still work to be done regarding the features and overall deployment of the app before testing can be carried out.
 
 Tech Stack
