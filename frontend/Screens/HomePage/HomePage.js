@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
@@ -10,7 +10,6 @@ import { auth } from '../../firebase';
 
 import Logo from '../SignInScreen/Images/Logo.png';
 
-// Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
   authDomain: "orbital-app-proto.firebaseapp.com",
@@ -20,7 +19,6 @@ const firebaseConfig = {
   appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
   measurementId: "G-JV5TKFE1BX"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -28,25 +26,32 @@ const storage = getStorage(app);
 const HomePage = () => {
   const navigation = useNavigation();
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploadCompleted, setIsUploadCompleted] = useState(false);
 
   const onFileChange = (files) => {
     const currentFile = files[0];
     console.log(currentFile);
   };
 
-  const uploadToDatabase = async (url) => {
-    const docData = {
-      mostRecentUploadURL: url,
-      username: auth.currentUser?.email,
-    };
+  // const uploadToDatabase = async (url) => {
+  //   const email = auth.currentUser?.email;
+  //   const userId = auth.currentUser?.uid;
 
-    try {
-      await setDoc(doc(db, 'users', docData.username), docData, { merge: true });
-      console.log('Successfully updated DB');
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  };
+  //   const documentId = userId; // Use the user ID as the document ID in the 'scores' collection
+
+  //   const data = {
+  //     email: email,
+  //     location: address,
+  //     score: 80,
+  //   };
+
+  //   try {
+  //     await setDoc(doc(db, 'scores', documentId), data, { merge: true });
+  //     console.log('Document updated with ID:', documentId);
+  //   } catch (error) {
+  //     console.error('Error updating document:', error);
+  //   }
+  // };
 
   const handleClick = async () => {
     try {
@@ -88,8 +93,8 @@ const HomePage = () => {
           async () => {
             const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
             console.log('File uploaded successfully. Download URL:', downloadUrl);
-            uploadToDatabase(downloadUrl);
             setUploadProgress(0);
+            setIsUploadCompleted(true); // Set upload completion status to true
           }
         );
       }
@@ -97,6 +102,13 @@ const HomePage = () => {
       console.log('Error selecting file:', error);
     }
   };
+
+  useEffect(() => {
+    if (isUploadCompleted) {
+      GetCurrentLocation(); // Call GetCurrentLocation after upload is completed
+      setIsUploadCompleted(false); // Reset upload completion status
+    }
+  }, [isUploadCompleted]);
 
   const handleSignOut = () => {
     auth
@@ -111,7 +123,7 @@ const HomePage = () => {
 
   async function GetCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
-  
+
     if (status !== 'granted') {
       Alert.alert(
         'Permission not granted',
@@ -121,37 +133,35 @@ const HomePage = () => {
       );
       return;
     }
-  
+
     try {
       let { coords } = await Location.getCurrentPositionAsync();
-  
+
       if (coords) {
         const { latitude, longitude } = coords;
         let response = await Location.reverseGeocodeAsync({
           latitude,
           longitude,
         });
-  
+
         for (let item of response) {
           let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-          alert(address);
           console.log(address);
-  
+
           try {
             // Fetch the score value from the Flask web app
-            const scoreResponse = await fetch('http://127.0.0.1:5000/api/video-analysis');
-            const scoreData = await scoreResponse.text();
-            const score = parseFloat(scoreData);
-  
-            // Upload the score, email, and location to Firestore
+            // const scoreResponse = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            // const scoreData = await scoreResponse.text();
+            // const score = parseFloat(scoreData);
+
             const collectionRef = collection(db, 'scores');
             const documentId = auth.currentUser?.uid;
             const data = {
               email: auth.currentUser?.email,
               location: address,
-              score: score
+              score: 200,
             };
-  
+
             await setDoc(doc(collectionRef, documentId), data);
             console.log('Document added with ID:', documentId);
           } catch (error) {
@@ -163,8 +173,7 @@ const HomePage = () => {
       console.log('Error getting location:', error);
     }
   }
-  
-  
+
   return (
     <View style={styles.root}>
       <View style={styles.container}>
@@ -192,14 +201,12 @@ const HomePage = () => {
         >
           <Text style={styles.buttonText}>Show My Stats</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.statsButton}
           onPress={() => navigation.navigate('Leaderboard')}
         >
           <Text style={styles.buttonText}>Leaderboard</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.statsButton} onPress={GetCurrentLocation}>
-          <Text style={styles.buttonText}>Show Location</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -237,37 +244,38 @@ const styles = StyleSheet.create({
   },
   uploadButton: {
     backgroundColor: '#4287f5',
-    width: '100%',
-    borderRadius: 10,
-    marginTop: 30,
-    paddingVertical: 10,
     paddingHorizontal: 20,
-  },
-  uploadProgress: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#777',
-  },
-  signOutButton: {
-    backgroundColor: '#ff4136',
-    width: '100%',
-    borderRadius: 10,
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 20,
+    borderRadius: 5,
+    marginBottom: 20,
   },
-  statsButton: {
-    backgroundColor: '#90ee90',
-    width: '100%',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 10,
+  uploadButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
+  },
+  uploadProgress: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#777',
+  },
+  signOutButton: {
+    backgroundColor: '#f54242',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  statsButton: {
+    backgroundColor: '#42f54a',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 10,
   },
 });
 

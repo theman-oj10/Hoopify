@@ -28,7 +28,7 @@ def yoloTrack(path_to_video, path_to_court_img):
 
     #cv2.destroyAllWindows()
     print(f"rim coordinates: {rim_coordinates}")
-    results = model.predict(source=path_to_video, show=True, stream='True')
+    results = model.predict(source=path_to_video, show=False, stream='True')
     shots_taken = 0
     crossed_rim = False
     score = 0
