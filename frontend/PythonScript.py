@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 from ultralytics import YOLO
 import cv2
@@ -32,7 +32,9 @@ classNames = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'trai
 def perform_video_analysis(video_path):
     return yoloTrack(video_path, '/Users/manojnarender/Documents/Hoopify/frontend/ShotTracker/TestFootage/court_invert.png')
 
-
+@app.route('/')
+def index():
+    return send_from_directory(os.path.dirname(__file__), 'index.html')
 data = None  # Initialize the global variable
 
 @app.route('/api/video-analysis', methods=['GET'])
