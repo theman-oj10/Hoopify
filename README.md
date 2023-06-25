@@ -94,8 +94,6 @@ Reverse Geocoding: The Location.reverseGeocodeAsync function is used to obtain t
 Fetching Data from Flask Web App: The function then makes a request to a Flask web app to fetch data. The response is converted to JSON format, and the totalShotsMade and totalShotsTaken values are extracted.
 Storing Data in Firestore: The function creates a document in the 'scores' collection of Firestore. The document ID is obtained from auth.currentUser?.uid, and the data to be stored includes the user's email, location (address), totalShotsMade, and totalShotsTaken. The setDoc function is used to add the document to Firestore.
 
-
-
 Overall Progress
 
 We have almost fully implemented all the features except the hotzones feature which just needs some work on the frontend and the customizable report feature. Furthermore, the algorithm used to analyze the videos needs significant improvements as the accuracy is still lacking and we do not want that to compromise users’ experience. From user testing, we have gained valuable insight on which direction we should be headed towards and it has pointed us in the right way. Hence, there is still work to be done regarding the features and overall deployment of the app before testing can be carried out.
@@ -119,6 +117,7 @@ Others:
 Github: Version Control as it is the industry standard.
  
 Dependencies
+
     "@expo/webpack-config": "^18.0.1",
     "@react-native-firebase/app": "^18.0.0",
     "@react-native-firebase/auth": "^18.0.0",
@@ -143,36 +142,10 @@ Dependencies
     "react-native-web": "~0.18.11"
 
 User Testing
-Since we were unable to deploy our application, we gathered a few friends who are basketball enthusiasts and made them try out the application on our local machine. We asked them the following questions:
 
-
-
-We managed to get 7 responses:
-
-
-
-
+Since we were unable to deploy our application, we gathered a few friends who are basketball enthusiasts and made them try out the application on our local machine. We managed to get 7 responses.
 
 Based on our limited user testing, we learned that more than implementing a myriad of features we should really work on making our core features better for milestone 2 we were ambitious and attempted to implement many features which sacrificed the accuracy of the core computer vision algorithms we were using. We also learned that the user interface is intuitive but we need to add more modern styling to make it production ready. It was great to see that a lot of these users shared the same awe we had when we started this project as we thought this is a cool application we can build.
-
-
-
-
-Software Engineering Practices
-Github/Version Control
-We used Github for version control and made commits frequently but were inconsistent with using a new branch for each feature. This is something we will fix in future commits.
-
-ERD (Firebase)
-
-
-
-
-
-
-
-Proposed Program Flow
-
-
 
 Development Plan
 
@@ -254,8 +227,6 @@ Allocate time to fix any issues that arise during the deployment of the MVP
 26 July - 23 August 2023
 Splashdown
 24 August 2023
-
-
 
 
 Proof Of Concept
