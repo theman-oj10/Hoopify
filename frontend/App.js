@@ -22,7 +22,7 @@ export default function App() {
         <Stack.Screen options={{ headerShown: false }} name="StatsPage" component={StatsPage} />
         <Stack.Screen options={{ headerShown: false }} name="ReportPage" component={ReportPage} />
         <Stack.Screen options={{ headerShown: false }} name="HotZonePage" component={HotZonePage} />
-        <Stack.Screen options={{ headerShown: false }} name="Leaderboard" component={Leaderboard} />
+        <Stack.Screen name="Leaderboard" component={Leaderboard} />
       </Stack.Navigator>
     </NavigationContainer>
   );
