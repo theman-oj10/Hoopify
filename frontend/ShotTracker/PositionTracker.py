@@ -4,28 +4,32 @@ import cv2
 import imutils
 from ultralytics import YOLO
 # model = YOLO('yolov8l.pt')
-#results = model.predict(source="TestFootage/MAIN_TEST.mov", show=True, device='mps', stream='True')
+# results = model.predict(source="TestFootage/MAIN_TEST.mov", show=True, device='mps', stream='True')
+
 
 def find_homography_matrix(path_to_video, path_to_courtImg):
-# new plot
-    plt.figure(figsize=(10,8))
+    # new plot
+    plt.figure(figsize=(10, 8))
 
     # stores a set of fixed points on the basketball court in 3D space in the image
-    pts_3D = np.array([(0,235), (70, 236), (230, 235), (370, 232), (530, 230), (600, 227), (300, 360), (200, 315), (405, 310)])
+    pts_3D = np.array([(0, 235), (70, 236), (230, 235), (370, 232),
+                      (530, 230), (600, 227), (300, 360), (200, 315), (405, 310)])
     # stores the corresponding points in 2D space
-    pts_2D = np.array([(0, 0), (63, 0),(226, 0), (370, 0), (535, 0), (600, 0), (300, 216), (226, 160), (370, 160) ])
-
+    pts_2D = np.array([(0, 0), (63, 0), (226, 0), (370, 0),
+                      (535, 0), (600, 0), (300, 216), (226, 160), (370, 160)])
+    print("step 1")
     cap = cv2.VideoCapture(path_to_video)
     success, img = cap.read()
     cap.release()
     # image of the video_frame
     frame = img
-    frame = cv2.resize(frame, (600,400))
+    frame = cv2.resize(frame, (600, 400))
 
     # 2d court image
     court = cv2.imread(path_to_courtImg)
-    court = cv2.resize(court, (600,400))
+    court = cv2.resize(court, (600, 400))
 
+    print("STEP 2")
     roi = frame[150:400, 0: 600]
 
     # storing original frame dimensions and dimensions of roi
@@ -40,7 +44,7 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
     edges = cv2.Canny(roi, 50, 150, apertureSize=3)
     # lines are the mathematical representation of line edges detected in the image
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 200)
-
+    print("STEP 3")
     # calculate (x1,y1) and (x2, y2) coordinates
     for line in lines:
         # rho is the distance of a perpendicular from the origin to the line
@@ -58,22 +62,23 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
         y2 = int(y0 - 1000 * (a))
 
         # shows each line
-        cv2.line(frame, (x1, y1 + (i_h - r_h)), (x2, y2 + (i_h - r_h)), (255, 0 ,100), 1)
-
+        cv2.line(frame, (x1, y1 + (i_h - r_h)),
+                 (x2, y2 + (i_h - r_h)), (255, 0, 100), 1)
+    print("STEP 4")
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(24, 8))
     fig.suptitle("PLAYER POSITION EXTRACTION")
 
-    ax1.set_title("3D Image")
+    # ax1.set_title("3D Image")
     for p in range(0, len(pts_3D)):
         ax1.scatter(pts_3D[p][0], pts_3D[p][1], s=100, c='r', marker='o')
 
-    ax2.set_title("2D Image")
+    # ax2.set_title("2D Image")
     for p in range(0, len(pts_2D)):
         ax2.scatter(pts_2D[p][0], pts_2D[p][1], s=200, c='r')
-
-    #ax1.imshow(frame)
-    #ax2.imshow(court)
-    #plt.show()
+    print("STEP 5")
+    # ax1.imshow(frame)
+    # ax2.imshow(court)
+    # plt.show()
 
     # finding homography matrix:
     matrix, status = cv2.findHomography(pts_3D, pts_2D)
@@ -100,7 +105,9 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
 #             transformed_x = normalized_coord[0, 0]
 #             transformed_y = normalized_coord[1, 0]
 
+
 def show_hotzones(court_img, positions):
     court = cv2.imRead(court_img)
-    for i in posit5ions:
-        cv2.circle(img=court, center=(i[0], i[1]), radius=50, color=(0,255,0), thickness=5)
+    for i in positions:
+        cv2.circle(img=court, center=(i[0], i[1]),
+                   radius=50, color=(0, 255, 0), thickness=5)

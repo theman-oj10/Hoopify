@@ -93,6 +93,7 @@ const HomePage = () => {
           async () => {
             const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
             console.log('File uploaded successfully. Download URL:', downloadUrl);
+            sendDownloadUrl(downloadUrl);
             setUploadProgress(0);
             setIsUploadCompleted(true); // Set upload completion status to true
           }

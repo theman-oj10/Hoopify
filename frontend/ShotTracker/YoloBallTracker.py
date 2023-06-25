@@ -30,6 +30,7 @@ def yoloTrack(path_to_video, path_to_court_img):
     #cv2.destroyAllWindows()
     print(f"rim coordinates: {rim_coordinates}")
     results = model.predict(source=path_to_video, show=False, stream='True')
+    print("results collected!")
     shots_taken = 0
     crossed_rim = False
     score = 0
@@ -56,6 +57,7 @@ def yoloTrack(path_to_video, path_to_court_img):
     shot_tobeTaken = False
     # finding homography matrix:
     matrix = pt.find_homography_matrix(path_to_video, path_to_court_img)
+    print("homography matrix found!")
     # each result is a frame
     for result in results:
         boxes = result.boxes
