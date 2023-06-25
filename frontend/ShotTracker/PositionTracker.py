@@ -26,7 +26,6 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
     court = cv2.imread(path_to_courtImg)
     court = cv2.resize(court, (600,400))
 
-    # region of interest from the video_frame
     roi = frame[150:400, 0: 600]
 
     # storing original frame dimensions and dimensions of roi
@@ -103,5 +102,5 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
 
 def show_hotzones(court_img, positions):
     court = cv2.imRead(court_img)
-    for i in positions:
+    for i in posit5ions:
         cv2.circle(img=court, center=(i[0], i[1]), radius=50, color=(0,255,0), thickness=5)

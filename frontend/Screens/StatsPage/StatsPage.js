@@ -1,13 +1,12 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Share } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Logo from '../SignInScreen/Images/Logo.png';
-
+import axios from 'axios'; // Import axios library for making HTTP requests
 
 const StatsPage = () => {
-  const totalShotsTaken = 100;
-  const totalShotsMade = 72;
+  const [totalShotsMade, setTotalShotsMade] = useState(0); // State to store total shots made
+  const [totalShotsTaken, setTotalShotsTaken] = useState(0); // State to store total shots taken
   const previousWorkoutScores = [
     { date: '2023-05-22', shotsTaken: 20, shotsMade: 16 },
     { date: '2023-05-20', shotsTaken: 15, shotsMade: 9 },
@@ -28,21 +27,37 @@ const StatsPage = () => {
     console.log('View Hot Zone');
   };
 
-  const handleShare = async() => {
+  const handleShare = async () => {
     // Handle the action for sharing
     const shareOptions = {
       message: `I made ${totalShotsMade} / ${totalShotsTaken} shots today`,
-    }
+    };
     try {
       const ShareResponse = await Share.share(shareOptions);
-    } catch(error) {
+    } catch (error) {
       console.log('Error => ', error);
     }
   };
 
+  const fetchScore = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
+      const scoreData = response.data;
+      // Set totalShotsMade and totalShotsTaken from the score data received
+      setTotalShotsMade(scoreData.totalShotsMade);
+      setTotalShotsTaken(scoreData.totalShotsTaken);
+    } catch (error) {
+      console.log('Error fetching score:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchScore(); // Fetch the score when the component mounts
+  }, []);
+
   return (
     <View style={styles.container}>
-        <Image source={Logo} style={styles.logo} resizeMode="contain" />
+      <Image source={Logo} style={styles.logo} resizeMode="contain" />
       <View style={styles.mainStatContainer}>
         <Text style={styles.mainFraction}>
           {totalShotsMade}/{totalShotsTaken}
@@ -74,7 +89,10 @@ const StatsPage = () => {
       <TouchableOpacity style={styles.button} onPress={handleShare}>
         <Text style={styles.buttonText}>Share</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.button, styles.uploadButton]} onPress={() => navigation.navigate('ReportPage')}>
+      <TouchableOpacity
+        style={[styles.button, styles.uploadButton]}
+        onPress={() => navigation.navigate('ReportPage')}
+      >
         <Text style={styles.buttonText}>Show my progress</Text>
       </TouchableOpacity>
     </View>
