@@ -24,6 +24,7 @@ def find_homography_matrix(path_to_video, path_to_courtImg):
     # image of the video_frame
     frame = img
     frame = cv2.resize(frame, (600, 400))
+    print("Step 1.5")
 
     # 2d court image
     court = cv2.imread(path_to_courtImg)

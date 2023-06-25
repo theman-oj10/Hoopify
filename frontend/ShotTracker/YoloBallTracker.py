@@ -134,8 +134,8 @@ def yoloTrack(path_to_video, path_to_court_img):
         #print(i)
         else:
             cv2.circle(img=court, center=(int(i[0]), int(i[1])), radius=5, color=(0, 0, 255), thickness=5)
-    cv2.imshow("Hotzones", court)
-    cv2.waitKey(0)
+    #cv2.imshow("Hotzones", court)
+    #cv2.waitKey(0)
     # returning the co-ordinates of the center of the ball
     print(f"Score: {score}")
     print(f"Shots: {shots_taken}")

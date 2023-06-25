@@ -106,9 +106,9 @@ const HomePage = () => {
 
   useEffect(() => {
     if (isUploadCompleted) {
+      navigation.navigate("StatsPage");
       GetCurrentLocation(); // Call GetCurrentLocation after upload is completed
       setIsUploadCompleted(false); // Reset upload completion status
-      navigation.navigate("StatsPage");
     }
   }, [isUploadCompleted]);
 
