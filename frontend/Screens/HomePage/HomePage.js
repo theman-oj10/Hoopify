@@ -107,6 +107,7 @@ const HomePage = () => {
     if (isUploadCompleted) {
       GetCurrentLocation(); // Call GetCurrentLocation after upload is completed
       setIsUploadCompleted(false); // Reset upload completion status
+      navigation.navigate("StatsPage");
     }
   }, [isUploadCompleted]);
 
@@ -150,16 +151,20 @@ const HomePage = () => {
 
           try {
             // Fetch the score value from the Flask web app
-            // const scoreResponse = await fetch('http://127.0.0.1:5000/api/video-analysis');
-            // const scoreData = await scoreResponse.text();
-            // const score = parseFloat(scoreData);
+            const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            const datas = await response.json();
+
+            const totalShotsMade = datas.totalShotsMade;
+            const totalShotsTaken = datas.totalShotsTaken;
+
 
             const collectionRef = collection(db, 'scores');
             const documentId = auth.currentUser?.uid;
             const data = {
               email: auth.currentUser?.email,
               location: address,
-              score: 200,
+              totalShotsMade: totalShotsMade,
+              totalShotsTaken: totalShotsTaken
             };
 
             await setDoc(doc(collectionRef, documentId), data);
@@ -173,6 +178,28 @@ const HomePage = () => {
       console.log('Error getting location:', error);
     }
   }
+
+  const sendDownloadUrl = async (downloadUrl) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/video-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ downloadUrl }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        // Handle the response data from the Flask server
+        console.log(data);
+      } else {
+        console.log('Error:', response.status);
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
 
   return (
     <View style={styles.root}>

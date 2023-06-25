@@ -1,8 +1,8 @@
 import cv2
 from ultralytics import YOLO
 import numpy as np
-import FindRim
-import PositionTracker as pt
+from . import FindRim
+from . import PositionTracker as pt
 
 def intersect(ballX, ballY, x1, y1, x2, y2, x3, y3, x4, y4):
     # equation of rim line
@@ -22,7 +22,8 @@ def yoloTrack(path_to_video, path_to_court_img):
     model.classes = ['person', 'sports ball']
 
     # recording the rim-cordinates
-    rim_coordinates = FindRim.find_rim(path_to_video)
+    #rim_coordinates = FindRim.find_rim(path_to_video)
+    rim_coordinates = [(737, 205), (813, 206), (744, 268), (804, 265)]
     # checking shot attempts
     # in possesion => overlap between ball and person bbox
 
@@ -137,12 +138,12 @@ def yoloTrack(path_to_video, path_to_court_img):
     print(f"Score: {score}")
     print(f"Shots: {shots_taken}")
     # print(results)
-    return score
+    return [score, shots_taken]
 
 # need to have 2 checks
 # pass through rim and the middle of the net
 # first find the co-ordinates of the middle of the net
 # checking if it crosses the rim
 
-yoloTrack("TestFootage/MAIN_TEST.mov", "TestFootage/court_invert.png")
+# yoloTrack("TestFootage/MAIN_TEST.mov", "TestFootage/court_invert.png")
 
