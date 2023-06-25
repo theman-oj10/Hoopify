@@ -30,50 +30,52 @@ classNames = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'trai
 
 
 def perform_video_analysis(video_path):
-    return yoloTrack(video_path, '/Users/manojnarender/Documents/Hoopify/frontend/ShotTracker/TestFootage')
+    return yoloTrack(video_path, '/Users/manojnarender/Documents/Hoopify/frontend/ShotTracker/TestFootage/court_invert.png')
 
 
-@app.route('/api/video-analysis', methods=['POST', 'GET'])
-def video_analysis():
-    data = None
-    if request.method == 'GET':
-        return jsonify(data)
-    elif request.method == 'POST':
+data = None  # Initialize the global variable
+
+@app.route('/api/video-analysis', methods=['GET'])
+def get_video_analysis():
+    # Handle the GET request
+    return jsonify(data)
+
+@app.route('/api/video-analysis', methods=['POST'])
+def post_video_analysis():
+    global data  # Use the global variable
+    try:
+        download_url = request.json.get('downloadUrl')
+        print("Downloaded!")
+        # Download the video file
+        response = requests.get(download_url)
+        response.raise_for_status()
+
+        # Replace with the desired path for the temporary video file
+        temp_video_path = 'temp_video.mp4'
+
+        with open(temp_video_path, 'wb') as file:
+            file.write(response.content)
+        print("Analyzing video!")
+        # Analyze the video
         try:
-            download_url = request.json.get('downloadUrl')
-            print("downloaded!")
-            # Download the video file
-            response = requests.get(download_url)
-            response.raise_for_status()
-
-            # Replace with the desired path for the temporary video file
-            temp_video_path = 'temp_video.mp4'
-
-            with open(temp_video_path, 'wb') as file:
-                file.write(response.content)
-            print("analysing video!")
-            # Analyze the video
-            try:
-                #finalScore = perform_video_analysis(temp_video_path)
-                finalScore = [21, 21]
-            except Exception as e:
-                return "NOT WORKING"
-            print("video analysed!")
-            # Delete the temporary video file
-            os.remove(temp_video_path)
-
-            # Return the score as a response
-            total_shots_made = finalScore[0]
-            total_shots_taken = finalScore[1]
-
-            # Create a dictionary with the values
-            data = {
-                'totalShotsMade': total_shots_made,
-                'totalShotsTaken': total_shots_taken
-            }
-            return jsonify(data)
+            finalScore = perform_video_analysis(temp_video_path)
+            #finalScore = [21, 21]
         except Exception as e:
-            return str(e)
+            return "NOT WORKING"
+        print("Video analyzed!")
+        # Delete the temporary video file
+        os.remove(temp_video_path)
+
+        # Update the global variable
+        total_shots_made = finalScore[0]
+        total_shots_taken = finalScore[1]
+        data = {
+            'totalShotsMade': total_shots_made,
+            'totalShotsTaken': total_shots_taken
+        }
+        return jsonify(data)
+    except Exception as e:
+        return str(e)
 
 
 if __name__ == '__main__':
