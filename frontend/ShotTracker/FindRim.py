@@ -2,6 +2,7 @@ import cv2
 def getFirstFrame(path):
     cap = cv2.VideoCapture(path)
     success, img = cap.read()
+    cv2.imwrite("firstFrame.png", img)
     cap.release()
     return img
 def find_rim(path):
