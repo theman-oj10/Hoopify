@@ -16,14 +16,15 @@ def intersect(ballX, ballY, x1, y1, x2, y2, x3, y3, x4, y4):
     # check if ball intersects
     #return ballY == m*ballX + c
     return minX <= ballX <= maxX and minY <= ballY <= maxY
-def yoloTrack(path_to_video, path_to_court_img):
+def yoloTrack(path_to_video, coordinates):
+    path_to_court_img = '/Users/manojnarender/Documents/Hoopify/frontend/ShotTracker/TestFootage/court_invert.png'
     model = YOLO('yolov8l.pt')
     # Filtering the classes: !Doesn't work still tracks everything
     model.classes = ['person', 'sports ball']
-
     # recording the rim-cordinates
     #rim_coordinates = FindRim.find_rim(path_to_video)
-    rim_coordinates = [(737, 205), (813, 206), (744, 268), (804, 265)]
+    #rim_coordinates = [(737, 205), (813, 206), (744, 268), (804, 265)]
+    rim_coordinates = coordinates 
     # checking shot attempts
     # in possesion => overlap between ball and person bbox
 
@@ -135,6 +136,7 @@ def yoloTrack(path_to_video, path_to_court_img):
         else:
             cv2.circle(img=court, center=(int(i[0]), int(i[1])), radius=5, color=(0, 0, 255), thickness=5)
     #cv2.imshow("Hotzones", court)
+    cv2.imwrite("frontend/hotzones.png", court)
     #cv2.waitKey(0)
     # returning the co-ordinates of the center of the ball
     print(f"Score: {score}")
