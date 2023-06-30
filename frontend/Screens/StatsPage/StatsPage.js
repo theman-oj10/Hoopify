@@ -2,17 +2,56 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Share } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Logo from '../SignInScreen/Images/Logo.png';
-import axios from 'axios'; // Import axios library for making HTTP requests
+import axios from 'axios';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, orderBy, getDocs } from 'firebase/firestore';
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
+  authDomain: "orbital-app-proto.firebaseapp.com",
+  projectId: "orbital-app-proto",
+  storageBucket: "orbital-app-proto.appspot.com",
+  messagingSenderId: "965591983424",
+  appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
+  measurementId: "G-JV5TKFE1BX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const StatsPage = () => {
-  const [totalShotsMade, setTotalShotsMade] = useState(0); // State to store total shots made
-  const [totalShotsTaken, setTotalShotsTaken] = useState(0); // State to store total shots taken
-  const previousWorkoutScores = [
-    { date: '2023-05-22', shotsTaken: 20, shotsMade: 16 },
-    { date: '2023-05-20', shotsTaken: 15, shotsMade: 9 },
-    { date: '2023-05-18', shotsTaken: 25, shotsMade: 18 },
-  ];
+  const [totalShotsMade, setTotalShotsMade] = useState(0);
+  const [totalShotsTaken, setTotalShotsTaken] = useState(0);
+  const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
   const navigation = useNavigation();
+
+  const formatDateTime = (timestamp) => {
+    const date = timestamp.toDate();
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    return date.toLocaleString(undefined, options);
+  };
+
+  const fetchPreviousWorkoutScores = async () => {
+    try {
+      const scoresRef = collection(db, 'scores');
+      const scoresQuery = query(scoresRef, orderBy('date', 'desc'));
+      const scoresSnapshot = await getDocs(scoresQuery);
+  
+      const scores = scoresSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        const formattedDateTime = formatDateTime(data.date);
+        return { ...data, date: formattedDateTime };
+      });
+      setPreviousWorkoutScores(scores);
+    } catch (error) {
+      console.log('Error fetching previous workout scores:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPreviousWorkoutScores();
+  }, []);
 
   const calculateFieldGoalPercentage = () => {
     if (totalShotsTaken === 0) {
@@ -23,12 +62,10 @@ const StatsPage = () => {
   };
 
   const handleViewHotZone = () => {
-    // Handle the action for viewing the hot zone
     console.log('View Hot Zone');
   };
 
   const handleShare = async () => {
-    // Handle the action for sharing
     const shareOptions = {
       message: `I made ${totalShotsMade} / ${totalShotsTaken} shots today`,
     };
@@ -43,7 +80,6 @@ const StatsPage = () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
       const scoreData = response.data;
-      // Set totalShotsMade and totalShotsTaken from the score data received
       setTotalShotsMade(scoreData.totalShotsMade);
       setTotalShotsTaken(scoreData.totalShotsTaken);
     } catch (error) {
@@ -52,7 +88,7 @@ const StatsPage = () => {
   };
 
   useEffect(() => {
-    fetchScore(); // Fetch the score when the component mounts
+    fetchScore();
   }, []);
 
   return (
@@ -71,7 +107,7 @@ const StatsPage = () => {
           <View key={index} style={styles.previousStatContainer}>
             <Text style={styles.previousStatDate}>{stat.date}</Text>
             <Text style={styles.previousStatScore}>
-              {stat.shotsMade}/{stat.shotsTaken}
+              {stat.totalShotsMade}/{stat.totalShotsTaken}
             </Text>
           </View>
         ))}
