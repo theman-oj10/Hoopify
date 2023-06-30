@@ -55,18 +55,51 @@ def post_video_analysis():
             finalScore = yoloTrack('frontend/temp_video.mp4', coordinates)
             #finalScore = [0, 0]
         except Exception as e:
-            return "NOT WORKING"
+            print(str(e))
+            return jsonify(str(e))
         print("Video analyzed!")
         # Delete the temporary video file and first frame
         os.remove('frontend/temp_video.mp4')
         os.remove('frontend/firstFrame.png')
         # Update the global variable
-        total_shots_made = finalScore[0]
-        total_shots_taken = finalScore[1]
+        total_shots_made, total_shots_taken = finalScore[0][0], finalScore[0][1]
+        paint_made, paint_attempt = finalScore[1][0], finalScore[1][1]
+        mid_range_made, mid_range_attempt = finalScore[2][0], finalScore[2][1]
+        three_point_made, three_point_attempt = finalScore[3][0], finalScore[3][1]
+        free_throw_made, free_throw_attempt = finalScore[4][0], finalScore[4][1]
+        left_corner_three_made, left_corner_three_attempt = finalScore[5][0], finalScore[5][1] 
+        right_corner_three_made, right_corner_three_attempt = finalScore[6][0], finalScore[6][1]
+        left_corner_made, left_corner_attempt = finalScore[7][0], finalScore[7][1]
+        right_corner_made, right_corner_attempt = finalScore[8][0], finalScore[8][1]
+        left_low_post_made, left_low_post_attempt = finalScore[9][0], finalScore[9][1]
+        right_low_post_made,right_low_post_attempt = finalScore[10][0], finalScore[10][1]
+        left_high_post_made,left_high_post_attempt = finalScore[11][0], finalScore[11][1]
+        right_high_post_made,right_high_post_attempt = finalScore[12][0], finalScore[12][1]
+        top_key_made,top_key_attempt = finalScore[13][0], finalScore[13][1]
+        top_key_three_made,top_key_three_attempt = finalScore[14][0], finalScore[14][1]
+        left_wing_three_made,left_wing_three_attempt = finalScore[15][0], finalScore[15][1]
+        right_wing_three_made,right_wing_three_attempt = finalScore[16][0], finalScore[16][1]
+        
         data = {
-            'totalShotsMade': total_shots_made,
-            'totalShotsTaken': total_shots_taken
+            "total": { "shotsMade" : total_shots_made, "shotsTaken": total_shots_taken},
+            "paint": { "shotsMade" : paint_made, "shotsTaken": paint_attempt},
+            "free_throw": { "shotsMade" : free_throw_made, "shotsTaken": free_throw_attempt},
+            "mid_range" : { "shotsMade" : mid_range_made, "shotsTaken": mid_range_attempt},
+            "three_point": { "shotsMade" : three_point_made, "shotsTaken": three_point_attempt},
+            "left_corner_three": { "shotsMade" : left_corner_three_made, "shotsTaken": left_corner_three_attempt},
+            "right_corner_three": { "shotsMade" : right_corner_three_made, "shotsTaken": right_corner_three_attempt},
+            "left_corner": { "shotsMade" : left_corner_made, "shotsTaken": left_corner_attempt},
+            "right_corner": { "shotsMade" : right_corner_made, "shotsTaken": right_corner_attempt},
+            "left_low_post": { "shotsMade" : left_low_post_made, "shotsTaken": left_low_post_attempt},
+            "right_low_post": { "shotsMade" : right_low_post_made, "shotsTaken": right_low_post_attempt},
+            "left_high_post": { "shotsMade" : left_high_post_made, "shotsTaken": left_high_post_attempt},
+            "right_high_post": { "shotsMade" : right_high_post_made, "shotsTaken": right_high_post_attempt},
+            "top_key": { "shotsMade" : top_key_made, "shotsTaken": top_key_attempt},
+            "top_key_three": { "shotsMade" : top_key_three_made, "shotsTaken": top_key_three_attempt},
+            "left_wing_three": { "shotsMade" : left_wing_three_made, "shotsTaken": left_wing_three_attempt},
+            "right_wing_three": { "shotsMade" : right_wing_three_made, "shotsTaken": right_wing_three_attempt}
         }
+        print(data)
         return jsonify(data)
     except Exception as e:
         return str(e) 
