@@ -80,8 +80,8 @@ const StatsPage = () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
       const scoreData = response.data;
-      setTotalShotsMade(scoreData.totalShotsMade);
-      setTotalShotsTaken(scoreData.totalShotsTaken);
+      setTotalShotsMade(scoreData.total.shotsMade);
+      setTotalShotsTaken(scoreData.total.shotsTaken);
     } catch (error) {
       console.log('Error fetching score:', error);
     }

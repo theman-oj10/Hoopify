@@ -4,6 +4,157 @@ import numpy as np
 from . import FindRim
 from . import PositionTracker as pt
 
+left_corner_three = [0, 0]
+right_corner_three = [0, 0] 
+left_corner = [0, 0]
+right_corner = [0, 0]
+left_low_post = [0, 0]
+right_low_post = [0, 0]
+left_high_post = [0, 0]
+right_high_post = [0, 0]
+top_key = [0, 0]
+top_key_three = [0, 0]
+left_wing_three = [0, 0]
+right_wing_three = [0, 0]
+
+paint = [0, 0]
+three_point = [0, 0]
+mid_range = [0, 0]
+free_throw = [0, 0]
+
+def updateHotzones(ballX, ballY, isMake):
+    def handleMakeOrMiss(isMake, hotzone):
+        if isMake:
+            hotzone[0] +=1
+            hotzone[1] +=1
+        else:
+            hotzone[1] +=1
+            
+    if isPaint(ballX, ballY):
+        handleMakeOrMiss(isMake, paint)
+    if isFreeThrow(ballX, ballY):
+        handleMakeOrMiss(isMake, free_throw)
+    if isMidRange(ballX, ballY):
+        handleMakeOrMiss(isMake, mid_range)
+        if isLeftCorner(ballX, ballY):
+            handleMakeOrMiss(isMake, left_corner)
+        elif isRightCorner(ballX, ballY):
+            handleMakeOrMiss(isMake, right_corner)
+        elif isLeftLowPost(ballX, ballY):
+            handleMakeOrMiss(isMake, left_low_post)
+        elif isRightLowPost(ballX, ballY):
+            handleMakeOrMiss(isMake, right_low_post)
+        elif isLeftHighPost(ballX, ballY):
+            handleMakeOrMiss(isMake, left_high_post)
+        elif isRightHighPost(ballX, ballY):
+            handleMakeOrMiss(isMake, right_high_post)
+        elif isTopKey(ballX, ballY):
+            handleMakeOrMiss(isMake, top_key)
+        else:
+            return "Error"
+    if isThreePoint(ballX, ballY):
+        handleMakeOrMiss(isMake, three_point)
+        if isLeftCornerThree(ballX, ballY):
+            handleMakeOrMiss(isMake, left_corner_three)
+        elif isRightCornerThree(ballX, ballY):
+            handleMakeOrMiss(isMake, right_corner_three)
+        elif isLeftWingThree(ballX, ballY):
+            handleMakeOrMiss(isMake, left_wing_three)
+        elif isRightWingThree(ballX, ballY):
+            handleMakeOrMiss(isMake, right_wing_three)
+        elif isTopKeyThree(ballX, ballY):
+            handleMakeOrMiss(isMake, top_key_three)
+        else:
+            return "Error"
+        
+def isPaint(ballX, ballY):
+    paint = [(249, 0), (410, 0), (249, 252), (410, 252)]
+    return intersect(ballX, ballY, paint[0][0], paint[0][1], paint[1][0], paint[1][1], paint[2][0], paint[2][1], paint[3][0], paint[3][1])
+    
+def isMidRange(ballX, ballY):
+    if isPaint(ballX, ballY) or isFreeThrow(ballX, ballY):
+        return False
+    lower_rectangle = [(69,0), (591,0), (69,71), (591, 71)]
+    # is in lower rectangle
+    if intersect(ballX, ballY, lower_rectangle[0][0], lower_rectangle[0][1],lower_rectangle[1][0], lower_rectangle[1][1], lower_rectangle[2][0], lower_rectangle[2][1], lower_rectangle[3][0], lower_rectangle[3][1]):
+        return True
+    # or in semicircle
+    if ballY > lower_rectangle[2][1]:
+        return (ballX**2) + (ballY**2) - (661 * ballX) - (142 * ballY) == -43846
+    return False
+
+def isLeftCorner(ballX, ballY):
+    if not isMidRange(ballX, ballY):
+        return False
+    return ballY <= 146 and ballX >= 187 
+
+def isRightCorner(ballX, ballY):
+    if not isMidRange(ballX, ballY):
+        return False
+    return ballY <= 146 and ballX >= 477 
+
+def isLeftLowPost(ballX, ballY):
+    if not isMidRange(ballX, ballY):
+        return False
+    return ballY <= 146 and ballX < 187
+
+def isRightLowPost(ballX, ballY):
+    if not isMidRange(ballX, ballY):
+        return False 
+    return ballY <= 146 and ballX < 477 
+
+def isLeftHighPost(ballX, ballY):
+    if not isMidRange(ballX, ballY):
+        return False
+    return ballY > 146 and ballX <= 249
+
+def isRightHighPost(ballX, ballY):
+    if not isMidRange(ballX, ballY):
+        return False
+    return ballY > 146 and ballX >= 410
+
+def isTopKey(ballX, ballY):
+    if not isMidRange(ballX, ballY) and isFreeThrow(ballX, ballY):
+        return False
+    if isLeftCorner(ballX, ballY) or isRightCorner(ballX, ballY) or isLeftLowPost(ballX, ballY) or isRightLowPost(ballX, ballY):
+        return False
+    if isLeftHighPost(ballX, ballY) or isRightHighPost(ballX, ballY):
+        return False
+    return ballY > 146 and ballX >= 410
+
+def isFreeThrow(ballX, ballY):
+    free_throw = [(249, 252), (410, 252), (249, 274), (410, 274)]
+    return intersect(ballX, ballY, free_throw[0][0], free_throw[0][1],free_throw[1][0], free_throw[1][1], free_throw[2][0], free_throw[2][1], free_throw[3][0], free_throw[3][1]) 
+
+# Three Pointers
+def isThreePoint(ballX, ballY):
+    return not isPaint(ballX, ballY) and not isMidRange(ballX, ballY)
+
+def isLeftCornerThree(ballX, ballY):
+    if not isThreePoint(ballX, ballY):
+        return False
+    return ballY >= 0 and ballY <= 146 and ballX < 80
+
+def isRightCornerThree(ballX, ballY):
+    if not isThreePoint(ballX, ballY):
+        return False
+    return ballY >= 0 and ballY <= 146 and ballX > 579
+
+def isLeftWingThree(ballX, ballY):
+    if not isThreePoint(ballX, ballY) or isLeftCornerThree(ballX, ballY) or isRightCornerThree(ballX, ballY):
+        return False
+    return ballY <= ((-141/109)*ballX) + (71981/109)
+
+def isRightWingThree(ballX, ballY):
+    if not isThreePoint(ballX, ballY) or isLeftCornerThree(ballX, ballY) or isRightCornerThree(ballX, ballY):
+        return False
+    return ballY <= ((298/217)*ballX) - (52740/217)
+
+def isTopKeyThree(ballX, ballY):
+    if not isThreePoint(ballX, ballY) or isLeftCornerThree(ballX, ballY) or isRightCornerThree(ballX, ballY) or isLeftWingThree(ballX, ballY) or isRightWingThree(ballX, ballY):
+        return False
+    return True
+    
 def intersect(ballX, ballY, x1, y1, x2, y2, x3, y3, x4, y4):
     # equation of rim line
     m = (y2 - y1)/(x2 - x1)
@@ -18,6 +169,27 @@ def intersect(ballX, ballY, x1, y1, x2, y2, x3, y3, x4, y4):
     return minX <= ballX <= maxX and minY <= ballY <= maxY
 def yoloTrack(path_to_video, coordinates):
     path_to_court_img = '/Users/manojnarender/Documents/Hoopify/frontend/ShotTracker/TestFootage/court_invert.png'
+    global left_corner_three, right_corner_three,left_corner, right_corner, left_low_post, right_low_post, left_high_post, right_high_post, top_key, top_key_three, left_wing_three, right_wing_three, paint, three_point, mid_range, free_throw
+    # reset everything to (0, 0)
+    left_corner_three = [0, 0]
+    right_corner_three = [0, 0] 
+    left_corner = [0, 0]
+    right_corner = [0, 0]
+    left_low_post = [0, 0]
+    right_low_post = [0, 0]
+    left_high_post = [0, 0]
+    right_high_post = [0, 0]
+    top_key = [0, 0]
+    top_key_three = [0, 0]
+    left_wing_three = [0, 0]
+    right_wing_three = [0, 0]
+
+    paint = [0, 0]
+    three_point = [0, 0]
+    mid_range = [0, 0]
+    free_throw = [0, 0]
+    #check if paint => midrange, if yes check if free throw, or else check other midrange, => otherwise its 3 pointer
+    
     model = YOLO('yolov8l.pt')
     # Filtering the classes: !Doesn't work still tracks everything
     model.classes = ['person', 'sports ball']
@@ -58,12 +230,11 @@ def yoloTrack(path_to_video, coordinates):
     shot_tobeTaken = False
     # finding homography matrix:
     matrix = pt.find_homography_matrix(path_to_video, path_to_court_img)
-    print("homography matrix found!")
+    print("Homography matrix found!")
     # each result is a frame
     for result in results:
         boxes = result.boxes
         frame = 0
-
         # boxes contains all the bboxes in a frame
         # if a frame contains both a person and a ball
         # check if frame and ball overlap
@@ -129,12 +300,15 @@ def yoloTrack(path_to_video, coordinates):
     court = cv2.imread(path_to_court_img)
     # hotzones
     for i in shot_attempts:
+        currX = i[0]
+        currY = i[1]
         if i in made_shots:
             made_shots.remove(i)
-            cv2.circle(img=court, center=(int(i[0]), int(i[1])), radius=5, color=(0, 255, 0), thickness=5)
-        #print(i)
+            cv2.circle(img=court, center=(int(currX), int(currY)), radius=5, color=(0, 255, 0), thickness=5)
+            updateHotzones(currX, currY, True)
         else:
-            cv2.circle(img=court, center=(int(i[0]), int(i[1])), radius=5, color=(0, 0, 255), thickness=5)
+            cv2.circle(img=court, center=(int(currX), int(currY)), radius=5, color=(0, 0, 255), thickness=5)
+            updateHotzones(currX, currY, False)
     #cv2.imshow("Hotzones", court)
     cv2.imwrite("frontend/hotzones.png", court)
     #cv2.waitKey(0)
@@ -142,7 +316,7 @@ def yoloTrack(path_to_video, coordinates):
     print(f"Score: {score}")
     print(f"Shots: {shots_taken}")
     # print(results)
-    return [score, shots_taken]
+    return [[score, shots_taken], paint, free_throw, mid_range, three_point, left_corner_three, right_corner_three,left_corner, right_corner, left_low_post, right_low_post, left_high_post, right_high_post, top_key, top_key_three, left_wing_three, right_wing_three]
 
 # need to have 2 checks
 # pass through rim and the middle of the net
