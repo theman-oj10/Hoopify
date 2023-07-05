@@ -188,7 +188,7 @@ const HomePage = () => {
       const response = await fetch('http://127.0.0.1:5000/api/first_frame', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ downloadUrl }),
       }); 
@@ -198,7 +198,7 @@ const HomePage = () => {
         console.log(data);
         setFrameFound(true);
       } else {
-        console.log('Error:', response.status);
+        console.log('ResponseError:', response.status);
       }
     } catch (error) {
       console.log('Error:', error);

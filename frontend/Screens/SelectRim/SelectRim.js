@@ -35,6 +35,11 @@ function SelectRim() {
     const handleSubmit = async (event) =>  {
         // send coordinates to backend
         try {
+            if (coordinates.length < 18){
+                alert("You haven't chosen enough points!")
+                return ;
+            }
+
             const response = await fetch('http://127.0.0.1:5000/api/video-analysis', {
             method: 'POST',
             headers: {

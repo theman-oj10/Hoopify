@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import HotZone from '../SignInScreen/Images/HotZone.png'
 import { useNavigation } from '@react-navigation/native';
 
 const HotZonePage = () => {
@@ -8,26 +7,32 @@ const HotZonePage = () => {
   const hotZones = ['Left Corner 3', 'Right Wing', 'Paint'];
   const weakZones = ['Top of the Key', 'Left Elbow'];
   const [imageUrl, setImageUrl] = useState("")
-  useEffect(() => {
-        fetchImage(); 
-  }, []);
   
-  const fetchImage = async () => {
-      try {
-          console.log("Hotzones Image Fetching")
-          const response = await fetch('http://127.0.0.1:5000/api/hotzones')
-          const blob = await response.blob()
-          const url = URL.createObjectURL(blob)
-          setImageUrl(url)
-      }
-      catch (error) {
-          console.log('Error fetching Image:', error);
-      }
-      if (!imageUrl) {
-          return <div>Loading...</div>; // Placeholder for the loading state
-      }   
-  }
-
+  
+  // const fetchImage = async () => {
+  //     try {
+  //         console.log("Hotzones Image Fetching")
+  //         const response = await fetch('http://127.0.0.1:5000/api/hotzones')
+  //         const blob = await response.blob()
+  //         const url = URL.createObjectURL(blob)
+  //         console.log(response)
+  //         console.log(url)
+  //         //return url
+  //         setImageUrl(url)
+  //         console.log(imageUrl);
+  //     }
+  //     catch (error) {
+  //         console.log('Error fetching Image:', error);
+  //     }
+  //     if (!imageUrl) {
+  //          return <div>Loading...</div>; // Placeholder for the loading state
+  //     }   
+  // }
+  // useEffect(() => {
+  //       //console.log("use")
+  //       fetchImage(); 
+  // }, []);
+  
   const handleShare = () => {
     // Handle the action for sharing
     console.log('Share');
@@ -38,7 +43,7 @@ const HotZonePage = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hotzones</Text>
-      <Image source={imageUrl} style={styles.logo} resizeMode="contain" />
+      <Image source="http://127.0.0.1:5000/api/hotzones" style={styles.logo} resizeMode="contain" />
       
       <Text style={styles.title}>Hot Zones</Text>
       <View style={styles.hotZoneContainer}>
