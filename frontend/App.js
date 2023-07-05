@@ -10,10 +10,7 @@ import StatsPage from './Screens/StatsPage/StatsPage';
 import ReportPage from './Screens/ReportPage/ReportPage';
 import HotZonePage from './Screens/HotZonePage/HotZonePage';
 import Leaderboard from './Screens/Leaderboard/Leaderboard';
-<<<<<<< HEAD
-=======
 import SelectRim from './Screens/SelectRim/SelectRim';
->>>>>>> reorg
 
 const Stack = createNativeStackNavigator();
 
@@ -27,10 +24,7 @@ export default function App() {
         <Stack.Screen options={{ headerShown: false }} name="ReportPage" component={ReportPage} />
         <Stack.Screen options={{ headerShown: false }} name="HotZonePage" component={HotZonePage} />
         <Stack.Screen name="Leaderboard" component={Leaderboard} />
-<<<<<<< HEAD
-=======
         <Stack.Screen options={{ headerShown: false }} name="SelectRim" component={SelectRim} />
->>>>>>> reorg
       </Stack.Navigator>
     </NavigationContainer>
   );
