@@ -1,6 +1,6 @@
 https://docs.google.com/document/d/1S0BTIQ4QMQpytQ8v_hZvGcjbfrKoIT-vESrE1p1VEwA/edit
 
-<h1>Milestone 1 Submission</h1>
+<h1>Milestone 2 Submission</h1>
 
 **Team Name**
 
