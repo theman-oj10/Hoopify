@@ -82,7 +82,8 @@ def isMidRange(ballX, ballY):
     if isPaint(ballX, ballY) or isFreeThrow(ballX, ballY):
         return False
     #lower_rectangle = [(69, 0), (591, 0), (69, 71), (591, 71)]
-    lower_rectangle = [[62, 0], [538, 0], [62, 45], [538, 45]]
+    #lower_rectangle = [[62, 0], [538, 0], [62, 45], [538, 45]]
+    lower_rectangle = [[62, 0], [538, 0], [62, 56], [538, 56]]
     # is in lower rectangle
     if intersect(ballX, ballY, lower_rectangle[0][0], lower_rectangle[0][1], lower_rectangle[1][0],
                  lower_rectangle[1][1], lower_rectangle[2][0], lower_rectangle[2][1], lower_rectangle[3][0],
@@ -91,7 +92,8 @@ def isMidRange(ballX, ballY):
     # or in semicircle
     if ballY > lower_rectangle[2][1]:
         #return (ballX ** 2) - (661 * ballX) + 43846 <= (142 * ballY) - (ballY ** 2)
-        return (ballX ** 2) - (602 * ballX) + 63042 <= (90 * ballY)- (ballY ** 2)
+        #return (ballX ** 2) - (602 * ballX) + 63042 <= (90 * ballY)- (ballY ** 2)
+        return ((ballX - 300)**2)/55696 + ((ballY - 48)**2)/26896 <= 1
     return False
 
 

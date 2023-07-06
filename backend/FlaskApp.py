@@ -23,6 +23,7 @@ firebaseConfig = {
 app = Flask(__name__)
 load_dotenv()
 CORS(app, resources={r"/*": {"origins": "*"}})
+# NOTE RUN after you CD into backend
 # Setting up Key directories
 current_dir = os.getcwd()
 parent_dir = os.path.dirname(current_dir)
@@ -44,7 +45,7 @@ def get_video_analysis():
 def post_video_analysis():
     global data  # Use the global variable
     try:
-        #os.remove("hotzones.png") # remove prev hotzones check if you need this
+        #os.remove("hotzones.png") # remove prev hotzones check if you need
         coordinates = request.json.get('coordinates')
         print(coordinates)
         print("Analyzing video!")
