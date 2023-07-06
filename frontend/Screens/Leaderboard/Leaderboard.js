@@ -14,7 +14,6 @@ const firebaseConfig = {
   appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
   measurementId: "G-JV5TKFE1BX"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -27,22 +26,34 @@ const Leaderboard = () => {
       try {
         const currentUser = auth.currentUser;
         if (currentUser) {
-          const userEmail = currentUser.email;
+          const userEmail = currentUser?.email;
 
-          const snapshot = await getDocs(query(collection(db, 'scores'), orderBy('score', 'desc')));
+          // Fetch user's location from Firestore
+          const userSnapshot = await getDocs(query(collection(db, 'scores'), where('email', '==', userEmail)));
+          const userData = userSnapshot.docs.map(doc => doc.data());
+          const userLocation = userData[0]?.location || '';
+
+          setSortingLocation(userLocation);
+
+          const snapshot = await getDocs(
+            query(
+              collection(db, 'scores'),
+              where('location', '==', userLocation), // Filter by location
+              orderBy('totalShotsMade', 'desc') // Sort by total shots made (descending)
+              // orderBy('fieldGoalPercentage', 'desc') // Sort by field goal percentage (descending)
+            )
+          );
+
           const fetchedData = snapshot.docs
-            .filter(doc => doc.data().email === userEmail)
             .map(doc => ({
               id: doc.id,
-              score: doc.data().score,
               email: doc.data().email,
-              location: doc.data().location
+              location: doc.data().location,
+              totalShotsMade: doc.data().totalShotsMade,
+              totalShotsTaken: doc.data().totalShotsTaken,
+              fieldGoalPercentage: (doc.data().totalShotsMade / doc.data().totalShotsTaken) * 100
             }));
           setLeaderboardData(fetchedData);
-
-          if (fetchedData.length > 0) {
-            setSortingLocation(fetchedData[0].location);
-          }
         }
       } catch (error) {
         console.log('Error fetching data:', error);
@@ -52,11 +63,12 @@ const Leaderboard = () => {
     fetchData();
   }, []);
 
-  const renderLeaderboardItem = ({ id, score, email, location }, index) => (
+  const renderLeaderboardItem = ({ id, email, location, totalShotsMade, fieldGoalPercentage }, index) => (
     <View key={id} style={styles.leaderboardItem}>
       <Text style={styles.rank}>{index + 1}</Text>
       <Text style={styles.email}>{email}</Text>
-      <Text style={styles.score}>{score}</Text>
+      <Text style={styles.totalShotsMade}>{totalShotsMade}</Text>
+      <Text style={styles.fieldGoalPercentage}>({fieldGoalPercentage}%)</Text>
     </View>
   );
 
@@ -112,14 +124,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000000',
   },
-  score: {
+  totalShotsMade: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000000',
+    marginRight: 10
   },
-  location: {
-    marginLeft: 8,
+  fieldGoalPercentage: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: '#000000',
   },
 });
