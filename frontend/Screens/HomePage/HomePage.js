@@ -27,7 +27,8 @@ const HomePage = () => {
   const navigation = useNavigation();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
-
+  const [coordinates, setCoordinates] = useState([]) // for SelectRim
+  const [frameFound, setFrameFound] = useState(false);
   const onFileChange = (files) => {
     const currentFile = files[0];
     console.log(currentFile);
@@ -105,12 +106,14 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (isUploadCompleted) {
+    if (isUploadCompleted && frameFound) {
+      navigation.navigate("SelectRim")
+      /** 
       navigation.navigate("StatsPage");
       GetCurrentLocation(); // Call GetCurrentLocation after upload is completed
-      setIsUploadCompleted(false); // Reset upload completion status
+      setIsUploadCompleted(false); // Reset upload completion status*/
     }
-  }, [isUploadCompleted]);
+  }, [isUploadCompleted, frameFound]);
 
   const handleSignOut = () => {
     auth
@@ -187,26 +190,26 @@ const HomePage = () => {
 
   const sendDownloadUrl = async (downloadUrl) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/video-analysis', {
+      const response = await fetch('http://127.0.0.1:5000/api/first_frame', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ downloadUrl }),
-      });
-  
+      }); 
       if (response.ok) {
         const data = await response.json();
         // Handle the response data from the Flask server
         console.log(data);
+        setFrameFound(true);
       } else {
-        console.log('Error:', response.status);
+        console.log('ResponseError:', response.status);
       }
     } catch (error) {
       console.log('Error:', error);
     }
   };
-
+  
   return (
     <View style={styles.root}>
       <View style={styles.container}>
