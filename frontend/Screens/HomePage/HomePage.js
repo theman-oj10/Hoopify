@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, Alert } from
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, collection } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, collection, Timestamp } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import * as DocumentPicker from 'expo-document-picker';
 import { auth } from '../../firebase';
@@ -151,15 +151,19 @@ const HomePage = () => {
 
         for (let item of response) {
           let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-          console.log(address);
+          // console.log(address);
 
           try {
             // Fetch the score value from the Flask web app
-            const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
-            const datas = await response.json();
+            // const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            // const datas = await response.json();
 
-            const totalShotsMade = datas.totalShotsMade;
-            const totalShotsTaken = datas.totalShotsTaken;
+            // const totalShotsMade = datas.totalShotsMade;
+            // const totalShotsTaken = datas.totalShotsTaken;
+
+            const totalShotsMade = 10;
+            const totalShotsTaken = 15;
+            const currentDate = Timestamp.fromDate(new Date());
 
 
             const collectionRef = collection(db, 'scores');
@@ -168,7 +172,8 @@ const HomePage = () => {
               email: auth.currentUser?.email,
               location: address,
               totalShotsMade: totalShotsMade,
-              totalShotsTaken: totalShotsTaken
+              totalShotsTaken: totalShotsTaken,
+              date: currentDate
             };
 
             await setDoc(doc(collectionRef, documentId), data);
