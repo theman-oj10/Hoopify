@@ -244,6 +244,12 @@ const HomePage = () => {
         >
           <Text style={styles.buttonText}>Leaderboard</Text>
         </TouchableOpacity>
+         <TouchableOpacity
+          style={styles.statsButton}
+          onPress={() => navigation.navigate('LoadingScreen')}
+        >
+          <Text style={styles.buttonText}>Loading Screen</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
