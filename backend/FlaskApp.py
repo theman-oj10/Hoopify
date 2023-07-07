@@ -127,7 +127,7 @@ def post_first_frame():
         
         print("First Frame Found!")
         response = jsonify("firstFrame")
-        #response.headers.add("Access-Control-Allow-Origin")
+        response.headers.add("Access-Control-Allow-Origin")
         return response, 201
     except Exception as e:
         return jsonify(str(e))

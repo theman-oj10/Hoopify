@@ -11,6 +11,7 @@ import ReportPage from './Screens/ReportPage/ReportPage';
 import HotZonePage from './Screens/HotZonePage/HotZonePage';
 import Leaderboard from './Screens/Leaderboard/Leaderboard';
 import SelectRim from './Screens/SelectRim/SelectRim';
+import LoadingScreen from './Screens/LoadingScreen/LoadingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function App() {
         <Stack.Screen options={{ headerShown: false }} name="HotZonePage" component={HotZonePage} />
         <Stack.Screen name="Leaderboard" component={Leaderboard} />
         <Stack.Screen options={{ headerShown: false }} name="SelectRim" component={SelectRim} />
+        <Stack.Screen options={{ headerShown: false }} name="LoadingScreen" component={LoadingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
