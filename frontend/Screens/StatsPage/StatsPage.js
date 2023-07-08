@@ -5,6 +5,7 @@ import Logo from '../SignInScreen/Images/Logo.png';
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { auth } from '../../firebase';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -16,6 +17,16 @@ const firebaseConfig = {
   appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
   measurementId: "G-JV5TKFE1BX"
 };
+
+// const fetchReportData = async () => {
+  //   try {
+  //     const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
+  //     return response.data;
+  //   } catch (error) {
+  //     console.log('Error fetching report data:', error);
+  //     throw error;
+  //   }
+  // };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -34,7 +45,7 @@ const StatsPage = () => {
 
   const fetchPreviousWorkoutScores = async () => {
     try {
-      const scoresRef = collection(db, 'scores');
+      const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts'); // Use the 'scores' collection and user ID
       const scoresQuery = query(scoresRef, orderBy('date', 'desc'));
       const scoresSnapshot = await getDocs(scoresQuery);
   
@@ -80,7 +91,6 @@ const StatsPage = () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
       const scoreData = response.data;
-      // Set totalShotsMade and totalShotsTaken from the score data received
       setTotalShotsMade(scoreData.total.shotsMade);
       setTotalShotsTaken(scoreData.total.shotsTaken);
     } catch (error) {

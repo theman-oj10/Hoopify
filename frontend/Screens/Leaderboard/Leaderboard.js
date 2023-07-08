@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import 'firebase/auth';
 import { getFirestore, collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
@@ -14,6 +13,7 @@ const firebaseConfig = {
   appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
   measurementId: "G-JV5TKFE1BX"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -26,52 +26,47 @@ const Leaderboard = () => {
       try {
         const currentUser = auth.currentUser;
         if (currentUser) {
-          const userEmail = currentUser?.email;
-
-          // Fetch user's location from Firestore
-          const userSnapshot = await getDocs(query(collection(db, 'scores'), where('email', '==', userEmail)));
-          const userData = userSnapshot.docs.map(doc => doc.data());
-          const userLocation = userData[0]?.location || '';
-
-          setSortingLocation(userLocation);
-
+          const userEmail = currentUser.email;
+  
           const snapshot = await getDocs(
             query(
-              collection(db, 'scores'),
-              where('location', '==', userLocation), // Filter by location
-              orderBy('totalShotsMade', 'desc') // Sort by total shots made (descending)
+              collection(db, 'scores', auth.currentUser?.uid, 'workouts'),
+              orderBy('totalShotsMade', 'desc'), // Sort by total shots made (descending)
+              orderBy('totalShotsTaken', 'asc')
               // orderBy('fieldGoalPercentage', 'desc') // Sort by field goal percentage (descending)
             )
           );
-
-          const fetchedData = snapshot.docs
-            .map(doc => ({
-              id: doc.id,
-              email: doc.data().email,
-              location: doc.data().location,
-              totalShotsMade: doc.data().totalShotsMade,
-              totalShotsTaken: doc.data().totalShotsTaken,
-              fieldGoalPercentage: (doc.data().totalShotsMade / doc.data().totalShotsTaken) * 100
-            }));
+  
+          const fetchedData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            email: doc.data().email,
+            location: doc.data().location, // Use location from workouts collection
+            totalShotsMade: doc.data().totalShotsMade,
+            totalShotsTaken: doc.data().totalShotsTaken,
+            fieldGoalPercentage: (doc.data().totalShotsMade / doc.data().totalShotsTaken) * 100
+          }));
           setLeaderboardData(fetchedData);
+  
+          const userLocation = fetchedData[0]?.location || '';
+          setSortingLocation(userLocation);
         }
       } catch (error) {
         console.log('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
   }, []);
 
-  const renderLeaderboardItem = ({ id, email, location, totalShotsMade, fieldGoalPercentage }, index) => (
+  const renderLeaderboardItem = ({ id, email, totalShotsMade, fieldGoalPercentage }, index) => (
     <View key={id} style={styles.leaderboardItem}>
       <Text style={styles.rank}>{index + 1}</Text>
       <Text style={styles.email}>{email}</Text>
       <Text style={styles.totalShotsMade}>{totalShotsMade}</Text>
-      <Text style={styles.fieldGoalPercentage}>({fieldGoalPercentage}%)</Text>
+      <Text style={styles.fieldGoalPercentage}>({fieldGoalPercentage.toFixed(2)}%)</Text>
     </View>
   );
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Leaderboard</Text>

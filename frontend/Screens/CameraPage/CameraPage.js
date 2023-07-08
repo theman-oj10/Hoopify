@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Platform } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
-import { Permissions } from 'react-native-unimodules';
+import { useNavigation } from '@react-navigation/native';
 
 const CameraPage = () => {
+  const navigation = useNavigation();
   const [cameraRef, setCameraRef] = useState(null);
   const [recording, setRecording] = useState(false);
 
@@ -18,12 +19,6 @@ const CameraPage = () => {
       if (mediaStatus !== 'granted') {
         alert('Media Library permission not granted!');
       }
-      if (Platform.OS === 'android') {
-        const { status: audioStatus } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-        if (audioStatus !== 'granted') {
-          alert('Audio recording permission not granted!');
-        }
-      }
     })();
   }, []);
 
@@ -31,7 +26,8 @@ const CameraPage = () => {
     if (cameraRef && !recording) {
       setRecording(true);
       const video = await cameraRef.recordAsync();
-      saveVideoToGallery(video.uri);
+      const downloadUrl = await saveVideoToGallery(video.uri);
+      console.log('Download URL:', downloadUrl);
       setRecording(false);
     }
   };
@@ -44,18 +40,35 @@ const CameraPage = () => {
   };
 
   const saveVideoToGallery = async (videoUri) => {
-    const asset = await MediaLibrary.createAssetAsync(videoUri);
-    const album = await MediaLibrary.getAlbumAsync('Download');
-    if (album == null) {
-      await MediaLibrary.createAlbumAsync('Download', asset, false);
-    } else {
-      await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+    try {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        throw new Error('Media Library permission not granted!');
+      }
+  
+      const asset = await MediaLibrary.createAssetAsync(videoUri);
+      const album = await MediaLibrary.getAlbumAsync('Download');
+      if (album == null) {
+        await MediaLibrary.createAlbumAsync('Download', asset, false);
+      } else {
+        await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      }
+  
+      const albumAssets = await MediaLibrary.getAssetsAsync({ album });
+      if (albumAssets?.assets.length > 0) {
+        const lastVideo = albumAssets.assets[0];
+        return lastVideo.uri;
+      } else {
+        throw new Error('No video found in the album.');
+      }
+    } catch (error) {
+      console.log('Error saving video to gallery:', error);
+      return null;
     }
-    const albumAssets = await MediaLibrary.getAssetsAsync({ album });
-    if (albumAssets?.assets.length > 0) {
-      const lastVideo = albumAssets.assets[0];
-      console.log('Download URL:', lastVideo.uri);
-    }
+  };
+  
+  const goToHome = () => {
+    navigation.navigate('Home'); // Replace 'Home' with the name of your home screen
   };
 
   return (
@@ -79,8 +92,11 @@ const CameraPage = () => {
           <Text style={{ color: '#fff' }}>Stop</Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity onPress={goToHome}>
+        <Text>Go to Home</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 export default CameraPage;
