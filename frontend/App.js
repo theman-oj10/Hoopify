@@ -12,6 +12,7 @@ import HotZonePage from './Screens/HotZonePage/HotZonePage';
 import Leaderboard from './Screens/Leaderboard/Leaderboard';
 import SelectRim from './Screens/SelectRim/SelectRim';
 import CameraPage from './Screens/CameraPage/CameraPage';
+import LoadingScreen from './Screens/LoadingScreen/LoadingScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function App() {
         <Stack.Screen name="Leaderboard" component={Leaderboard} />
         <Stack.Screen options={{ headerShown: false }} name="SelectRim" component={SelectRim} />
         <Stack.Screen options={{ headerShown: false }} name="CameraPage" component={CameraPage} />
+        <Stack.Screen options={{ headerShown: false }} name="LoadingScreen" component={LoadingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

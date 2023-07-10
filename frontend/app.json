@@ -15,7 +15,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.yourcompany.androidtest",
+      "buildNumber": "1.0.0",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Your description here",
+        "NSMicrophoneUsageDescription": "Your description here",
+        "NSPhotoLibraryUsageDescription": "Your description here",
+        "NSPhotoLibraryAddUsageDescription": "Your description here"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -34,4 +42,3 @@
     }
   }
 }
-

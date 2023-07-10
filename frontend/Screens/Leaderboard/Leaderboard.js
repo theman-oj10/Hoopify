@@ -66,6 +66,40 @@ const Leaderboard = () => {
       <Text style={styles.fieldGoalPercentage}>({fieldGoalPercentage.toFixed(2)}%)</Text>
     </View>
   );
+
+  async function GetCurrentLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission not granted',
+        'Allow the app to use location service.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
+      return;
+    }
+
+    try {
+      let { coords } = await Location.getCurrentPositionAsync();
+
+      if (coords) {
+        const { latitude, longitude } = coords;
+        let response = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+
+        for (let item of response) {
+          let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+          // console.log(address);
+          return address;
+        }
+      }
+    } catch (error) {
+      console.log('Error getting location:', error);
+    }
+  }
   
   return (
     <View style={styles.container}>

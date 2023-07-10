@@ -244,11 +244,17 @@ const HomePage = () => {
         >
           <Text style={styles.buttonText}>Leaderboard</Text>
         </TouchableOpacity>
-         <TouchableOpacity
+        <TouchableOpacity
           style={styles.statsButton}
           onPress={() => navigation.navigate('LoadingScreen')}
         >
           <Text style={styles.buttonText}>Loading Screen</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.statsButton}
+          onPress={() => navigation.navigate('CameraPage')}
+        >
+          <Text style={styles.buttonText}>Use My Camera</Text>
         </TouchableOpacity>
       </View>
     </View>
