@@ -42,6 +42,16 @@ const ReportPage = () => {
     fetchPreviousWorkoutScores();
   }, []);
 
+  // const fetchReportData = async () => {
+  //   try {
+  //     const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
+  //     return response.data;
+  //   } catch (error) {
+  //     console.log('Error fetching report data:', error);
+  //     throw error;
+  //   }
+  // };
+
   const fetchReportData = async () => {
     // Simulated API response
     return {
