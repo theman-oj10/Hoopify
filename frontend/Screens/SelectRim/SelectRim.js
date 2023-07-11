@@ -6,7 +6,31 @@ function SelectRim() {
   const [imageUrl, setImageUrl] = useState("");
   const [coordinates, setCoordinates] = useState([]);
   const [loading, setLoading] = useState(false); // Track loading state
+  const [messages, setMessages] = useState([]);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://127.0.0.1:5000/');
+
+    socket.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    socket.onmessage = (event) => {
+      const message = event.data;
+      console.log('Received message:', message);
+      setMessages((prevMessages) => [message, ...prevMessages]);
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    // Clean up the WebSocket connection
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   useEffect(() => {
     fetchImage();
@@ -68,7 +92,12 @@ function SelectRim() {
   };
 
   if (!imageUrl || loading) {
-    return <LoadingScreen>Loading...</LoadingScreen>; // Placeholder for the loading state
+    return (
+      <>
+        <LoadingScreen>Loading...</LoadingScreen>
+        <h3>{messages[0]}</h3>
+      </>
+    ); // Placeholder for the loading state
   }
 
   return (
