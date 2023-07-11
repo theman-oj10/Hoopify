@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, Alert } from
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, collection, Timestamp } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, collection, Timestamp, documentId } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import * as DocumentPicker from 'expo-document-picker';
 import { auth } from '../../firebase';
@@ -155,24 +155,88 @@ const HomePage = () => {
 
           try {
             // Fetch the score value from the Flask web app
-            // const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
-            // const datas = await response.json();
+            const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            const datas = await response.json();
 
-            // const totalShotsMade = datas.totalShotsMade;
-            // const totalShotsTaken = datas.totalShotsTaken;
+            const totalShotsMade = datas.total.shotsMade;
+            const totalShotsTaken = datas.total.shotsTaken;
+            const paintShotsMade = datas.paint.shotsMade;
+            const paintShotsTaken = datas.paint.shotsTaken;
+            const freeThrowShotsMade = datas.free_throw.shotsMade;
+            const freeThrowShotsTaken = datas.free_throw.shotsTaken;
+            const midRangeShotsMade = datas.mid_range.shotsMade;
+            const midRangeShotsTaken = datas.mid_range.shotsTaken;
+            const threePointShotsMade = datas.three_point.shotsMade;
+            const threePointShotsTaken = datas.three_point.shotsTaken;
+            const leftCornerThreeShotsMade = datas.left_corner_three.shotsMade;
+            const leftCornerThreeShotsTaken = datas.left_corner_three.shotsTaken;
+            const rightCornerThreeShotsMade = datas.right_corner_three.shotsMade;
+            const rightCornerThreeShotsTaken = datas.right_corner_three.shotsTaken;
+            const leftCornerShotsMade = datas.left_corner.shotsMade;
+            const leftCornerShotsTaken = datas.left_corner.shotsTaken;
+            const rightCornerShotsMade = datas.right_corner.shotsMade;
+            const rightCornerShotsTaken = datas.right_corner.shotsTaken;
+            const leftLowPostShotsMade = datas.left_low_post.shotsMade;
+            const leftLowPostShotsTaken = datas.left_low_post.shotsTaken;
+            const rightLowPostShotsMade = datas.right_low_post.shotsMade;
+            const rightLowPostShotsTaken = datas.right_low_post.shotsTaken;
+            const leftHighPostShotsMade = datas.left_high_post.shotsMade;
+            const leftHighPostShotsTaken = datas.left_high_post.shotsTaken;
+            const rightHighPostShotsMade = datas.right_high_post.shotsMade;
+            const rightHighPostShotsTaken = datas.right_high_post.shotsTaken;
+            const topKeyShotsMade = datas.top_key.shotsMade;
+            const topKeyShotsTaken = datas.top_key.shotsTaken;
+            const topKeyThreeShotsMade = datas.top_key_three.shotsMade;
+            const topKeyThreeShotsTaken = datas.top_key_three.shotsTaken;
+            const leftWingThreeShotsMade = datas.left_wing_three.shotsMade;
+            const leftWingThreeShotsTaken = datas.left_wing_three.shotsTaken;
+            const rightWingThreeShotsMade = datas.right_wing_three.shotsMade;
+            const rightWingThreeShotsTaken = datas.right_wing_three.shotsTaken;
 
-            const totalShotsMade = 10;
-            const totalShotsTaken = 15;
+
+            // const totalShotsMade = 10;
+            // const totalShotsTaken = 15;
             const currentDate = Timestamp.fromDate(new Date());
 
 
-            const collectionRef = collection(db, 'scores');
-            const documentId = auth.currentUser?.uid;
+            const collectionRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
             const data = {
               email: auth.currentUser?.email,
               location: address,
               totalShotsMade: totalShotsMade,
               totalShotsTaken: totalShotsTaken,
+              paintShotsMade: paintShotsMade,
+              paintShotsTaken: paintShotsTaken,
+              freeThrowShotsMade: freeThrowShotsMade,
+              freeThrowShotsTaken: freeThrowShotsTaken,
+              midRangeShotsMade: midRangeShotsMade,
+              midRangeShotsTaken: midRangeShotsTaken,
+              threePointShotsMade: threePointShotsMade,
+              threePointShotsTaken: threePointShotsTaken,
+              leftCornerThreeShotsMade: leftCornerThreeShotsMade,
+              leftCornerThreeShotsTaken: leftCornerThreeShotsTaken,
+              rightCornerThreeShotsMade: rightCornerThreeShotsMade,
+              rightCornerThreeShotsTaken: rightCornerThreeShotsTaken,
+              leftCornerShotsMade: leftCornerShotsMade,
+              leftCornerShotsTaken: leftCornerShotsTaken,
+              rightCornerShotsMade: rightCornerShotsMade,
+              rightCornerShotsTaken: rightCornerShotsTaken,
+              leftLowPostShotsMade: leftLowPostShotsMade,
+              leftLowPostShotsTaken: leftLowPostShotsTaken,
+              rightLowPostShotsMade: rightLowPostShotsMade,
+              rightLowPostShotsTaken: rightLowPostShotsTaken,
+              leftHighPostShotsMade: leftHighPostShotsMade,
+              leftHighPostShotsTaken: leftHighPostShotsTaken,
+              rightHighPostShotsMade: rightHighPostShotsMade,
+              rightHighPostShotsTaken: rightHighPostShotsTaken,
+              topKeyShotsMade: topKeyShotsMade,
+              topKeyShotsTaken: topKeyShotsTaken,
+              topKeyThreeShotsMade: topKeyThreeShotsMade,
+              topKeyThreeShotsTaken: topKeyThreeShotsTaken,
+              leftWingThreeShotsMade: leftWingThreeShotsMade,
+              leftWingThreeShotsTaken: leftWingThreeShotsTaken,
+              rightWingThreeShotsMade: rightWingThreeShotsMade,
+              rightWingThreeShotsTaken: rightWingThreeShotsTaken,
               date: currentDate
             };
 

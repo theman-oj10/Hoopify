@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Logo from '../SignInScreen/Images/Logo.png';
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { auth } from '../../firebase';
 
 // Firebase configuration
@@ -46,7 +46,7 @@ const StatsPage = () => {
   const fetchPreviousWorkoutScores = async () => {
     try {
       const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts'); // Use the 'scores' collection and user ID
-      const scoresQuery = query(scoresRef, orderBy('date', 'desc'));
+      const scoresQuery = query(scoresRef, orderBy('date', 'desc'), limit(3));
       const scoresSnapshot = await getDocs(scoresQuery);
   
       const scores = scoresSnapshot.docs.map((doc) => {

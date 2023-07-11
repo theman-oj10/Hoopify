@@ -13,6 +13,7 @@ import Leaderboard from './Screens/Leaderboard/Leaderboard';
 import SelectRim from './Screens/SelectRim/SelectRim';
 import CameraPage from './Screens/CameraPage/CameraPage';
 import LoadingScreen from './Screens/LoadingScreen/LoadingScreen';
+import RegisterPage from './Screens/RegisterPage/RegisterPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ export default function App() {
         <Stack.Screen options={{ headerShown: false }} name="SelectRim" component={SelectRim} />
         <Stack.Screen options={{ headerShown: false }} name="CameraPage" component={CameraPage} />
         <Stack.Screen options={{ headerShown: false }} name="LoadingScreen" component={LoadingScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="RegisterPage" component={RegisterPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
