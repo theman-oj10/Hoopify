@@ -6,6 +6,7 @@ import axios from 'axios';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, orderBy, getDocs, limit } from 'firebase/firestore';
 import { auth } from '../../firebase';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -18,16 +19,6 @@ const firebaseConfig = {
   measurementId: "G-JV5TKFE1BX"
 };
 
-// const fetchReportData = async () => {
-  //   try {
-  //     const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log('Error fetching report data:', error);
-  //     throw error;
-  //   }
-  // };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -35,6 +26,7 @@ const StatsPage = () => {
   const [totalShotsMade, setTotalShotsMade] = useState(0);
   const [totalShotsTaken, setTotalShotsTaken] = useState(0);
   const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const formatDateTime = (timestamp) => {
@@ -45,10 +37,10 @@ const StatsPage = () => {
 
   const fetchPreviousWorkoutScores = async () => {
     try {
-      const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts'); // Use the 'scores' collection and user ID
+      const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
       const scoresQuery = query(scoresRef, orderBy('date', 'desc'), limit(3));
       const scoresSnapshot = await getDocs(scoresQuery);
-  
+
       const scores = scoresSnapshot.docs.map((doc) => {
         const data = doc.data();
         const formattedDateTime = formatDateTime(data.date);
@@ -89,10 +81,14 @@ const StatsPage = () => {
 
   const fetchScore = async () => {
     try {
+      setIsLoading(true); // Start loading state
+
       const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
       const scoreData = response.data;
       setTotalShotsMade(scoreData.total.shotsMade);
       setTotalShotsTaken(scoreData.total.shotsTaken);
+
+      setIsLoading(false); // Stop loading state
     } catch (error) {
       console.log('Error fetching score:', error);
     }
@@ -103,46 +99,52 @@ const StatsPage = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Image source={Logo} style={styles.logo} resizeMode="contain" />
-      <View style={styles.mainStatContainer}>
-        <Text style={styles.mainFraction}>
-          {totalShotsMade}/{totalShotsTaken}
-        </Text>
-        <Text style={styles.mainStatLabel}>Workout Results</Text>
-      </View>
-
-      <View style={styles.previousStatsContainer}>
-        <Text style={styles.heading}>Previous Workout Scores</Text>
-        {previousWorkoutScores.map((stat, index) => (
-          <View key={index} style={styles.previousStatContainer}>
-            <Text style={styles.previousStatDate}>{stat.date}</Text>
-            <Text style={styles.previousStatScore}>
-              {stat.totalShotsMade}/{stat.totalShotsTaken}
+    <>
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <View style={styles.container}>
+          <Image source={Logo} style={styles.logo} resizeMode="contain" />
+          <View style={styles.mainStatContainer}>
+            <Text style={styles.mainFraction}>
+              {totalShotsMade}/{totalShotsTaken}
             </Text>
+            <Text style={styles.mainStatLabel}>Workout Results</Text>
           </View>
-        ))}
-      </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HotZonePage')}>
-        <Text style={styles.buttonText}>View Hot Zone</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.button, styles.uploadButton]}
-        onPress={() => navigation.navigate('HomePage')}
-      >
-        <Text style={styles.buttonText}>Hoopify More</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleShare}>
-        <Text style={styles.buttonText}>Share</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.button, styles.uploadButton]}
-        onPress={() => navigation.navigate('ReportPage')}
-      >
-        <Text style={styles.buttonText}>Show my progress</Text>
-      </TouchableOpacity>
-    </View>
+          <View style={styles.previousStatsContainer}>
+            <Text style={styles.heading}>Previous Workout Scores</Text>
+            {previousWorkoutScores.map((stat, index) => (
+              <View key={index} style={styles.previousStatContainer}>
+                <Text style={styles.previousStatDate}>{stat.date}</Text>
+                <Text style={styles.previousStatScore}>
+                  {stat.totalShotsMade}/{stat.totalShotsTaken}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HotZonePage')}>
+            <Text style={styles.buttonText}>View Hot Zone</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.uploadButton]}
+            onPress={() => navigation.navigate('HomePage')}
+          >
+            <Text style={styles.buttonText}>Hoopify More</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleShare}>
+            <Text style={styles.buttonText}>Share</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.uploadButton]}
+            onPress={() => navigation.navigate('ReportPage')}
+          >
+            <Text style={styles.buttonText}>Show my progress</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </>
   );
 };
 
@@ -170,51 +172,50 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   mainStatLabel: {
-    fontSize: 30,
-    marginTop: 10,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
   },
   previousStatsContainer: {
-    marginBottom: 30,
-    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
   },
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: 'black',
+    color: 'white',
   },
   previousStatContainer: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   previousStatDate: {
     fontSize: 16,
-    color: 'black',
+    color: 'white',
   },
   previousStatScore: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
   },
   button: {
-    backgroundColor: '#4287f5',
+    backgroundColor: 'white',
     width: '100%',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
+    padding: 15,
     marginBottom: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    borderRadius: 5,
+    alignItems: 'center',
   },
   uploadButton: {
-    backgroundColor: '#f54242',
+    backgroundColor: '#1E90FF',
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1E90FF',
   },
 });
 

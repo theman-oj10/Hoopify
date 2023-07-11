@@ -7,6 +7,7 @@ function SelectRim() {
   const [coordinates, setCoordinates] = useState([]);
   const [loading, setLoading] = useState(false); // Track loading state
   const [messages, setMessages] = useState([]);
+  const [showInstructions, setShowInstructions] = useState(true); // Track whether to show instructions
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -91,7 +92,7 @@ function SelectRim() {
     }
   };
 
-  if (!imageUrl || loading) {
+  if (loading) {
     return (
       <>
         <LoadingScreen>Loading...</LoadingScreen>
@@ -100,10 +101,24 @@ function SelectRim() {
     ); // Placeholder for the loading state
   }
 
+  const handleProceed = () => {
+    setShowInstructions(false);
+  };
+
   return (
     <div>
-      <img src={imageUrl} alt="firstFrame" onClick={handleClick} />
-      <button onClick={handleSubmit}>Submit</button>
+      {showInstructions && (
+        <>
+          <p>Instructions: Please read the following instructions before proceeding.</p>
+          <button onClick={handleProceed}>Proceed</button>
+        </>
+      )}
+      {!showInstructions && (
+        <>
+          <img src={imageUrl} alt="firstFrame" onClick={handleClick} />
+          <button onClick={handleSubmit}>Submit</button>
+        </>
+      )}
     </div>
   );
 }
