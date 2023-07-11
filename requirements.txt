@@ -60,9 +60,9 @@ six==1.16.0
 socketio==0.2.1
 sympy==1.12
 --find-links https://download.pytorch.org/whl/cpu
-torch==2.0.1+cpu
+torch==2.0.1
 --find-links https://download.pytorch.org/whl/cpu 
-torchvision==0.15.2+cpu
+torchvision==0.15.2
 tqdm==4.65.0
 typing_extensions==4.7.1
 tzdata==2023.3
