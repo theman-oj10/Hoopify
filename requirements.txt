@@ -1,3 +1,4 @@
+-f https://download.pytorch.org/whl/cpu
 bidict==0.22.1
 blinker==1.6.2
 CacheControl==0.13.1
