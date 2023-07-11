@@ -10,7 +10,9 @@ from PythonScripts.YoloBallTracker import yoloTrack
 import requests
 from PythonScripts.FindRim import getFirstFrame
 import os
-
+from firebase_admin import credentials, initialize_app
+cred = credentials.Certificate("firebase_admin")
+initialize_app(cred)
 firebaseConfig = {
     'apiKey': "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
     'authDomain': "orbital-app-proto.firebaseapp.com",

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "orbital-app-proto",
+  "private_key_id": "65416d10f81aa941f8e1901afffb3a35f16c4548",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkolkVbKQ2h0V+\n2Bi3cv8f8i8Qj9ob0KHX8sQRNv94tABb33alHSQD2NArXZZRHbs9zuox2LK85Rn6\nTr3CqzVghF+pLkUkrj+aUxqlkScExly1cMqPhM7Rs8+KWRWxJUu42H5N2I8Rrcax\nO0PpmakEGn2CdQe4IHMhtKlxPLVVl46fpEzm1I1Lbb4K1Y1AfoItZOopR2e7KxV+\nGnB02MnLgkkLfeIEsWBXwj56nx5DFncyjSOsp8otuYdJUjn8PtFBkWLiP3G38nyj\ntXCxANrRqzg7eqBVyqNgfz/mnaRUPHpqeWNQd5HRcZrjFWATVSYYJaCK8z2FuBo0\nFcTfVzFpAgMBAAECggEAHuhJoB+Kvp/rmJIaJcqFgepWEp5m/ITQ9XkifPbdxDvK\nu3S60emkGsLH5fRGZYkW31YqmlwLxjGejGLe9h5tQWbojJreqTG7SA4k+QNEl31j\n5z47EPGGYFEI+/iYfW66hgPCxnuK9G8y15AAQmkyFU6h1G2DGvqgkqnXi6YxhtVF\nBhh/vfaV8BxUHzgw4pN9PAB+Z5sDR/Cp9iuVVbEG/Bn62yXQsfrAvBZf8OOqOJ2F\nEkQfQJeMkWd8hEMGDd3+oHBGLqAsqp2QZZXW4AJIgvdwKt6QuBNrJK9bwoORMvTF\nvr/pHUXt+fIgZQWQoFRMj+O0BAsd8Qgh+/BI0kr4FwKBgQDlecGL+bwzR1M0kcy/\nevveeco3d1YH2F7g0S4dgUp/aIewk4s0MBUtrU5pIjNJUlcPepS5a8RQ9C3d3g3O\nqBb1x0ZGRURL1rV1NgZ+jF1NbxwbzWIJqL02OSE7Y3SbuG0VAZvjdGst8G3GX21s\njPBoUsMcBXlrv3Q3zrhGf0f9DwKBgQC3qeqp52XG3+d4uNqG0v70kYnQpRNNiPmB\nPRWISN4k/l3wnXhQ2RBerRe674p3yqpq1XCIsz+anwKbbnXXBKFG9/BmmErCnRR5\nyp+snpCrX4sFCVfhxA1ECW0CocgRc387jkNCZEAsfjsuKJWTVgTCrXYpWZnyJa9X\nnHeZ5BhaBwKBgQDHnJHv4N0E/hYytGEWbzSI4gg1F2mOiXh+t3cV01GqYpMl1jJQ\nw0Ko6Qg8C7PxI973Z/nXERdEFCORy4bXLQBL63wFxFsUXUCbJNOhYRgIM46P4KhX\nHqD4edmef3T/v/2jODMSOELDQ1E6LehRdIfrN5Lg3SIxx+igYwGI0U8doQKBgAhZ\nNeyBMzQmC1yGcpB8WNB/KReN2WHF3ymLwEXQoiBmW5jLX6O1KjRTg+egadfmI3b1\nusbL9xEtNy4fiEW81SPns0rGk2djQoICvt1W29aeYjBZa2A8zCmSkBz1g6WfbWIk\nplQHQI+FMWV4vMvUtiSvQ9a/VusV4XGHEDyzjJPTAoGAYtLV4OXomthBzMma/haj\nx7+hr6BWhzRLQ6b1ifbKaOuL9jBgo0rXjOkQkcqNKvb8nxvHnXyI6X44ZDA0vNtj\noTjOelX7hLoexQD6RyXvaekKPfqoeR45nVPfhnD7//PjHoci7Vr53SKobaN4gpSH\nsMqRe6vMAVDJoNaaHC0zwxQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-4agc7@orbital-app-proto.iam.gserviceaccount.com",
+  "client_id": "112324863936477910026",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-4agc7%40orbital-app-proto.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

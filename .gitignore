@@ -1,3 +1,4 @@
 node_modules
 backend/hoopifyEnv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.dylib
 virtualenv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.dylib
+google-cloud-sdk/bin/anthoscli
