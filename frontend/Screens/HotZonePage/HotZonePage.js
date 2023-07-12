@@ -18,8 +18,7 @@ const HotZonePage = () => {
           console.log("Hotzones Image Fetching")
           const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/hotzones')
           const blob = await response.blob()
-          const url = URL.createObjectURL(blob)
-          setImageUrl(url)
+          setImageUrl(response.url)
       }
       catch (error) {
           console.log('Error fetching Image:', error);
