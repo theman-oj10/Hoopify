@@ -97,41 +97,79 @@ const ReportPage = () => {
   const renderWorkoutCharts = () => {
     // Ref added to the BarChart component
     const workoutLabels = previousWorkoutScores.map((workout, index) => `Workout ${index + 1}`);
-    const workoutData = previousWorkoutScores.map((workout) =>
+    const totalScoreData = previousWorkoutScores.map((workout) =>
       calculateImprovement(reportData.total.shotsMade, workout.totalShotsTaken).toFixed(2)
+    );
+    const paintData = previousWorkoutScores.map((workout) =>
+      calculateImprovement(reportData.paint.shotsMade, workout.paintShotsTaken).toFixed(2)
+    );
+    const midrangeData = previousWorkoutScores.map((workout) =>
+      calculateImprovement(reportData.mid_range.shotsMade, workout.midRangeShotsTaken).toFixed(2)
+    );
+    const freeThrowData = previousWorkoutScores.map((workout) =>
+      calculateImprovement(reportData.free_throw.shotsMade, workout.freeThrowShotsTaken).toFixed(2)
+    );
+    const threePointData = previousWorkoutScores.map((workout) =>
+      calculateImprovement(reportData.three_point.shotsMade, workout.threePointShotsTaken).toFixed(2)
     );
   
     return (
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>Workout Improvement</Text>
         <View ref={chartRef}>
-          <BarChart
-            data={{
-              labels: workoutLabels,
-              datasets: [
-                {
-                  data: workoutData,
+          <ScrollView horizontal>
+            <LineChart
+              data={{
+                labels: workoutLabels,
+                datasets: [
+                  {
+                    data: totalScoreData,
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                    strokeWidth: 2,
+                  },
+                  {
+                    data: paintData,
+                    color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                    strokeWidth: 2,
+                  },
+                  {
+                    data: midrangeData,
+                    color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
+                    strokeWidth: 2,
+                  },
+                  {
+                    data: freeThrowData,
+                    color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+                    strokeWidth: 2,
+                  },
+                  {
+                    data: threePointData,
+                    color: (opacity = 1) => `rgba(255, 255, 0, ${opacity})`,
+                    strokeWidth: 2,
+                  },
+                ],
+              }}
+              width={workoutLabels.length * 100}
+              height={200}
+              chartConfig={{
+                backgroundColor: '#f2f2f2',
+                backgroundGradientFrom: '#f2f2f2',
+                backgroundGradientTo: '#f2f2f2',
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 10,
                 },
-              ],
-            }}
-            width={300}
-            height={200}
-            chartConfig={{
-              backgroundColor: '#f2f2f2',
-              backgroundGradientFrom: '#f2f2f2',
-              backgroundGradientTo: '#f2f2f2',
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              style: {
-                borderRadius: 10,
-              },
-            }}
-            style={styles.chart}
-          />
+              }}
+              style={styles.chart}
+              bezier
+            />
+          </ScrollView>
         </View>
       </View>
     );
   };
+  
 
   const handleShare = async () => {
     // Capture the bar chart component as an image
@@ -164,9 +202,11 @@ const ReportPage = () => {
 
   const saveSharedDocument = async (activityType) => {
     try {
+      const currentDate = Timestamp.fromDate(new Date());
       const docRef = await addDoc(collection(db, 'sharedDocuments'), {
         content: generateDocumentContent(),
-        activityType: activityType,
+        email: auth.currentUser?.email,
+        date: currentDate,
       });
       console.log('Document saved with ID:', docRef.id);
     } catch (error) {

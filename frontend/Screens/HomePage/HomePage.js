@@ -155,7 +155,7 @@ const HomePage = () => {
 
           try {
             // Fetch the score value from the Flask web app
-            const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
             const datas = await response.json();
 
             const totalShotsMade = datas.total.shotsMade;
@@ -310,15 +310,15 @@ const HomePage = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.statsButton}
-          onPress={() => navigation.navigate('LoadingScreen')}
-        >
-          <Text style={styles.buttonText}>Loading Screen</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.statsButton}
           onPress={() => navigation.navigate('CameraPage')}
         >
           <Text style={styles.buttonText}>Use My Camera</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.statsButton}
+          onPress={() => navigation.navigate('ReportPage')}
+        >
+          <Text style={styles.buttonText}>See My Report</Text>
         </TouchableOpacity>
       </View>
     </View>
