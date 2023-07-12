@@ -3,15 +3,13 @@ import { View, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
 
 const LoadingScreen = () => {
-  return (
-    <View style={styles.container}>
-      <LottieView
-        source={'https://assets10.lottiefiles.com/packages/lf20_jGw3lx.json'} // Replace with the path to your animation JSON file
-        autoPlay
-        loop     
-        style={styles.animation}
-      />
-    </View>
+  return (<div>
+    <script src='https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js'>
+    </script>
+<lottie-player src='https://lottie.host/ef7b3923-3976-4318-994d-c68ee7f18421/P2ikOGoFUc.json' background='Transparent' speed='1' style={{width: '300px', height: '300px'}} direction='1' mode='normal' loop controls autoplay hover>
+
+</lottie-player>
+  </div>
   );
 };
 

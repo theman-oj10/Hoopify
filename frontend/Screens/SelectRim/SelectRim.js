@@ -10,28 +10,28 @@ function SelectRim() {
   const [showInstructions, setShowInstructions] = useState(true); // Track whether to show instructions
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const socket = new WebSocket('ws://127.0.0.1:5000/');
+  // useEffect(() => {
+    // const socket = new WebSocket('ws://127.0.0.1:5000/');
 
-    socket.onopen = () => {
-      console.log('WebSocket connection established');
-    };
+    // socket.onopen = () => {
+    //   console.log('WebSocket connection established');
+    // };
 
-    socket.onmessage = (event) => {
-      const message = event.data;
-      console.log('Received message:', message);
-      setMessages((prevMessages) => [message, ...prevMessages]);
-    };
+    // socket.onmessage = (event) => {
+    //   const message = event.data;
+    //   console.log('Received message:', message);
+    //   setMessages((prevMessages) => [message, ...prevMessages]);
+    // };
 
-    socket.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
+    // socket.onclose = () => {
+    //   console.log('WebSocket connection closed');
+    // };
 
-    // Clean up the WebSocket connection
-    return () => {
-      socket.close();
-    };
-  }, []);
+  //   // Clean up the WebSocket connection
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, []);
 
   useEffect(() => {
     fetchImage();
@@ -50,7 +50,7 @@ function SelectRim() {
   const fetchImage = async () => {
     try {
       console.log("Image Fetching");
-      const response = await fetch('http://127.0.0.1:5000/api/first_frame');
+      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame');
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       setImageUrl(url);
@@ -69,10 +69,11 @@ function SelectRim() {
 
       setLoading(true); // Start loading state
 
-      const response = await fetch('http://127.0.0.1:5000/api/video-analysis', {
+      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify({ coordinates }),
       });
@@ -115,7 +116,7 @@ function SelectRim() {
       )}
       {!showInstructions && (
         <>
-          <img src={imageUrl} alt="firstFrame" onClick={handleClick} />
+          <img src='https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame' alt="firstFrame" onClick={handleClick} />
           <button onClick={handleSubmit}>Submit</button>
         </>
       )}
