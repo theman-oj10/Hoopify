@@ -1,75 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import Logo from './Images/Logo.png';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useNavigation } from '@react-navigation/native';
 
 const SignInScreen = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigation = useNavigation();
-  
-    useEffect(() => {
-      const unsubscribe = auth.onAuthStateChanged(user => {
-        if (user) {
-          navigation.replace('HomePage');
-        }
-      });
-      return unsubscribe;
-    }, []);
-  
-    const handleSignUp = () => {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredentials => {
-          const user = userCredentials.user;
-          console.log('Registered with:', user.email);
-        })
-        .catch(error => alert(error.message));
-    };
-  
-    const handleLogin = () => {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(userCredentials => {
-          const user = userCredentials.user;
-          console.log('Logged in with:', user.email);
-        })
-        .catch(error => alert(error.message));
-    };
-  
-    return (
-      <KeyboardAvoidingView style={styles.root} behavior="padding">
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>hoopify</Text>
-          <Image source={Logo} style={styles.logo} resizeMode="contain" />
-  
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#888"
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
-  
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#888"
-            secureTextEntry
-            value={password}
-            onChangeText={text => setPassword(text)}
-          />
-  
-          <TouchableOpacity onPress={handleLogin} style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-  
-          <TouchableOpacity onPress={handleSignUp} style={[styles.button, styles.registerButton]}>
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        navigation.replace('HomePage');
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log('Logged in with:', user.email);
+      })
+      .catch(error => alert(error.message));
+  };
+
+  const handleRegister = () => {
+    navigation.navigate('RegisterPage');
+  };
+
+  return (
+    <KeyboardAvoidingView style={styles.root} behavior="padding">
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>hoopify</Text>
+        <Image source={Logo} style={styles.logo} resizeMode="contain" />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#888"
+          value={email}
+          onChangeText={text => setEmail(text)}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#888"
+          secureTextEntry
+          value={password}
+          onChangeText={text => setPassword(text)}
+        />
+
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleRegister} style={[styles.button, styles.registerButton]}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 };
   
   const styles = StyleSheet.create({
