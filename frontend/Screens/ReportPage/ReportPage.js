@@ -42,26 +42,26 @@ const ReportPage = () => {
     fetchPreviousWorkoutScores();
   }, []);
 
-  // const fetchReportData = async () => {
-  //   try {
-  //     const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log('Error fetching report data:', error);
-  //     throw error;
-  //   }
-  // };
-
   const fetchReportData = async () => {
-    // Simulated API response
-    return {
-      total: { shotsMade: 45, shotsTaken: 60 },
-      paint: { shotsMade: 20, shotsTaken: 30 },
-      free_throw: { shotsMade: 10, shotsTaken: 12 },
-      mid_range: { shotsMade: 8, shotsTaken: 15 },
-      three_point: { shotsMade: 7, shotsTaken: 20 },
-    };
+    try {
+      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+      return response.data;
+    } catch (error) {
+      console.log('Error fetching report data:', error);
+      throw error;
+    }
   };
+
+  // const fetchReportData = async () => {
+  //   // Simulated API response
+  //   return {
+  //     total: { shotsMade: 45, shotsTaken: 60 },
+  //     paint: { shotsMade: 20, shotsTaken: 30 },
+  //     free_throw: { shotsMade: 10, shotsTaken: 12 },
+  //     mid_range: { shotsMade: 8, shotsTaken: 15 },
+  //     three_point: { shotsMade: 7, shotsTaken: 20 },
+  //   };
+  // };
 
   const formatDateTime = (timestamp) => {
     const date = timestamp.toDate();

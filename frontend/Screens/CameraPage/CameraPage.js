@@ -98,7 +98,7 @@ const CameraPage = () => {
 
           try {
             // Fetch the score value from the Flask web app
-            const response = await fetch('http://127.0.0.1:5000/api/video-analysis');
+            const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
             const datas = await response.json();
 
             const totalShotsMade = datas.total.shotsMade;
@@ -197,7 +197,7 @@ const CameraPage = () => {
 
   const sendDownloadUrl = async (downloadUrl) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/first_frame', {
+      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
