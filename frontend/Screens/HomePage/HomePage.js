@@ -190,7 +190,7 @@ const HomePage = () => {
 
   const sendDownloadUrl = async (downloadUrl) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/first_frame', {
+      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

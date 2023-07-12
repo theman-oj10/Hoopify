@@ -89,7 +89,7 @@ const StatsPage = () => {
 
   const fetchScore = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:5000/api/video-analysis');
+      const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
       const scoreData = response.data;
       setTotalShotsMade(scoreData.total.shotsMade);
       setTotalShotsTaken(scoreData.total.shotsTaken);

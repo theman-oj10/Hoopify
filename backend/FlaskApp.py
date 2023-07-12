@@ -1,18 +1,18 @@
 from flask import Flask, request, jsonify, send_file, make_response
-from flask_socketio import SocketIO, emit
+#from flask_socketio import SocketIO, emit
 from dotenv import load_dotenv
 from ultralytics import YOLO
 import cv2
 import math
 import numpy as np
 from flask_cors import CORS
-from PythonScripts.YoloBallTracker import yoloTrack
+from backend.PythonScripts.YoloBallTracker import yoloTrack
 import requests
-from PythonScripts.FindRim import getFirstFrame
+#from PythonScripts.FindRim import getFirstFrame
 import os
-from firebase_admin import credentials, initialize_app
-cred = credentials.Certificate("firebase_admin")
-initialize_app(cred)
+# from firebase_admin import credentials, initialize_app
+# cred = credentials.Certificate("firebase_admin")
+# initialize_app(cred)
 firebaseConfig = {
     'apiKey': "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
     'authDomain': "orbital-app-proto.firebaseapp.com",
@@ -26,28 +26,29 @@ firebaseConfig = {
 app = Flask(__name__)
 load_dotenv()
 CORS(app, resources={r"/*": {"origins": "*"}})
-socketio = SocketIO(app, transports='websocket') # configuring websocket
-@socketio.on('connect', namespace="/")
-def handle_connect():
-    try:
-        print('WebSocket Client connected')
-    except Exception as e:
-        print(str(e))
+# socketio = SocketIO(app, transports='websocket') # configuring websocket
+# @socketio.on('connect', namespace="/")
+# def handle_connect():
+#     try:
+#         print('WebSocket Client connected')
+#     except Exception as e:
+#         print(str(e))
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    try:
-        print('WebSocket Client disconnected')
-    except Exception as e:
-        print(str(e))
-@socketio.on_error()        # Handles the default namespace
-def error_handler(e):
-    print(e)
-# NOTE RUN after you CD into backend
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     try:
+#         print('WebSocket Client disconnected')
+#     except Exception as e:
+#         print(str(e))
+# @socketio.on_error()        # Handles the default namespace
+# def error_handler(e):
+#     print(e)
+
 # Setting up Key directories
-current_dir = os.getcwd()
-parent_dir = os.path.dirname(current_dir)
+parent_dir = os.getcwd()
+current_dir = os.path.join(parent_dir,"backend")
 resources_dir = os.path.join(parent_dir, "resources")
+court_img = os.path.join(resources_dir, "court_invert.png")
 
 data = None  # Initialize the global variable
 
@@ -69,14 +70,14 @@ def post_video_analysis():
         coordinates = request.json.get('coordinates')
         print(coordinates)
         print("Analyzing video!")
-        emit('message', 'Analyzing video!', broadcast=True)
+        #emit('message', 'Analyzing video!', broadcast=True)
         temp_video_path = os.path.join(resources_dir, "temp_video.mp4")
         first_frame_path = os.path.join(resources_dir, "firstFrame.png")
         # Analyze the video
-        finalScore = yoloTrack(temp_video_path, coordinates)
+        finalScore = yoloTrack(temp_video_path, coordinates, court_img)
         #finalScore = [0, 0]
         print("Video analyzed!")
-        emit('message', 'Video Analyzed!!', broadcast=True)
+        #emit('message', 'Video Analyzed!!', broadcast=True)
         
         # Delete the temporary video file and first frame
         os.remove(temp_video_path)
@@ -100,7 +101,7 @@ def post_video_analysis():
         top_key_three_made,top_key_three_attempt = finalScore[14][0], finalScore[14][1]
         left_wing_three_made,left_wing_three_attempt = finalScore[15][0], finalScore[15][1]
         right_wing_three_made,right_wing_three_attempt = finalScore[16][0], finalScore[16][1]
-        emit('message', 'Collecting Your Shooting Data!', broadcast=True)
+        #emit('message', 'Collecting Your Shooting Data!', broadcast=True)
         data = {
             "total": { "shotsMade" : total_shots_made, "shotsTaken": total_shots_taken},
             "paint": { "shotsMade" : paint_made, "shotsTaken": paint_attempt},
@@ -121,8 +122,10 @@ def post_video_analysis():
             "right_wing_three": { "shotsMade" : right_wing_three_made, "shotsTaken": right_wing_three_attempt}
         }
         print(data)
-        emit('message', 'Almost Done!', broadcast=True)
-        return jsonify(data)
+        #emit('message', 'Almost Done!', broadcast=True)
+        response = jsonify(data)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response, 200
     except Exception as e:
         return jsonify(str(e)) 
     
@@ -170,6 +173,8 @@ def get_hotzones():
     return send_file(file_path)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
-    #app.run(debug=True)
+    #socketio.run(app, debug=True)
+    #app.run(host='0.0.0.0', port=8080)
+    app.run(port=int(os.environ.get("PORT", 8080)),host='0.0.0.0',debug=True)
+
     

@@ -16,7 +16,7 @@ const HotZonePage = () => {
   const fetchImage = async () => {
       try {
           console.log("Hotzones Image Fetching")
-          const response = await fetch('http://127.0.0.1:5000/api/hotzones')
+          const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/hotzones')
           const blob = await response.blob()
           const url = URL.createObjectURL(blob)
           setImageUrl(url)

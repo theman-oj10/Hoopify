@@ -210,12 +210,13 @@ def intersect(ballX, ballY, x1, y1, x2, y2, x3, y3, x4, y4):
 
 
 
-def yoloTrack(path_to_video, coordinates):
+def yoloTrack(path_to_video, coordinates, path_to_court_img):
 #def yoloTrack(path_to_video):
-    current_dir = os.getcwd()
-    parent_dir = os.path.dirname(current_dir)
-    resources_dir = os.path.join(parent_dir, "resources")
-    path_to_court_img = os.path.join(resources_dir,"court_invert.png")
+    root_dir = os.getcwd()
+    parent_dir = os.path.join(root_dir, "backend")
+    current_dir = os.path.join(parent_dir, "PythonScripts")
+    resources_dir = os.path.join(root_dir, "resources")
+    #path_to_court_img = os.path.join(resources_dir,"court_invert.png")
     
     global left_corner_three, right_corner_three, left_corner, right_corner, left_low_post, right_low_post, left_high_post, right_high_post, top_key, top_key_three, left_wing_three, right_wing_three, paint, three_point, mid_range, free_throw
     # reset everything to (0, 0)
@@ -236,8 +237,7 @@ def yoloTrack(path_to_video, coordinates):
     mid_range = [0, 0]
     free_throw = [0, 0]
     # check if paint => midrange, if yes check if free throw, or else check other midrange, => otherwise its 3 pointer
-    cwd = os.path.join(os.getcwd(), "PythonScripts")
-    model_path = os.path.join(cwd, "yolov8l.pt")
+    model_path = os.path.join(current_dir, "yolov8l.pt")
     model = YOLO(model_path)
     # Filtering the classes: !Doesn't work still tracks everything
     model.classes = ['person', 'sports ball']
