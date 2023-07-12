@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback } from 'react-native';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 function SelectRim() {
@@ -10,42 +11,17 @@ function SelectRim() {
   const [showInstructions, setShowInstructions] = useState(true); // Track whether to show instructions
   const navigation = useNavigation();
 
-  // useEffect(() => {
-    // const socket = new WebSocket('ws://127.0.0.1:5000/');
-
-    // socket.onopen = () => {
-    //   console.log('WebSocket connection established');
-    // };
-
-    // socket.onmessage = (event) => {
-    //   const message = event.data;
-    //   console.log('Received message:', message);
-    //   setMessages((prevMessages) => [message, ...prevMessages]);
-    // };
-
-    // socket.onclose = () => {
-    //   console.log('WebSocket connection closed');
-    // };
-
-  //   // Clean up the WebSocket connection
-  //   return () => {
-  //     socket.close();
-  //   };
-  // }, []);
-
   useEffect(() => {
     fetchImage();
   }, []);
 
   const handleClick = (event) => {
-    const { offsetX, offsetY } = event.nativeEvent;
-    console.log(offsetX);
-    console.log(offsetY);
-    const newCoord = [...coordinates, [offsetX, offsetY]];
+    const { locationX, locationY } = event.nativeEvent;
+    console.log(locationX);
+    console.log(locationY);
+    const newCoord = [...coordinates, [locationX, locationY]];
     setCoordinates(newCoord);
   };
-
-  console.log(coordinates);
 
   const fetchImage = async () => {
     try {
@@ -60,7 +36,6 @@ function SelectRim() {
   };
 
   const handleSubmit = async () => {
-    // send coordinates to backend
     try {
       if (coordinates.length < 18) {
         alert("You haven't chosen enough points!");
@@ -81,7 +56,6 @@ function SelectRim() {
       if (response.ok) {
         const data = await response.json();
         console.log(data);
-        // navigate to stats page after video analysis is done
         navigation.navigate('StatsPage');
       } else {
         console.log('ResponseError:', response.status);
@@ -93,35 +67,55 @@ function SelectRim() {
     }
   };
 
-  if (loading) {
-    return (
-      <>
-        <LoadingScreen>Loading...</LoadingScreen>
-        <h3>{messages[0]}</h3>
-      </>
-    ); // Placeholder for the loading state
-  }
-
   const handleProceed = () => {
     setShowInstructions(false);
   };
 
+  if (loading) {
+    return (
+      <>
+        <LoadingScreen>Loading...</LoadingScreen>
+        <Text>{messages[0]}</Text>
+      </>
+    );
+  }
+
   return (
-    <div>
-      {showInstructions && (
+    <View style={styles.container}>
+      {showInstructions ? (
         <>
-          <p>Instructions: Please read the following instructions before proceeding.</p>
-          <button onClick={handleProceed}>Proceed</button>
+          <Text style={styles.instructions}>Instructions: Please read the following instructions before proceeding.</Text>
+          <Button onPress={handleProceed} title="Proceed" />
+        </>
+      ) : (
+        <>
+          {imageUrl ? (
+            <TouchableWithoutFeedback onPress={handleClick}>
+              <Image source={{ uri: imageUrl }} style={styles.image} />
+            </TouchableWithoutFeedback>
+          ) : (
+            <Text>Loading image...</Text>
+          )}
+          <Button onPress={handleSubmit} title="Submit" />
         </>
       )}
-      {!showInstructions && (
-        <>
-          <img src='https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame' alt="firstFrame" onClick={handleClick} />
-          <button onClick={handleSubmit}>Submit</button>
-        </>
-      )}
-    </div>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  instructions: {
+    marginBottom: 20,
+  },
+  image: {
+    width: 1000,
+    height: 600,
+  },
+});
 
 export default SelectRim;
