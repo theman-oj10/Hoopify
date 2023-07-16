@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback } from 'react-native';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import { Platform } from 'react-native';
+import Instructions from './Instructions';
+
 
 function SelectRim() {
   const [imageUrl, setImageUrl] = useState("");
@@ -10,18 +13,8 @@ function SelectRim() {
   const [messages, setMessages] = useState([]);
   const [showInstructions, setShowInstructions] = useState(true); // Track whether to show instructions
   const navigation = useNavigation();
-
-  useEffect(() => {
-    fetchImage();
-  }, []);
-
-  const handleClick = (event) => {
-    const { locationX, locationY } = event.nativeEvent;
-    console.log(locationX);
-    console.log(locationY);
-    const newCoord = [...coordinates, [locationX, locationY]];
-    setCoordinates(newCoord);
-  };
+  const [selectRimURL, setSelectRimURL] = useState(""); 
+  const [rimSelected, setRimSelected] = useState(false);
 
   const fetchImage = async () => {
     try {
@@ -33,7 +26,77 @@ function SelectRim() {
       console.log('Error fetching Image:', error);
     }
   };
+  const fetchSelectRimProgress = async () => {
+    try {
+      setRimSelected(true)
+      console.log("SelectRim Fetching");
+      const response = await fetch('http://127.0.0.1:8080/api/selectRim');
+      const blob = await response.blob();
+      await setSelectRimURL(response.url);
+      //setRefreshKey(refreshKey + 1);
+      console.log(response.url)
+    } catch (error) {
+      console.log('Error fetching Image:', error);
+    }
+  }; 
+  useEffect(() => {
+    fetchImage();
+  }, []);
+useEffect(() => {
+    if (coordinates.length > 0) {
+      fetchSelectRimProgress();
+    }
+  }, [coordinates]);
 
+  // useEffect(() => {
+  //   fetchSelectRimProgress();
+  // }, [coordinates]);
+
+ const handleClick = async (event) => {
+  let locationX, locationY;
+  if (Platform.OS === 'web') {
+    const { clientX, clientY } = event;
+    locationX = clientX;
+    locationY = clientY;
+  } else {
+    const { locationX: rawLocationX, locationY: rawLocationY } = event.nativeEvent;
+    locationX = rawLocationX;
+    locationY = rawLocationY;
+  }
+  console.log(locationX);
+  console.log(locationY);
+  const newCoord = await [...coordinates, [locationX, locationY]];
+  const coordinatesLen = await newCoord.length;
+  console.log(`coordinateslen ${coordinatesLen}`)
+  await setCoordinates(newCoord)
+  await selectRimProgress(coordinatesLen)
+  //await fetchSelectRimProgress()
+}
+  // posting the coordinates length to backend
+  const selectRimProgress = async (coordinatesLen) => {
+    try {
+      const response = await fetch('http://127.0.0.1:8080/api/selectRim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({coordinatesLen}),
+      }); 
+      if (response.ok) {
+        const data = await response.json();
+        // Handle the response data from the Flask server
+        console.log(data);
+        //fetchSelectRimProgress()
+    
+      } else {
+        console.log('ResponseError:', response.status);
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+  
   const handleSubmit = async () => {
     try {
       if (coordinates.length < 18) {
@@ -53,6 +116,7 @@ function SelectRim() {
       });
 
       if (response.ok) {
+        console.log("response received")
         const data = await response.json();
         console.log(data);
         navigation.navigate('StatsPage');
@@ -65,7 +129,6 @@ function SelectRim() {
       setLoading(false); // Stop loading state
     }
   };
-
   const handleProceed = () => {
     setShowInstructions(false);
   };
@@ -74,7 +137,6 @@ function SelectRim() {
     return (
       <>
         <LoadingScreen>Loading...</LoadingScreen>
-        <Text>{messages[0]}</Text>
       </>
     );
   }
@@ -96,6 +158,12 @@ function SelectRim() {
             <Text>Loading image...</Text>
           )}
           <Button onPress={handleSubmit} title="Submit" />
+          <Image
+  source={{ uri: `${selectRimURL}?timestamp=${new Date().getTime()}` }}
+  key={coordinates}
+  style={styles.image}
+/>
+
         </>
       )}
     </View>

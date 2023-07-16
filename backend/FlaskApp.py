@@ -6,9 +6,9 @@ import cv2
 import math
 import numpy as np
 from flask_cors import CORS
-from backend.PythonScripts.YoloBallTracker import yoloTrack
+from PythonScripts.YoloBallTracker import yoloTrack
+#from backend.PythonScripts.YoloBallTracker import yoloTrack
 import requests
-#from PythonScripts.FindRim import getFirstFrame
 import os
 # from firebase_admin import credentials, initialize_app
 # cred = credentials.Certificate("firebase_admin")
@@ -49,9 +49,42 @@ parent_dir = os.getcwd()
 current_dir = os.path.join(parent_dir,"backend")
 resources_dir = os.path.join(parent_dir, "resources")
 court_img = os.path.join(resources_dir, "court_invert.png")
-
+path_to_select_rim = os.path.join(resources_dir, "select_rim.png")
+select_rim = cv2.imread(path_to_select_rim)
 data = None  # Initialize the global variable
-
+# {1: [38,28], 2:[91,28], 3: [216, 28], 4: [384, 28], 5: [507, 28],
+# 6: [561, 28], 7: [216, 168], 8: [300, 168], 9: [384,168], 10: [300, 214] }
+path_to_updated_rim = os.path.join(resources_dir, "updated_rim.png") 
+cv2.imwrite(path_to_updated_rim, select_rim)
+rim_selected = False
+@app.route('/api/selectRim', methods=['GET'])
+def get_select_rim():
+    if not rim_selected:
+        return send_file(path_to_select_rim)
+    return send_file(path_to_updated_rim)    
+# problem: the page is initialised with the old updated rim pic, 
+# any changes is not being reflected bcos frontend is not fetching
+@app.route('/api/selectRim', methods=['POST'])
+def post_select_rim():
+    global rim_selected
+    rim_selected = True
+    positions = [[38,28], [91,28], [216, 28], [384, 28], [507, 28], [561, 28], [216, 168], [300, 168], [384,168], [300, 214]]
+    select_rim = cv2.imread(path_to_select_rim)
+    cv2.imwrite(path_to_updated_rim, select_rim)
+    try:
+        index = request.json.get('coordinatesLen')
+        print(f"Number of points selected: {index}")
+        # index will be length of coordinates array
+        for i in range(len(positions)):
+            if i == index:
+                break
+            currPos = positions[i]
+            cv2.circle(img=select_rim, center=(currPos[0], currPos[1]), radius=5, color=(0, 255, 0), thickness=5)
+        #path_to_updated_rim = os.path.join(resources_dir, "updated_rim.png")
+        cv2.imwrite(path_to_updated_rim, select_rim)
+        return jsonify("Updated Select Rim")
+    except Exception as e:
+        return jsonify(str(e)) 
 @app.route('/', methods=['GET'])
 def home():
     # Handle the GET request

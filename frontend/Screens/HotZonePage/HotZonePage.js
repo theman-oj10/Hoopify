@@ -38,7 +38,7 @@ const HotZonePage = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hotzones</Text>
-      <Image source={imageUrl} style={styles.logo} resizeMode="contain" />
+      <Image source={{ uri: imageUrl }} style={styles.logo} resizeMode="contain" />
       
       <Text style={styles.title}>Hot Zones</Text>
       <View style={styles.hotZoneContainer}>

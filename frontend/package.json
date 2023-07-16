@@ -21,7 +21,7 @@
     "expo": "~48.0.15",
     "expo-2d-context": "^0.0.3",
     "expo-av": "~13.2.1",
-    "expo-camera": "~13.2.1",
+    "expo-camera": "^13.4.2",
     "expo-constants": "~14.2.1",
     "expo-document-picker": "~11.2.2",
     "expo-image-picker": "~14.1.1",
