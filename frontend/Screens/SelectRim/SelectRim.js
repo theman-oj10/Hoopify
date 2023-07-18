@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback, findNodeHandle } from 'react-native';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import { Platform } from 'react-native';
 import Instructions from './Instructions';
 
-
 function SelectRim() {
   const [imageUrl, setImageUrl] = useState("");
   const [coordinates, setCoordinates] = useState([]);
-  const [loading, setLoading] = useState(false); // Track loading state
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [showInstructions, setShowInstructions] = useState(true); // Track whether to show instructions
+  const [showInstructions, setShowInstructions] = useState(true);
   const navigation = useNavigation();
-  const [selectRimURL, setSelectRimURL] = useState(""); 
+  const [selectRimURL, setSelectRimURL] = useState("");
   const [rimSelected, setRimSelected] = useState(false);
+  const [firstImageSize, setFirstImageSize] = useState({ width: 0, height: 0 }); // Track the size of the first image
 
   const fetchImage = async () => {
     try {
@@ -26,6 +26,18 @@ function SelectRim() {
       console.log('Error fetching Image:', error);
     }
   };
+
+  useEffect(() => {
+    fetchImage();
+  }, []);
+
+  const handleFirstImageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    setFirstImageSize({ width, height });
+    console.log(width);
+    console.log(height);
+  };
+
   const fetchSelectRimProgress = async () => {
     try {
       setRimSelected(true)
@@ -39,40 +51,34 @@ function SelectRim() {
       console.log('Error fetching Image:', error);
     }
   }; 
+
   useEffect(() => {
-    fetchImage();
-  }, []);
-useEffect(() => {
     if (coordinates.length > 0) {
       fetchSelectRimProgress();
     }
   }, [coordinates]);
 
-  // useEffect(() => {
-  //   fetchSelectRimProgress();
-  // }, [coordinates]);
-
- const handleClick = async (event) => {
-  let locationX, locationY;
-  if (Platform.OS === 'web') {
-    const { clientX, clientY } = event;
-    locationX = clientX;
-    locationY = clientY;
-  } else {
-    const { locationX: rawLocationX, locationY: rawLocationY } = event.nativeEvent;
-    locationX = rawLocationX;
-    locationY = rawLocationY;
+  const handleClick = async (event) => {
+    let locationX, locationY;
+    if (Platform.OS === 'web') {
+      const { clientX, clientY } = event;
+      locationX = clientX;
+      locationY = clientY;
+    } else {
+      const { locationX: rawLocationX, locationY: rawLocationY } = event.nativeEvent;
+      locationX = rawLocationX;
+      locationY = rawLocationY;
+    }
+    console.log(locationX);
+    console.log(locationY);
+    const newCoord = await [...coordinates, [locationX, locationY]];
+    const coordinatesLen = await newCoord.length;
+    console.log(`coordinateslen ${coordinatesLen}`)
+    await setCoordinates(newCoord)
+    await selectRimProgress(coordinatesLen)
+    //await fetchSelectRimProgress()
   }
-  console.log(locationX);
-  console.log(locationY);
-  const newCoord = await [...coordinates, [locationX, locationY]];
-  const coordinatesLen = await newCoord.length;
-  console.log(`coordinateslen ${coordinatesLen}`)
-  await setCoordinates(newCoord)
-  await selectRimProgress(coordinatesLen)
-  //await fetchSelectRimProgress()
-}
-  // posting the coordinates length to backend
+
   const selectRimProgress = async (coordinatesLen) => {
     try {
       const response = await fetch('http://127.0.0.1:8080/api/selectRim', {
@@ -81,14 +87,12 @@ useEffect(() => {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify({coordinatesLen}),
-      }); 
+        body: JSON.stringify({ coordinatesLen }),
+      });
       if (response.ok) {
         const data = await response.json();
-        // Handle the response data from the Flask server
         console.log(data);
         //fetchSelectRimProgress()
-    
       } else {
         console.log('ResponseError:', response.status);
       }
@@ -96,7 +100,7 @@ useEffect(() => {
       console.log('Error:', error);
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       if (coordinates.length < 18) {
@@ -129,6 +133,7 @@ useEffect(() => {
       setLoading(false); // Stop loading state
     }
   };
+
   const handleProceed = () => {
     setShowInstructions(false);
   };
@@ -153,7 +158,7 @@ useEffect(() => {
           {imageUrl ? (
             <View style={{ transform: [{ rotate: '90deg' }] }}>
               <View style={styles.imageContainer}>
-                <TouchableWithoutFeedback onPress={handleClick}>
+                <TouchableWithoutFeedback onLayout={handleFirstImageLayout} onPress={handleClick}>
                   <Image source={{ uri: imageUrl }} style={styles.image} />
                 </TouchableWithoutFeedback>
               </View>
@@ -197,19 +202,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: '80%'
+    marginRight: '80%',
   },
   image: {
     width: '80%',
     height: 'auto',
     marginLeft: '100%',
-    aspectRatio: 16 / 9 ,
+    aspectRatio: 16 / 9,
   },
   submitButton: {
     marginTop: 10,
-    marginRight: '20%'
+    marginRight: '20%',
   },
 });
-
 
 export default SelectRim;
