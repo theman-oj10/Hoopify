@@ -337,7 +337,7 @@ const StatsPage = () => {
               date: currentDate
             };
 
-            await setDoc(doc(collectionRef, documentId), data);
+            await addDoc(collectionRef, data);
             console.log('Document added with ID:', documentId);
           } catch (error) {
             console.error('Error adding document:', error);
