@@ -5,7 +5,18 @@ import LottieView from 'lottie-react-native';
 const LoadingScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Hello world</Text>
+      <LottieView
+        source={require('../LoadingScreen/animation_ljzx6p74.json')} 
+        autoPlay
+        loop
+        style={styles.animation}
+      />
+      <LottieView
+        source={require('../LoadingScreen/animation_ljzy1ap8')} 
+        autoPlay
+        loop
+        style={styles.animation}
+      />
     </View>
   );
 };
@@ -17,11 +28,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: 'pink',
   },
   animation: {
     width: '70%',
-    height: 100,
+    height: 350,
     borderRadius: 10,
   },
+  text: {
+    fontSize: 50
+  }
 });

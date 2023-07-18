@@ -30,18 +30,6 @@ const ReportPage = () => {
   const navigation = useNavigation();
   const chartRef = useRef();
 
-  useEffect(() => {
-    fetchReportData()
-      .then((data) => {
-        setReportData(data);
-      })
-      .catch((error) => {
-        console.log('Error fetching report data:', error);
-      });
-
-    fetchPreviousWorkoutScores();
-  }, []);
-
   const fetchReportData = async () => {
     try {
       const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
@@ -55,11 +43,23 @@ const ReportPage = () => {
   // const fetchReportData = async () => {
   //   // Simulated API response
   //   return {
-  //     total: { shotsMade: 45, shotsTaken: 60 },
-  //     paint: { shotsMade: 20, shotsTaken: 30 },
-  //     free_throw: { shotsMade: 10, shotsTaken: 12 },
-  //     mid_range: { shotsMade: 8, shotsTaken: 15 },
-  //     three_point: { shotsMade: 7, shotsTaken: 20 },
+  //       "total": { "shotsMade" : 500, "shotsTaken": 750},
+  //       "paint": { "shotsMade" : 200, "shotsTaken": 300},
+  //       "free_throw": { "shotsMade" : 100, "shotsTaken": 120},
+  //       "mid_range" : { "shotsMade" : 150, "shotsTaken": 250},
+  //       "three_point": { "shotsMade" : 80, "shotsTaken": 200},
+  //       "left_corner_three": { "shotsMade" : 30, "shotsTaken": 50},
+  //       "right_corner_three": { "shotsMade" : 40, "shotsTaken": 60},
+  //       "left_corner": { "shotsMade" : 20, "shotsTaken": 30},
+  //       "right_corner": { "shotsMade" : 25, "shotsTaken": 35},
+  //       "left_low_post": { "shotsMade" : 60, "shotsTaken": 80},
+  //       "right_low_post": { "shotsMade" : 55, "shotsTaken": 75},
+  //       "left_high_post": { "shotsMade" : 70, "shotsTaken": 90},
+  //       "right_high_post": { "shotsMade" : 75, "shotsTaken": 95},
+  //       "top_key": { "shotsMade" : 90, "shotsTaken": 120},
+  //       "top_key_three": { "shotsMade" : 40, "shotsTaken": 70},
+  //       "left_wing_three": { "shotsMade" : 35, "shotsTaken": 60},
+  //       "right_wing_three": { "shotsMade" : 0, "shotsTaken": 0}
   //   };
   // };
 
@@ -87,12 +87,24 @@ const ReportPage = () => {
   };
 
   const calculateImprovement = (current, previous) => {
-    return ((current - previous) / previous) * 100;
+    return 10;
   };
 
   const calculateFieldGoalPercentage = (shotsMade, shotsTaken) => {
     return ((shotsMade / shotsTaken) * 100).toFixed(2);
   };
+
+  useEffect(() => {
+    fetchReportData()
+      .then((data) => {
+        setReportData(data);
+      })
+      .catch((error) => {
+        console.log('Error fetching report data:', error);
+      });
+
+    fetchPreviousWorkoutScores();
+  }, []);
 
   const renderWorkoutCharts = () => {
     // Ref added to the BarChart component
@@ -117,54 +129,151 @@ const ReportPage = () => {
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>Workout Improvement</Text>
         <View ref={chartRef}>
-          <ScrollView horizontal>
-            <LineChart
-              data={{
-                labels: workoutLabels,
-                datasets: [
-                  {
-                    data: totalScoreData,
-                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    strokeWidth: 2,
-                  },
-                  {
-                    data: paintData,
-                    color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                    strokeWidth: 2,
-                  },
-                  {
-                    data: midrangeData,
-                    color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
-                    strokeWidth: 2,
-                  },
-                  {
-                    data: freeThrowData,
-                    color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-                    strokeWidth: 2,
-                  },
-                  {
-                    data: threePointData,
-                    color: (opacity = 1) => `rgba(255, 255, 0, ${opacity})`,
-                    strokeWidth: 2,
-                  },
-                ],
-              }}
-              width={workoutLabels.length * 100}
-              height={200}
-              chartConfig={{
-                backgroundColor: '#f2f2f2',
-                backgroundGradientFrom: '#f2f2f2',
-                backgroundGradientTo: '#f2f2f2',
-                decimalPlaces: 2,
+          <View style={styles.chartWrapper}>
+            <Text style={styles.chartText}>Total Score</Text>
+            <BarChart
+          data={{
+            labels: workoutLabels,
+            datasets: [
+              {
+                data: totalScoreData,
                 color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 10,
-                },
-              }}
-              style={styles.chart}
-              bezier
-            />
-          </ScrollView>
+                strokeWidth: 2,
+              },
+            ],
+          }}
+          width={workoutLabels.length * 300}
+          height={200}
+          chartConfig={{
+            backgroundColor: '#f2f2f2',
+            backgroundGradientFrom: '#f2f2f2',
+            backgroundGradientTo: '#f2f2f2',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 10,
+            },
+          }}
+          style={styles.chart}
+          bezier
+        />
+      </View>
+      <View style={styles.chartWrapper}>
+        <Text style={styles.chartText}>Paint Score</Text>
+        <BarChart
+          data={{
+            labels: workoutLabels,
+            datasets: [
+              {
+                data: paintData,
+                color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                strokeWidth: 2,
+              },
+            ],
+          }}
+          width={workoutLabels.length * 300}
+          height={200}
+          chartConfig={{
+            backgroundColor: '#f2f2f2',
+            backgroundGradientFrom: '#f2f2f2',
+            backgroundGradientTo: '#f2f2f2',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 10,
+            },
+          }}
+          style={styles.chart}
+          bezier
+        />
+      </View>
+      <View style={styles.chartWrapper}>
+        <Text style={styles.chartText}>Mid-Range Score</Text>
+        <BarChart
+          data={{
+            labels: workoutLabels,
+            datasets: [
+              {
+                data: midrangeData,
+                color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
+                strokeWidth: 2,
+              },
+            ],
+          }}
+          width={workoutLabels.length * 300}
+          height={200}
+          chartConfig={{
+            backgroundColor: '#f2f2f2',
+            backgroundGradientFrom: '#f2f2f2',
+            backgroundGradientTo: '#f2f2f2',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 10,
+            },
+          }}
+          style={styles.chart}
+          bezier
+        />
+      </View>
+      <View style={styles.chartWrapper}>
+        <Text style={styles.chartText}>Free Throw Score</Text>
+        <BarChart
+          data={{
+            labels: workoutLabels,
+            datasets: [
+              {
+                data: freeThrowData,
+                color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+                strokeWidth: 2,
+              },
+            ],
+          }}
+          width={workoutLabels.length * 300}
+          height={200}
+          chartConfig={{
+            backgroundColor: '#f2f2f2',
+            backgroundGradientFrom: '#f2f2f2',
+            backgroundGradientTo: '#f2f2f2',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 10,
+            },
+          }}
+          style={styles.chart}
+          bezier
+        />
+      </View>
+      <View style={styles.chartWrapper}>
+        <Text style={styles.chartText}>Three Point Score</Text>
+        <BarChart
+          data={{
+            labels: workoutLabels,
+            datasets: [
+              {
+                data: threePointData,
+                color: (opacity = 1) => `rgba(255, 255, 0, ${opacity})`,
+                strokeWidth: 2,
+              },
+            ],
+          }}
+          width={workoutLabels.length * 300}
+          height={200}
+          chartConfig={{
+            backgroundColor: '#f2f2f2',
+            backgroundGradientFrom: '#f2f2f2',
+            backgroundGradientTo: '#f2f2f2',
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            style: {
+              borderRadius: 10,
+            },
+          }}
+          style={styles.chart}
+          bezier
+        />
+      </View>
         </View>
       </View>
     );
@@ -316,8 +425,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   tableContainer: {
-    marginBottom: 20,
-    marginTop: 20
+    marginBottom: 50,
+    marginTop: 40
   },
   table: {
     borderWidth: 1,
@@ -365,8 +474,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chart: {
-    marginVertical: 10,
-    borderRadius: 10,
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  chartWrapper: {
+    marginHorizontal: 10,
+    marginBottom: 20,
+  },
+  chartText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   }
 });
 
