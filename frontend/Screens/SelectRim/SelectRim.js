@@ -151,19 +151,28 @@ useEffect(() => {
       ) : (
         <>
           {imageUrl ? (
-            <TouchableWithoutFeedback onPress={handleClick}>
-              <Image source={{ uri: imageUrl }} style={styles.image} />
-            </TouchableWithoutFeedback>
+            <View style={{ transform: [{ rotate: '90deg' }] }}>
+              <View style={styles.imageContainer}>
+                <TouchableWithoutFeedback onPress={handleClick}>
+                  <Image source={{ uri: imageUrl }} style={styles.image} />
+                </TouchableWithoutFeedback>
+              </View>
+            </View>
           ) : (
             <Text>Loading image...</Text>
           )}
-          <Button onPress={handleSubmit} title="Submit" />
-          <Image
-            source={{ uri: `${selectRimURL}?timestamp=${new Date().getTime()}` }}
-            key={coordinates}
-            style={styles.image}
-          />
-
+          <View style={{ transform: [{ rotate: '90deg' }] }}>
+            <View style={styles.buttonContainer}>
+              <Button onPress={handleSubmit} title="Submit" style={styles.submitButton} />
+            </View>
+          </View>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: `${selectRimURL}?timestamp=${new Date().getTime()}` }}
+              key={coordinates}
+              style={styles.image}
+            />
+          </View>
         </>
       )}
     </View>
@@ -179,10 +188,28 @@ const styles = StyleSheet.create({
   instructions: {
     marginBottom: 20,
   },
+  imageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '80%'
+  },
   image: {
-    width: 1000,
-    height: 600,
+    width: '80%',
+    height: 'auto',
+    marginLeft: '100%',
+    aspectRatio: 16 / 9 ,
+  },
+  submitButton: {
+    marginTop: 10,
+    marginRight: '20%'
   },
 });
+
 
 export default SelectRim;

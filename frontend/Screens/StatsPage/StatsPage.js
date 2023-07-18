@@ -351,13 +351,11 @@ const StatsPage = () => {
 
   const fetchScore = async () => {
     try {
-      // const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+      const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
       setIsLoading(true); // Start loading state
-      // const scoreData = response.data;
-      // setTotalShotsMade(scoreData.total.shotsMade);
-      // setTotalShotsTaken(scoreData.total.shotsTaken);
-      setTotalShotsMade(10);
-      setTotalShotsTaken(15);
+      const scoreData = response.data;
+      setTotalShotsMade(scoreData.total.shotsMade);
+      setTotalShotsTaken(scoreData.total.shotsTaken);
 
       setPaintFG(calculateFieldGoalPercentage(scoreData.paint.shotsMade, scoreData.paint.shotsTaken))
       setFreeThrowFG(calculateFieldGoalPercentage(scoreData.free_throw.shotsMade, scoreData.free_throw.shotsTaken))

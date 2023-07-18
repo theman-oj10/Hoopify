@@ -8,25 +8,6 @@ const LoadingScreen = () => {
   // if (Platform.OS === 'web') {
   //   const animationRef = useRef(null); // Add this line to declare the animationRef
 
-  return (
-    <View style={styles.container}>
-      <LottieView
-        source={require('../LoadingScreen/animation_ljzx6p74.json')} 
-        autoPlay
-        loop
-        style={styles.animation}
-      />
-      <LottieView
-        source={require('../LoadingScreen/animation_ljzy1ap8')} 
-        autoPlay
-        loop
-        style={styles.animation}
-      />
-    </View>
-  );
-};
-
-
   // useEffect(() => {
   //   const animation = Lottie.loadAnimation({
   //     container: animationRef.current,
