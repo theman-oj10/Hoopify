@@ -35,8 +35,8 @@ function SelectRim() {
   const handleFirstImageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     //setFirstImageSize({ width, height });
-    setFirstImageX(width)
-    setFirstImageY(height)
+    setFirstImageX(width);
+    setFirstImageY(height);
     console.log(width);
     console.log(height);
   };
