@@ -14,8 +14,9 @@ function SelectRim() {
   const navigation = useNavigation();
   const [selectRimURL, setSelectRimURL] = useState("");
   const [rimSelected, setRimSelected] = useState(false);
-  const [firstImageSize, setFirstImageSize] = useState({ width: 0, height: 0 }); // Track the size of the first image
-
+  //const [firstImageSize, setFirstImageSize] = useState({ width: 0, height: 0 }); // Track the size of the first image
+  const [firstImageX, setFirstImageX] = useState(0)
+  const [firstImageY, setFirstImageY] = useState(0)
   const fetchImage = async () => {
     try {
       console.log("Image Fetching");
@@ -33,7 +34,9 @@ function SelectRim() {
 
   const handleFirstImageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    setFirstImageSize({ width, height });
+    //setFirstImageSize({ width, height });
+    setFirstImageX(width)
+    setFirstImageY(height)
     console.log(width);
     console.log(height);
   };
@@ -52,11 +55,11 @@ function SelectRim() {
     }
   }; 
 
-  useEffect(() => {
-    if (coordinates.length > 0) {
-      fetchSelectRimProgress();
-    }
-  }, [coordinates]);
+  // useEffect(() => {
+  //   if (coordinates.length > 0) {
+  //     fetchSelectRimProgress();
+  //   }
+  // }, [coordinates]);
 
   const handleClick = async (event) => {
     let locationX, locationY;
@@ -71,7 +74,11 @@ function SelectRim() {
     }
     console.log(locationX);
     console.log(locationY);
-    const newCoord = await [...coordinates, [locationX, locationY]];
+    const updatedX = 600/firstImageX * locationX
+    const updatedY = 400/firstImageY * locationY
+    console.log(updatedX);
+    console.log(updatedY);
+    const newCoord = await [...coordinates, [updatedX, updatedY]];
     const coordinatesLen = await newCoord.length;
     console.log(`coordinateslen ${coordinatesLen}`)
     await setCoordinates(newCoord)
