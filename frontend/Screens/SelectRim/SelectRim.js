@@ -159,10 +159,10 @@ useEffect(() => {
           )}
           <Button onPress={handleSubmit} title="Submit" />
           <Image
-  source={{ uri: `${selectRimURL}?timestamp=${new Date().getTime()}` }}
-  key={coordinates}
-  style={styles.image}
-/>
+            source={{ uri: `${selectRimURL}?timestamp=${new Date().getTime()}` }}
+            key={coordinates}
+            style={styles.image}
+          />
 
         </>
       )}

@@ -25,6 +25,26 @@ const db = getFirestore(app);
 const StatsPage = () => {
   const [totalShotsMade, setTotalShotsMade] = useState(0);
   const [totalShotsTaken, setTotalShotsTaken] = useState(0);
+  // all the hotzones data
+  const [paintFG, setPaintFG] = useState(0);
+  const [midRangeFG, setMidRangeFG] = useState(0);
+  const [threePointFG, setThreePointFG] = useState(0);
+  const [freeThrowFG, setFreeThrowFG] = useState(0);
+
+  // sub regions
+  const [leftCornerThreeFG, setLeftCornerThreeFG] = useState(0);
+  const [rightCornerThreeFG, setRightCornerThreeFG] = useState(0);
+  const [leftCornerFG, setLeftCornerFG] = useState(0);
+  const [rightCornerFG, setRightCornerFG] = useState(0);
+  const [leftLowPostFG, setLeftLowPostFG] = useState(0);
+  const [rightLowPostFG, setRightLowPostFG] = useState(0);
+  const [leftHighPostFG, setLeftHighPostFG] = useState(0);
+  const [rightHighPostFG, setRightHighPostFG] = useState(0);
+  const [topKeyFG, setTopKeyFG] = useState(0);
+  const [topKeyThreeFG, setTopKeyThreeFG] = useState(0);
+  const [leftWingThreeFG, setLeftWingThreeFG] = useState(0);
+  const [rightWingThreeFG, setRightWingThreeFG] = useState(0);
+
   const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
@@ -56,13 +76,19 @@ const StatsPage = () => {
     fetchPreviousWorkoutScores();
   }, []);
 
-  const calculateFieldGoalPercentage = () => {
-    if (totalShotsTaken === 0) {
-      return '0%';
+  const calculateFieldGoalPercentage = (attempts, makes) => {
+    attempts = parseInt(attempts)
+    makes = parseInt(makes)
+    if (attempts === 0) {
+      return 0;
     }
-    const percentage = (totalShotsMade / totalShotsTaken) * 100;
-    return `${percentage.toFixed(2)}%`;
+    const percentage = (makes / attempts) * 100;
+    return percentage.toFixed(2);
   };
+
+  const calculateImprovement = (currFG, prevFG) => {
+    // how are the scores formatted in firestore?
+  }
 
   const handleViewHotZone = () => {
     console.log('View Hot Zone');
@@ -86,6 +112,25 @@ const StatsPage = () => {
       const scoreData = response.data;
       setTotalShotsMade(scoreData.total.shotsMade);
       setTotalShotsTaken(scoreData.total.shotsTaken);
+
+      setPaintFG(calculateFieldGoalPercentage(scoreData.paint.shotsMade, scoreData.paint.shotsTaken))
+      setFreeThrowFG(calculateFieldGoalPercentage(scoreData.free_throw.shotsMade, scoreData.free_throw.shotsTaken))
+      setMidRangeFG(calculateFieldGoalPercentage(scoreData.mid_range.shotsMade, scoreData.mid_range.shotsTaken))
+      setThreePointFG(calculateFieldGoalPercentage(scoreData.three_point.shotsMade, scoreData.three_point.shotsTaken))
+      
+      setLeftCornerThreeFG(calculateFieldGoalPercentage(scoreData.left_corner_three.shotsMade, scoreData.left_corner_three.shotsTaken))
+      setRightCornerThreeFG(calculateFieldGoalPercentage(scoreData.right_corner_three.shotsMade, scoreData.right_corner_three.shotsTaken))
+      setLeftCornerFG(calculateFieldGoalPercentage(scoreData.left_corner.shotsMade, scoreData.left_corner.shotsTaken))
+      setRightCornerFG(calculateFieldGoalPercentage(scoreData.right_corner.shotsMade, scoreData.right_corner.shotsTaken))
+      setLeftLowPostFG(calculateFieldGoalPercentage(scoreData.left_low_post.shotsMade, scoreData.left_low_post.shotsTaken))
+      setRightLowPostFG(calculateFieldGoalPercentage(scoreData.right_low_post.shotsMade, scoreData.right_low_post.shotsTaken))
+      setLeftHighPostFG(calculateFieldGoalPercentage(scoreData.left_high_post.shotsMade, scoreData.left_high_post.shotsTaken))
+      setRightHighPostFG(calculateFieldGoalPercentage(scoreData.right_high_post.shotsMade, scoreData.right_high_post.shotsTaken))
+      setTopKeyFG(calculateFieldGoalPercentage(scoreData.top_key.shotsMade, scoreData.top_key.shotsTaken))
+      setTopKeyThreeFG(calculateFieldGoalPercentage(scoreData.top_key_three.shotsMade, scoreData.top_key_three.shotsTaken))
+      setLeftWingThreeFG(calculateFieldGoalPercentage(scoreData.left_wing_three.shotsMade, scoreData.left_wing_three.shotsTaken))
+      setRightWingThreeFG(calculateFieldGoalPercentage(scoreData.right_wing_three.shotsMade, scoreData.right_wing_three.shotsTaken))
+
 
       setIsLoading(false); // Stop loading state
     } catch (error) {
