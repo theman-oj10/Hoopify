@@ -414,7 +414,24 @@ const StatsPage = () => {
             ))}
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HotZonePage')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HotZonePage', {
+            paintFG,
+            midRangeFG,
+            threePointFG,
+            freeThrowFG,
+            leftCornerThreeFG,
+            rightCornerThreeFG,
+            leftCornerFG,
+            rightCornerFG,
+            leftLowPostFG,
+            rightLowPostFG,
+            leftHighPostFG,
+            rightHighPostFG,
+            topKeyFG,
+            topKeyThreeFG,
+            leftWingThreeFG,
+            rightWingThreeFG,
+          })}>
             <Text style={styles.buttonText}>View Hot Zone</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -436,6 +453,7 @@ const StatsPage = () => {
       )}
     </>
   );
+
 };
 
 const styles = StyleSheet.create({
@@ -507,3 +525,5 @@ const styles = StyleSheet.create({
 });
 
 export default StatsPage;
+
+
