@@ -33,7 +33,9 @@ const ReportPage = () => {
   const fetchReportData = async () => {
     try {
       const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
-      return response.data;
+      const data = await response.json();
+      console.log(data);
+      return data;
     } catch (error) {
       console.log('Error fetching report data:', error);
       throw error;
@@ -142,7 +144,7 @@ const ReportPage = () => {
               },
             ],
           }}
-          width={workoutLabels.length * 300}
+          width={workoutLabels.length * 100}
           height={200}
           chartConfig={{
             backgroundColor: '#f2f2f2',
@@ -171,7 +173,7 @@ const ReportPage = () => {
               },
             ],
           }}
-          width={workoutLabels.length * 300}
+          width={workoutLabels.length * 100}
           height={200}
           chartConfig={{
             backgroundColor: '#f2f2f2',
@@ -200,7 +202,7 @@ const ReportPage = () => {
               },
             ],
           }}
-          width={workoutLabels.length * 300}
+          width={workoutLabels.length * 100}
           height={200}
           chartConfig={{
             backgroundColor: '#f2f2f2',
@@ -229,7 +231,7 @@ const ReportPage = () => {
               },
             ],
           }}
-          width={workoutLabels.length * 300}
+          width={workoutLabels.length * 100}
           height={200}
           chartConfig={{
             backgroundColor: '#f2f2f2',
@@ -258,7 +260,7 @@ const ReportPage = () => {
               },
             ],
           }}
-          width={workoutLabels.length * 300}
+          width={workoutLabels.length * 100}
           height={200}
           chartConfig={{
             backgroundColor: '#f2f2f2',
@@ -476,10 +478,12 @@ const styles = StyleSheet.create({
   chart: {
     marginVertical: 8,
     borderRadius: 16,
+    alignItems: 'center',
   },
   chartWrapper: {
     marginHorizontal: 10,
     marginBottom: 20,
+    alignItems: 'center',
   },
   chartText: {
     fontSize: 20,

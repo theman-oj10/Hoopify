@@ -83,7 +83,7 @@ const HotZonePage = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Hotzones</Text>
-      <Image source={{ uri: imageUrl }} style={styles.logo} resizeMode="contain" />
+      <Image source={{uri: imageUrl}} style={styles.logo} resizeMode="contain" />
 
       <View style={styles.zoneContainer}>
         <Text style={styles.zoneTitle}>Major Zones</Text>

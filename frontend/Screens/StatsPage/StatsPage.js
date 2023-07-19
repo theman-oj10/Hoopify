@@ -351,9 +351,10 @@ const StatsPage = () => {
 
   const fetchScore = async () => {
     try {
-      const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
       setIsLoading(true); // Start loading state
-      const scoreData = response.data;
+      const scoreData = await response.json();
+      console.log(scoreData);
       setTotalShotsMade(scoreData.total.shotsMade);
       setTotalShotsTaken(scoreData.total.shotsTaken);
 

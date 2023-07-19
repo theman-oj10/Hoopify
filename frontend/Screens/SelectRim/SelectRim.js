@@ -15,14 +15,26 @@ function SelectRim() {
   const [selectRimURL, setSelectRimURL] = useState("");
   const [rimSelected, setRimSelected] = useState(false);
   //const [firstImageSize, setFirstImageSize] = useState({ width: 0, height: 0 }); // Track the size of the first image
-  const [firstImageX, setFirstImageX] = useState(0)
-  const [firstImageY, setFirstImageY] = useState(0)
+  const [firstImageX, setFirstImageX] = useState(0);
+  const [firstImageY, setFirstImageY] = useState(0);
+  const [firstFrameX, setFirstFrameX] = useState(0);
+  const [firstFrameY, setFirstFrameY] = useState(0);
+
   const fetchImage = async () => {
     try {
       console.log("Image Fetching");
       const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame');
       const blob = await response.blob();
       setImageUrl(response.url);
+      const urlLink = 'https://hoopbackend-unmihbju4a-as.a.run.app/api/first_frame';
+      Image.getSize(urlLink, (width, height) => {
+        console.log('Image width:', width);
+        console.log('Image height:', height);
+        setFirstFrameX(width);
+        setFirstFrameY(height);
+      }, (error) => {
+        console.log('Error getting image size:', error);
+      });
     } catch (error) {
       console.log('Error fetching Image:', error);
     }
@@ -74,8 +86,8 @@ function SelectRim() {
     }
     console.log(locationX);
     console.log(locationY);
-    const updatedX = 600/firstImageX * locationX
-    const updatedY = 400/firstImageY * locationY
+    const updatedX = firstFrameX/firstImageX * locationX
+    const updatedY = firstFrameY/firstImageY * locationY
     console.log(updatedX);
     console.log(updatedY);
     const newCoord = await [...coordinates, [updatedX, updatedY]];
