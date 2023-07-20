@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 import Instructions from './Instructions';
 
 function SelectRim() {
+  const [data, setData] = useState(null); 
   const [imageUrl, setImageUrl] = useState("");
   const [coordinates, setCoordinates] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,19 +54,19 @@ function SelectRim() {
     console.log(height);
   };
 
-  const fetchSelectRimProgress = async () => {
-    try {
-      setRimSelected(true)
-      console.log("SelectRim Fetching");
-      const response = await fetch('http://127.0.0.1:8080/api/selectRim');
-      const blob = await response.blob();
-      await setSelectRimURL(response.url);
-      //setRefreshKey(refreshKey + 1);
-      console.log(response.url)
-    } catch (error) {
-      console.log('Error fetching Image:', error);
-    }
-  }; 
+  // const fetchSelectRimProgress = async () => {
+  //   try {
+  //     setRimSelected(true)
+  //     console.log("SelectRim Fetching");
+  //     const response = await fetch('http://127.0.0.1:8080/api/selectRim');
+  //     const blob = await response.blob();
+  //     await setSelectRimURL(response.url);
+  //     //setRefreshKey(refreshKey + 1);
+  //     console.log(response.url)
+  //   } catch (error) {
+  //     console.log('Error fetching Image:', error);
+  //   }
+  // }; 
 
   // useEffect(() => {
   //   if (coordinates.length > 0) {
@@ -94,31 +95,31 @@ function SelectRim() {
     const coordinatesLen = await newCoord.length;
     console.log(`coordinateslen ${coordinatesLen}`)
     await setCoordinates(newCoord)
-    await selectRimProgress(coordinatesLen)
+    //await selectRimProgress(coordinatesLen)
     //await fetchSelectRimProgress()
   }
 
-  const selectRimProgress = async (coordinatesLen) => {
-    try {
-      const response = await fetch('http://127.0.0.1:8080/api/selectRim', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: JSON.stringify({ coordinatesLen }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        //fetchSelectRimProgress()
-      } else {
-        console.log('ResponseError:', response.status);
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  };
+  // const selectRimProgress = async (coordinatesLen) => {
+  //   try {
+  //     const response = await fetch('http://127.0.0.1:8080/api/selectRim', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Access-Control-Allow-Origin': '*'
+  //       },
+  //       body: JSON.stringify({ coordinatesLen }),
+  //     });
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log(data);
+  //       //fetchSelectRimProgress()
+  //     } else {
+  //       console.log('ResponseError:', response.status);
+  //     }
+  //   } catch (error) {
+  //     console.log('Error:', error);
+  //   }
+  // };
 
   const handleSubmit = async () => {
     try {
@@ -140,15 +141,17 @@ function SelectRim() {
 
       if (response.ok) {
         console.log("response received")
-        const data = await response.json();
-        console.log(data);
-        navigation.navigate('StatsPage');
+        const scoreData = await response.json();
+        console.log(`ScoreData: ${scoreData}`);
+        setData(scoreData)
+       
       } else {
         console.log('ResponseError:', response.status);
       }
     } catch (error) {
       console.log('Error:', error);
     } finally {
+      navigation.navigate('StatsPage');
       setLoading(false); // Stop loading state
     }
   };
@@ -156,7 +159,44 @@ function SelectRim() {
   const handleProceed = () => {
     setShowInstructions(false);
   };
+  if (Platform.OS == 'web') {
+    console.log("web")
+    if (loading) {
+      return (
+        <>
+          <LoadingScreen>Loading...</LoadingScreen>
+        </>
+      );
+    }
 
+  return (
+    <View style={styles.container}>
+      {showInstructions ? (
+        <>
+          <Text style={styles.instructions}>Instructions: Please read the following instructions before proceeding.</Text>
+          <Button onPress={handleProceed} title="Proceed" />
+        </>
+      ) : (
+        <>
+          {imageUrl ? (
+                <TouchableWithoutFeedback onPress={handleClick}>
+                  <Image source={{ uri: imageUrl }} 
+                  style={styles.imageWeb}
+                   />
+                </TouchableWithoutFeedback>
+
+          ) : (
+             <Text>Loading image...</Text>
+          )}
+        
+              <Button onPress={handleSubmit} title="Submit"/>
+
+        </>
+      )}
+    </View>
+  );
+}
+else {
   if (loading) {
     return (
       <>
@@ -190,18 +230,18 @@ function SelectRim() {
               <Button onPress={handleSubmit} title="Submit" style={styles.submitButton} />
             </View>
           </View>
-          <View style={styles.imageContainer}>
+          {/* <View style={styles.imageContainer}>
             <Image
               source={{ uri: `${selectRimURL}?timestamp=${new Date().getTime()}` }}
               key={coordinates}
               style={styles.image}
             />
-          </View>
+          </View> */}
         </>
       )}
     </View>
   );
-}
+}}
 
 const styles = StyleSheet.create({
   container: {
@@ -222,6 +262,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: '80%',
+  },
+  imageWeb: {
+    width: 1000,
+    height: 600,
+    alignItems: 'center',
+    justifyContent: 'center',
+    //marginTop: 'auto'
+    
   },
   image: {
     width: '80%',

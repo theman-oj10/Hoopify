@@ -25,6 +25,9 @@ const db = getFirestore(app);
 
 
 const ReportPage = () => {
+  // const {
+  //   data
+  // } = route.params;
   const [reportData, setReportData] = useState(null);
   const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
   const navigation = useNavigation();
@@ -32,8 +35,9 @@ const ReportPage = () => {
 
   const fetchReportData = async () => {
     try {
-      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
-      const data = await response.json();
+      //const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+      //const data = await response.json();
+      //setReportData(data)
       console.log(data);
       return data;
     } catch (error) {
@@ -78,9 +82,9 @@ const ReportPage = () => {
       const scoresSnapshot = await getDocs(scoresQuery);
 
       const scores = scoresSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        const formattedDateTime = formatDateTime(data.date);
-        return { ...data, date: formattedDateTime };
+        const prevData = doc.data();
+        const formattedDateTime = formatDateTime(prevData.date);
+        return { ...prevData, date: formattedDateTime };
       });
       setPreviousWorkoutScores(scores);
     } catch (error) {
@@ -88,8 +92,10 @@ const ReportPage = () => {
     }
   };
 
-  const calculateImprovement = (current, previous) => {
-    return 10;
+  const calculateImprovement = (currMade, currTaken, prevMade, prevTaken) => {
+    const prevFG = calculateFieldGoalPercentage(prevMade, prevTaken);
+    const currFG = calculateFieldGoalPercentage(currMade, currTaken);
+    return (prevFG - currFG)/ prevFG * 100
   };
 
   const calculateFieldGoalPercentage = (shotsMade, shotsTaken) => {
@@ -97,13 +103,10 @@ const ReportPage = () => {
   };
 
   useEffect(() => {
-    fetchReportData()
-      .then((data) => {
-        setReportData(data);
-      })
-      .catch((error) => {
-        console.log('Error fetching report data:', error);
-      });
+    // fetchReportData()
+    //   .catch((error) => {
+    //     console.log('Error fetching report data:', error);
+    //   });
 
     fetchPreviousWorkoutScores();
   }, []);
@@ -112,19 +115,19 @@ const ReportPage = () => {
     // Ref added to the BarChart component
     const workoutLabels = previousWorkoutScores.map((workout, index) => `Workout ${index + 1}`);
     const totalScoreData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.total.shotsMade, workout.totalShotsTaken).toFixed(2)
+      calculateImprovement(reportData.total.shotsMade, reportData.total.shotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)
     );
     const paintData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.paint.shotsMade, workout.paintShotsTaken).toFixed(2)
+      calculateImprovement(reportData.paint.shotsMade, reportData.paint.shotsTaken, workout.paintShotsMade, workout.paintShotsTaken).toFixed(2)
     );
     const midrangeData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.mid_range.shotsMade, workout.midRangeShotsTaken).toFixed(2)
+      calculateImprovement(reportData.mid_range.shotsMade, reportData.mid_range.shotsTaken, workout.midRangeShotsMade, workout.midRangeShotsTaken).toFixed(2)
     );
     const freeThrowData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.free_throw.shotsMade, workout.freeThrowShotsTaken).toFixed(2)
+      calculateImprovement(reportData.free_throw.shotsMade, reportData.free_throw.shotsTaken, workout.freeThrowShotsMade, workout.freeThrowShotsTaken).toFixed(2)
     );
     const threePointData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.three_point.shotsMade, workout.threePointShotsTaken).toFixed(2)
+      calculateImprovement(reportData.three_point.shotsMade, reportData.three_point.shotsTaken, workout.threePointShotsMade, workout.threePointShotsTaken).toFixed(2)
     );
   
     return (
@@ -161,7 +164,7 @@ const ReportPage = () => {
         />
       </View>
       <View style={styles.chartWrapper}>
-        <Text style={styles.chartText}>Paint Score</Text>
+        <Text style={styles.chartText}>Paint Field Goal %</Text>
         <BarChart
           data={{
             labels: workoutLabels,
@@ -190,7 +193,7 @@ const ReportPage = () => {
         />
       </View>
       <View style={styles.chartWrapper}>
-        <Text style={styles.chartText}>Mid-Range Score</Text>
+        <Text style={styles.chartText}>Mid-Range Field Goal %</Text>
         <BarChart
           data={{
             labels: workoutLabels,
@@ -219,7 +222,7 @@ const ReportPage = () => {
         />
       </View>
       <View style={styles.chartWrapper}>
-        <Text style={styles.chartText}>Free Throw Score</Text>
+        <Text style={styles.chartText}>Free Throw %</Text>
         <BarChart
           data={{
             labels: workoutLabels,
@@ -248,7 +251,7 @@ const ReportPage = () => {
         />
       </View>
       <View style={styles.chartWrapper}>
-        <Text style={styles.chartText}>Three Point Score</Text>
+        <Text style={styles.chartText}>Three Point %</Text>
         <BarChart
           data={{
             labels: workoutLabels,

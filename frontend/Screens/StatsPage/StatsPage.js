@@ -24,15 +24,51 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const StatsPage = () => {
+  //const [statsData, setStatsData] = useState(scoreData);
+  // hotzone data
   const [totalShotsMade, setTotalShotsMade] = useState(0);
   const [totalShotsTaken, setTotalShotsTaken] = useState(0);
-  // all the hotzones data
+  const [paintShotsTaken, setPaintShotsTaken] = useState(0);
+  const [paintShotsMade, setPaintShotsMade] = useState(0);
+  const [freeThrowShotsMade, setFreeThrowShotsMade] = useState(0);
+  const [freeThrowShotsTaken, setFreeThrowShotsTaken] = useState(0);
+  const [midRangeShotsMade, setMidRangeShotsMade] = useState(0);
+  const [midRangeShotsTaken, setMidRangeShotsTaken] = useState(0);
+  const [threePointShotsMade, setThreePointShotsMade] = useState(0);
+  const [threePointShotsTaken, setThreePointShotsTaken] = useState(0);
+
+
+  // sub regions
+  const [leftCornerThreeShotsMade, setLeftCornerThreeShotsMade] = useState(0);
+  const [leftCornerThreeShotsTaken, setLeftCornerThreeShotsTaken] = useState(0);
+  const [rightCornerThreeShotsMade, setRightCornerThreeShotsMade] = useState(0);
+  const [rightCornerThreeShotsTaken, setRightCornerThreeShotsTaken] = useState(0);
+  const [leftCornerShotsMade, setLeftCornerShotsMade] = useState(0);
+  const [leftCornerShotsTaken, setLeftCornerShotsTaken] = useState(0);
+  const [rightCornerShotsMade, setRightCornerShotsMade] = useState(0);
+  const [rightCornerShotsTaken, setRightCornerShotsTaken] = useState(0);
+  const [leftLowPostShotsMade, setLeftLowPostShotsMade] = useState(0);
+  const [leftLowPostShotsTaken, setLeftLowPostShotsTaken] = useState(0);
+  const [rightLowPostShotsMade, setRightLowPostShotsMade] = useState(0);
+  const [rightLowPostShotsTaken, setRightLowPostShotsTaken] = useState(0);
+  const [leftHighPostShotsMade, setLeftHighPostShotsMade] = useState(0);
+  const [leftHighPostShotsTaken, setLeftHighPostShotsTaken] = useState(0);
+  const [rightHighPostShotsMade, setRightHighPostShotsMade] = useState(0);
+  const [rightHighPostShotsTaken, setRightHighPostShotsTaken] = useState(0);
+  const [topKeyShotsMade, setTopKeyShotsMade] = useState(0);
+  const [topKeyShotsTaken, setTopKeyShotsTaken] = useState(0);
+  const [topKeyThreeShotsMade, setTopKeyThreeShotsMade] = useState(0);
+  const [topKeyThreeShotsTaken, setTopKeyThreeShotsTaken] = useState(0);
+  const [leftWingThreeShotsMade, setLeftWingThreeShotsMade] = useState(0);
+  const [leftWingThreeShotsTaken, setLeftWingThreeShotsTaken] = useState(0);
+  const [rightWingThreeShotsMade, setRightWingThreeShotsMade] = useState(0);
+  const [rightWingThreeShotsTaken, setRightWingThreeShotsTaken] = useState(0);
+  
+  // field goal %
   const [paintFG, setPaintFG] = useState(0);
   const [midRangeFG, setMidRangeFG] = useState(0);
   const [threePointFG, setThreePointFG] = useState(0);
   const [freeThrowFG, setFreeThrowFG] = useState(0);
-
-  // sub regions
   const [leftCornerThreeFG, setLeftCornerThreeFG] = useState(0);
   const [rightCornerThreeFG, setRightCornerThreeFG] = useState(0);
   const [leftCornerFG, setLeftCornerFG] = useState(0);
@@ -63,9 +99,9 @@ const StatsPage = () => {
       const scoresSnapshot = await getDocs(scoresQuery);
 
       const scores = scoresSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        const formattedDateTime = formatDateTime(data.date);
-        return { ...data, date: formattedDateTime };
+        const prevData = doc.data();
+        const formattedDateTime = formatDateTime(prevData.date);
+        return { ...prevData, date: formattedDateTime };
       });
       setPreviousWorkoutScores(scores);
     } catch (error) {
@@ -87,14 +123,6 @@ const StatsPage = () => {
     return percentage.toFixed(2);
   };
 
-  const calculateImprovement = (currFG, prevFG) => {
-    // how are the scores formatted in firestore?
-  }
-
-  const handleViewHotZone = () => {
-    console.log('View Hot Zone');
-  };
-
   const handleShare = async () => {
     const shareOptions = {
       message: `I made ${totalShotsMade} / ${totalShotsTaken} shots today`,
@@ -105,124 +133,6 @@ const StatsPage = () => {
       console.log('Error => ', error);
     }
   };
-
-  // async function GetCurrentLocation() {
-  //   let { status } = await Location.requestForegroundPermissionsAsync();
-  
-  //   if (status !== 'granted') {
-  //     Alert.alert(
-  //       'Permission not granted',
-  //       'Allow the app to use location service.',
-  //       [{ text: 'OK' }],
-  //       { cancelable: false }
-  //     );
-  //     return;
-  //   }
-  
-  //   try {
-  //     let { coords } = await Location.getCurrentPositionAsync();
-  
-  //     if (coords) {
-  //       const { latitude, longitude } = coords;
-  //       let response = await Location.reverseGeocodeAsync({
-  //         latitude,
-  //         longitude,
-  //       });
-  
-  //       for (let item of response) {
-  //         let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-  //         // console.log(address);
-  
-  //         try {
-  //           const totalShotsMade = 10;
-  //           const totalShotsTaken = 15;
-  //           const paintShotsMade = 5;
-  //           const paintShotsTaken = 8;
-  //           const freeThrowShotsMade = 7;
-  //           const freeThrowShotsTaken = 10;
-  //           const midRangeShotsMade = 3;
-  //           const midRangeShotsTaken = 5;
-  //           const threePointShotsMade = 4;
-  //           const threePointShotsTaken = 7;
-  //           const leftCornerThreeShotsMade = 2;
-  //           const leftCornerThreeShotsTaken = 3;
-  //           const rightCornerThreeShotsMade = 1;
-  //           const rightCornerThreeShotsTaken = 2;
-  //           const leftCornerShotsMade = 1;
-  //           const leftCornerShotsTaken = 2;
-  //           const rightCornerShotsMade = 3;
-  //           const rightCornerShotsTaken = 4;
-  //           const leftLowPostShotsMade = 2;
-  //           const leftLowPostShotsTaken = 3;
-  //           const rightLowPostShotsMade = 1;
-  //           const rightLowPostShotsTaken = 2;
-  //           const leftHighPostShotsMade = 4;
-  //           const leftHighPostShotsTaken = 5;
-  //           const rightHighPostShotsMade = 3;
-  //           const rightHighPostShotsTaken = 4;
-  //           const topKeyShotsMade = 6;
-  //           const topKeyShotsTaken = 9;
-  //           const topKeyThreeShotsMade = 5;
-  //           const topKeyThreeShotsTaken = 8;
-  //           const leftWingThreeShotsMade = 3;
-  //           const leftWingThreeShotsTaken = 5;
-  //           const rightWingThreeShotsMade = 2;
-  //           const rightWingThreeShotsTaken = 4;
-  
-  //           const currentDate = Timestamp.fromDate(new Date());
-  
-  //           const collectionRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
-  //           const data = {
-  //             email: auth.currentUser?.email,
-  //             location: address,
-  //             totalShotsMade: totalShotsMade,
-  //             totalShotsTaken: totalShotsTaken,
-  //             paintShotsMade: paintShotsMade,
-  //             paintShotsTaken: paintShotsTaken,
-  //             freeThrowShotsMade: freeThrowShotsMade,
-  //             freeThrowShotsTaken: freeThrowShotsTaken,
-  //             midRangeShotsMade: midRangeShotsMade,
-  //             midRangeShotsTaken: midRangeShotsTaken,
-  //             threePointShotsMade: threePointShotsMade,
-  //             threePointShotsTaken: threePointShotsTaken,
-  //             leftCornerThreeShotsMade: leftCornerThreeShotsMade,
-  //             leftCornerThreeShotsTaken: leftCornerThreeShotsTaken,
-  //             rightCornerThreeShotsMade: rightCornerThreeShotsMade,
-  //             rightCornerThreeShotsTaken: rightCornerThreeShotsTaken,
-  //             leftCornerShotsMade: leftCornerShotsMade,
-  //             leftCornerShotsTaken: leftCornerShotsTaken,
-  //             rightCornerShotsMade: rightCornerShotsMade,
-  //             rightCornerShotsTaken: rightCornerShotsTaken,
-  //             leftLowPostShotsMade: leftLowPostShotsMade,
-  //             leftLowPostShotsTaken: leftLowPostShotsTaken,
-  //             rightLowPostShotsMade: rightLowPostShotsMade,
-  //             rightLowPostShotsTaken: rightLowPostShotsTaken,
-  //             leftHighPostShotsMade: leftHighPostShotsMade,
-  //             leftHighPostShotsTaken: leftHighPostShotsTaken,
-  //             rightHighPostShotsMade: rightHighPostShotsMade,
-  //             rightHighPostShotsTaken: rightHighPostShotsTaken,
-  //             topKeyShotsMade: topKeyShotsMade,
-  //             topKeyShotsTaken: topKeyShotsTaken,
-  //             topKeyThreeShotsMade: topKeyThreeShotsMade,
-  //             topKeyThreeShotsTaken: topKeyThreeShotsTaken,
-  //             leftWingThreeShotsMade: leftWingThreeShotsMade,
-  //             leftWingThreeShotsTaken: leftWingThreeShotsTaken,
-  //             rightWingThreeShotsMade: rightWingThreeShotsMade,
-  //             rightWingThreeShotsTaken: rightWingThreeShotsTaken,
-  //             date: currentDate
-  //           };
-  //           const docRef = await addDoc(collectionRef, data);
-  //           console.log('Document added with ID:', docRef.id);
-  //         } catch (error) {
-  //           console.error('Error adding document:', error);
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log('Error getting location:', error);
-  //   }
-  // }
-
   async function GetCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -252,52 +162,49 @@ const StatsPage = () => {
 
           try {
             // Fetch the score value from the Flask web app
-            const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
-            const datas = await response.json();
+            // const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+            // const datas = await response.json();
 
-            const totalShotsMade = datas.total.shotsMade;
-            const totalShotsTaken = datas.total.shotsTaken;
-            const paintShotsMade = datas.paint.shotsMade;
-            const paintShotsTaken = datas.paint.shotsTaken;
-            const freeThrowShotsMade = datas.free_throw.shotsMade;
-            const freeThrowShotsTaken = datas.free_throw.shotsTaken;
-            const midRangeShotsMade = datas.mid_range.shotsMade;
-            const midRangeShotsTaken = datas.mid_range.shotsTaken;
-            const threePointShotsMade = datas.three_point.shotsMade;
-            const threePointShotsTaken = datas.three_point.shotsTaken;
-            const leftCornerThreeShotsMade = datas.left_corner_three.shotsMade;
-            const leftCornerThreeShotsTaken = datas.left_corner_three.shotsTaken;
-            const rightCornerThreeShotsMade = datas.right_corner_three.shotsMade;
-            const rightCornerThreeShotsTaken = datas.right_corner_three.shotsTaken;
-            const leftCornerShotsMade = datas.left_corner.shotsMade;
-            const leftCornerShotsTaken = datas.left_corner.shotsTaken;
-            const rightCornerShotsMade = datas.right_corner.shotsMade;
-            const rightCornerShotsTaken = datas.right_corner.shotsTaken;
-            const leftLowPostShotsMade = datas.left_low_post.shotsMade;
-            const leftLowPostShotsTaken = datas.left_low_post.shotsTaken;
-            const rightLowPostShotsMade = datas.right_low_post.shotsMade;
-            const rightLowPostShotsTaken = datas.right_low_post.shotsTaken;
-            const leftHighPostShotsMade = datas.left_high_post.shotsMade;
-            const leftHighPostShotsTaken = datas.left_high_post.shotsTaken;
-            const rightHighPostShotsMade = datas.right_high_post.shotsMade;
-            const rightHighPostShotsTaken = datas.right_high_post.shotsTaken;
-            const topKeyShotsMade = datas.top_key.shotsMade;
-            const topKeyShotsTaken = datas.top_key.shotsTaken;
-            const topKeyThreeShotsMade = datas.top_key_three.shotsMade;
-            const topKeyThreeShotsTaken = datas.top_key_three.shotsTaken;
-            const leftWingThreeShotsMade = datas.left_wing_three.shotsMade;
-            const leftWingThreeShotsTaken = datas.left_wing_three.shotsTaken;
-            const rightWingThreeShotsMade = datas.right_wing_three.shotsMade;
-            const rightWingThreeShotsTaken = datas.right_wing_three.shotsTaken;
+            // const totalShotsMade = datas.total.shotsMade;
+            // const totalShotsTaken = datas.total.shotsTaken;
+            // const paintShotsMade = datas.paint.shotsMade;
+            // const paintShotsTaken = datas.paint.shotsTaken;
+            // const freeThrowShotsMade = datas.free_throw.shotsMade;
+            // const freeThrowShotsTaken = datas.free_throw.shotsTaken;
+            // const midRangeShotsMade = datas.mid_range.shotsMade;
+            // const midRangeShotsTaken = datas.mid_range.shotsTaken;
+            // const threePointShotsMade = datas.three_point.shotsMade;
+            // const threePointShotsTaken = datas.three_point.shotsTaken;
+            // const leftCornerThreeShotsMade = datas.left_corner_three.shotsMade;
+            // const leftCornerThreeShotsTaken = datas.left_corner_three.shotsTaken;
+            // const rightCornerThreeShotsMade = datas.right_corner_three.shotsMade;
+            // const rightCornerThreeShotsTaken = datas.right_corner_three.shotsTaken;
+            // const leftCornerShotsMade = datas.left_corner.shotsMade;
+            // const leftCornerShotsTaken = datas.left_corner.shotsTaken;
+            // const rightCornerShotsMade = datas.right_corner.shotsMade;
+            // const rightCornerShotsTaken = datas.right_corner.shotsTaken;
+            // const leftLowPostShotsMade = datas.left_low_post.shotsMade;
+            // const leftLowPostShotsTaken = datas.left_low_post.shotsTaken;
+            // const rightLowPostShotsMade = datas.right_low_post.shotsMade;
+            // const rightLowPostShotsTaken = datas.right_low_post.shotsTaken;
+            // const leftHighPostShotsMade = datas.left_high_post.shotsMade;
+            // const leftHighPostShotsTaken = datas.left_high_post.shotsTaken;
+            // const rightHighPostShotsMade = datas.right_high_post.shotsMade;
+            // const rightHighPostShotsTaken = datas.right_high_post.shotsTaken;
+            // const topKeyShotsMade = datas.top_key.shotsMade;
+            // const topKeyShotsTaken = datas.top_key.shotsTaken;
+            // const topKeyThreeShotsMade = datas.top_key_three.shotsMade;
+            // const topKeyThreeShotsTaken = datas.top_key_three.shotsTaken;
+            // const leftWingThreeShotsMade = datas.left_wing_three.shotsMade;
+            // const leftWingThreeShotsTaken = datas.left_wing_three.shotsTaken;
+            // const rightWingThreeShotsMade = datas.right_wing_three.shotsMade;
+            // const rightWingThreeShotsTaken = datas.right_wing_three.shotsTaken;
 
-
-            // const totalShotsMade = 10;
-            // const totalShotsTaken = 15;
             const currentDate = Timestamp.fromDate(new Date());
 
             const collectionRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
             const documentId = collectionRef.id;
-            const data = {
+            const newData = {
               email: auth.currentUser?.email,
               location: address,
               totalShotsMade: totalShotsMade,
@@ -337,7 +244,7 @@ const StatsPage = () => {
               date: currentDate
             };
 
-            await addDoc(collectionRef, data);
+            await addDoc(collectionRef, newData);
             console.log('Document added with ID:', documentId);
           } catch (error) {
             console.error('Error adding document:', error);
@@ -351,18 +258,53 @@ const StatsPage = () => {
 
   const fetchScore = async () => {
     try {
-      const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+      const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
       setIsLoading(true); // Start loading state
       const scoreData = await response.json();
-      console.log(scoreData);
+      console.log(`StatsData: ${scoreData}`);
+      //setStatsData(data)
       setTotalShotsMade(scoreData.total.shotsMade);
       setTotalShotsTaken(scoreData.total.shotsTaken);
+
+      setPaintShotsMade(scoreData.paint.shotsMade)
+      setPaintShotsTaken(scoreData.paint.shotsTaken)
+      setFreeThrowShotsMade(scoreData.free_throw.shotsMade);
+      setFreeThrowShotsTaken(scoreData.free_throw.shotsTaken);
+      setMidRangeShotsMade(scoreData.mid_range.shotsMade);
+      setMidRangeShotsTaken(scoreData.mid_range.shotsTaken);
+      setThreePointShotsMade(scoreData.three_point.shotsMade);
+      setThreePointShotsTaken(scoreData.three_point.shotsTaken);
+
+      setLeftCornerThreeShotsMade(scoreData.left_corner_three.shotsMade);
+      setLeftCornerThreeShotsTaken(scoreData.left_corner_three.shotsTaken);
+      setRightCornerThreeShotsMade(scoreData.right_corner_three.shotsMade);
+      setRightCornerThreeShotsTaken(scoreData.right_corner_three.shotsTaken);
+      setLeftCornerShotsMade(scoreData.left_corner.shotsMade);
+      setLeftCornerShotsTaken(scoreData.left_corner.shotsTaken);
+      setRightCornerShotsMade(scoreData.right_corner.shotsMade);
+      setRightCornerShotsTaken(scoreData.right_corner.shotsTaken);
+      setLeftLowPostShotsMade(scoreData.left_low_post.shotsMade);
+      setLeftLowPostShotsTaken(scoreData.left_low_post.shotsTaken);
+      setRightLowPostShotsMade(scoreData.right_low_post.shotsMade);
+      setRightLowPostShotsTaken(scoreData.right_low_post.shotsTaken);
+      setLeftHighPostShotsMade(scoreData.left_high_post.shotsMade);
+      setLeftHighPostShotsTaken(scoreData.left_high_post.shotsTaken);
+      setRightHighPostShotsMade(scoreData.right_high_post.shotsMade);
+      setRightHighPostShotsTaken(scoreData.right_high_post.shotsTaken);
+      setTopKeyShotsMade(scoreData.top_key.shotsMade);
+      setTopKeyShotsTaken(scoreData.top_key.shotsTaken);
+      setTopKeyThreeShotsMade(scoreData.top_key_three.shotsMade);
+      setTopKeyThreeShotsTaken(scoreData.top_key_three.shotsTaken);
+      setLeftWingThreeShotsMade(scoreData.left_wing_three.shotsMade);
+      setLeftWingThreeShotsTaken(scoreData.left_wing_three.shotsTaken);
+      setRightWingThreeShotsMade(scoreData.right_wing_three.shotsMade);
+      setRightWingThreeShotsTaken(scoreData.right_wing_three.shotsTaken);
+      // setting field goal%
 
       setPaintFG(calculateFieldGoalPercentage(scoreData.paint.shotsMade, scoreData.paint.shotsTaken))
       setFreeThrowFG(calculateFieldGoalPercentage(scoreData.free_throw.shotsMade, scoreData.free_throw.shotsTaken))
       setMidRangeFG(calculateFieldGoalPercentage(scoreData.mid_range.shotsMade, scoreData.mid_range.shotsTaken))
       setThreePointFG(calculateFieldGoalPercentage(scoreData.three_point.shotsMade, scoreData.three_point.shotsTaken))
-      
       setLeftCornerThreeFG(calculateFieldGoalPercentage(scoreData.left_corner_three.shotsMade, scoreData.left_corner_three.shotsTaken))
       setRightCornerThreeFG(calculateFieldGoalPercentage(scoreData.right_corner_three.shotsMade, scoreData.right_corner_three.shotsTaken))
       setLeftCornerFG(calculateFieldGoalPercentage(scoreData.left_corner.shotsMade, scoreData.left_corner.shotsTaken))
@@ -375,7 +317,6 @@ const StatsPage = () => {
       setTopKeyThreeFG(calculateFieldGoalPercentage(scoreData.top_key_three.shotsMade, scoreData.top_key_three.shotsTaken))
       setLeftWingThreeFG(calculateFieldGoalPercentage(scoreData.left_wing_three.shotsMade, scoreData.left_wing_three.shotsTaken))
       setRightWingThreeFG(calculateFieldGoalPercentage(scoreData.right_wing_three.shotsMade, scoreData.right_wing_three.shotsTaken))
-
 
       setIsLoading(false); // Stop loading state
       GetCurrentLocation();
@@ -445,7 +386,7 @@ const StatsPage = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('ReportPage')}
+            onPress={() => navigation.navigate('ReportPage', {statsData})}
           >
             <Text style={styles.buttonText}>Show my progress</Text>
           </TouchableOpacity>

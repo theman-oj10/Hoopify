@@ -30,7 +30,7 @@ const HotZonePage = ({ route }) => {
     leftWingThreeFG,
     rightWingThreeFG
   } = route.params;
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('https://hoopbackend-unmihbju4a-as.a.run.app/api/hotzones');
 
   const majorZones = [
     { name: 'Paint', value: paintFG },
