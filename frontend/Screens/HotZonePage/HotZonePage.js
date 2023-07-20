@@ -10,36 +10,53 @@ import {
 import { useNavigation } from '@react-navigation/native';
 
 import HotZone from '../SignInScreen/Images/HotZone.png';
-import StatsPage from '../StatsPage/StatsPage';
 
-const HotZonePage = () => {
+const HotZonePage = ({ route }) => {
+  const { 
+    paintFG,
+    midRangeFG,
+    threePointFG,
+    freeThrowFG,
+    leftCornerThreeFG,
+    rightCornerThreeFG,
+    leftCornerFG,
+    rightCornerFG,
+    leftLowPostFG,
+    rightLowPostFG,
+    leftHighPostFG,
+    rightHighPostFG,
+    topKeyFG,
+    topKeyThreeFG,
+    leftWingThreeFG,
+    rightWingThreeFG
+  } = route.params;
   const [imageUrl, setImageUrl] = useState('');
 
   const majorZones = [
-    { name: 'Paint', value: StatsPage.paintFG },
-    { name: 'Mid-Range', value: StatsPage.midRangeFG },
-    { name: 'Three Point', value: StatsPage.threePointFG },
-    { name: 'Free Throw', value: StatsPage.freeThrowFG },
+    { name: 'Paint', value: paintFG },
+    { name: 'Mid-Range', value: midRangeFG },
+    { name: 'Three Point', value: threePointFG },
+    { name: 'Free Throw', value: freeThrowFG },
   ];
   majorZones.sort((a, b) => b.value - a.value);
 
   const midRangeZones = [
-    { name: 'Left Corner', value: StatsPage.leftCornerFG },
-    { name: 'Right Corner', value: StatsPage.rightCornerFG },
-    { name: 'Left Low Post', value: StatsPage.leftLowPostFG },
-    { name: 'Right Low Post', value: StatsPage.rightLowPostFG },
-    { name: 'Left High Post', value: StatsPage.leftHighPostFG },
-    { name: 'Right High Post', value: StatsPage.rightHighPostFG },
-    { name: 'Top of the Key', value: StatsPage.topKeyFG },
+    { name: 'Left Corner', value: leftCornerFG },
+    { name: 'Right Corner', value: rightCornerFG },
+    { name: 'Left Low Post', value: leftLowPostFG },
+    { name: 'Right Low Post', value: rightLowPostFG },
+    { name: 'Left High Post', value: leftHighPostFG },
+    { name: 'Right High Post', value: rightHighPostFG },
+    { name: 'Top of the Key', value: topKeyFG },
   ];
   midRangeZones.sort((a, b) => b.value - a.value);
 
   const threePointZones = [
-    { name: 'Left Corner Three', value: StatsPage.leftCornerThreeFG },
-    { name: 'Right Corner Three', value: StatsPage.rightCornerThreeFG },
-    { name: 'Left Wing Three', value: StatsPage.leftWingThreeFG },
-    { name: 'Right Wing Three', value: StatsPage.rightWingThreeFG },
-    { name: 'Top of the Key Three', value: StatsPage.topKeyThreeFG },
+    { name: 'Left Corner Three', value: leftCornerThreeFG },
+    { name: 'Right Corner Three', value: rightCornerThreeFG },
+    { name: 'Left Wing Three', value: leftWingThreeFG },
+    { name: 'Right Wing Three', value: rightWingThreeFG },
+    { name: 'Top of the Key Three', value: topKeyThreeFG },
   ];
   threePointZones.sort((a, b) => b.value - a.value);
 
@@ -83,7 +100,7 @@ const HotZonePage = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Hotzones</Text>
-      <Image source={{ uri: imageUrl }} style={styles.logo} resizeMode="contain" />
+      <Image source={{uri: imageUrl}} style={styles.logo} resizeMode="contain" />
 
       <View style={styles.zoneContainer}>
         <Text style={styles.zoneTitle}>Major Zones</Text>
