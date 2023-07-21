@@ -4,6 +4,23 @@ import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback, findNo
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import { Platform } from 'react-native';
 import Instructions from './Instructions';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, orderBy, getDocs, limit, Timestamp, setDoc, addDoc, doc } from 'firebase/firestore';
+import { auth } from '../../firebase';
+import * as Location from 'expo-location';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
+  authDomain: "orbital-app-proto.firebaseapp.com",
+  projectId: "orbital-app-proto",
+  storageBucket: "orbital-app-proto.appspot.com",
+  messagingSenderId: "965591983424",
+  appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
+  measurementId: "G-JV5TKFE1BX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 function SelectRim() {
   const [data, setData] = useState(null); 
@@ -121,6 +138,40 @@ function SelectRim() {
   //   }
   // };
 
+  async function GetCurrentLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission not granted',
+        'Allow the app to use location service.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      );
+      return;
+    }
+
+    try {
+      let { coords } = await Location.getCurrentPositionAsync();
+
+      if (coords) {
+        const { latitude, longitude } = coords;
+        let response = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+
+        for (let item of response) {
+          let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+          // console.log(address);
+          return address;
+        }
+      }
+    } catch (error) {
+      console.log('Error getting location:', error);
+    }
+  }
+
   const handleSubmit = async () => {
     try {
       if (coordinates.length < 18) {
@@ -141,9 +192,99 @@ function SelectRim() {
 
       if (response.ok) {
         console.log("response received")
-        const scoreData = await response.json();
-        console.log(`ScoreData: ${scoreData}`);
-        setData(scoreData)
+        const datas = await response.json();
+        try {
+          // Fetch the score value from the Flask web app
+          // const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
+          // const datas = await response.json();
+
+          const totalShotsMade = datas.total.shotsMade;
+          const totalShotsTaken = datas.total.shotsTaken;
+          const paintShotsMade = datas.paint.shotsMade;
+          const paintShotsTaken = datas.paint.shotsTaken;
+          const freeThrowShotsMade = datas.free_throw.shotsMade;
+          const freeThrowShotsTaken = datas.free_throw.shotsTaken;
+          const midRangeShotsMade = datas.mid_range.shotsMade;
+          const midRangeShotsTaken = datas.mid_range.shotsTaken;
+          const threePointShotsMade = datas.three_point.shotsMade;
+          const threePointShotsTaken = datas.three_point.shotsTaken;
+          const leftCornerThreeShotsMade = datas.left_corner_three.shotsMade;
+          const leftCornerThreeShotsTaken = datas.left_corner_three.shotsTaken;
+          const rightCornerThreeShotsMade = datas.right_corner_three.shotsMade;
+          const rightCornerThreeShotsTaken = datas.right_corner_three.shotsTaken;
+          const leftCornerShotsMade = datas.left_corner.shotsMade;
+          const leftCornerShotsTaken = datas.left_corner.shotsTaken;
+          const rightCornerShotsMade = datas.right_corner.shotsMade;
+          const rightCornerShotsTaken = datas.right_corner.shotsTaken;
+          const leftLowPostShotsMade = datas.left_low_post.shotsMade;
+          const leftLowPostShotsTaken = datas.left_low_post.shotsTaken;
+          const rightLowPostShotsMade = datas.right_low_post.shotsMade;
+          const rightLowPostShotsTaken = datas.right_low_post.shotsTaken;
+          const leftHighPostShotsMade = datas.left_high_post.shotsMade;
+          const leftHighPostShotsTaken = datas.left_high_post.shotsTaken;
+          const rightHighPostShotsMade = datas.right_high_post.shotsMade;
+          const rightHighPostShotsTaken = datas.right_high_post.shotsTaken;
+          const topKeyShotsMade = datas.top_key.shotsMade;
+          const topKeyShotsTaken = datas.top_key.shotsTaken;
+          const topKeyThreeShotsMade = datas.top_key_three.shotsMade;
+          const topKeyThreeShotsTaken = datas.top_key_three.shotsTaken;
+          const leftWingThreeShotsMade = datas.left_wing_three.shotsMade;
+          const leftWingThreeShotsTaken = datas.left_wing_three.shotsTaken;
+          const rightWingThreeShotsMade = datas.right_wing_three.shotsMade;
+          const rightWingThreeShotsTaken = datas.right_wing_three.shotsTaken;
+
+          const currentDate = Timestamp.fromDate(new Date());
+          const newLocation = await GetCurrentLocation();
+
+          const collectionRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
+          const documentId = collectionRef.id;
+          const newData = {
+            email: auth.currentUser?.email,
+            location: newLocation,
+            totalShotsMade: totalShotsMade,
+            totalShotsTaken: totalShotsTaken,
+            paintShotsMade: paintShotsMade,
+            paintShotsTaken: paintShotsTaken,
+            freeThrowShotsMade: freeThrowShotsMade,
+            freeThrowShotsTaken: freeThrowShotsTaken,
+            midRangeShotsMade: midRangeShotsMade,
+            midRangeShotsTaken: midRangeShotsTaken,
+            threePointShotsMade: threePointShotsMade,
+            threePointShotsTaken: threePointShotsTaken,
+            leftCornerThreeShotsMade: leftCornerThreeShotsMade,
+            leftCornerThreeShotsTaken: leftCornerThreeShotsTaken,
+            rightCornerThreeShotsMade: rightCornerThreeShotsMade,
+            rightCornerThreeShotsTaken: rightCornerThreeShotsTaken,
+            leftCornerShotsMade: leftCornerShotsMade,
+            leftCornerShotsTaken: leftCornerShotsTaken,
+            rightCornerShotsMade: rightCornerShotsMade,
+            rightCornerShotsTaken: rightCornerShotsTaken,
+            leftLowPostShotsMade: leftLowPostShotsMade,
+            leftLowPostShotsTaken: leftLowPostShotsTaken,
+            rightLowPostShotsMade: rightLowPostShotsMade,
+            rightLowPostShotsTaken: rightLowPostShotsTaken,
+            leftHighPostShotsMade: leftHighPostShotsMade,
+            leftHighPostShotsTaken: leftHighPostShotsTaken,
+            rightHighPostShotsMade: rightHighPostShotsMade,
+            rightHighPostShotsTaken: rightHighPostShotsTaken,
+            topKeyShotsMade: topKeyShotsMade,
+            topKeyShotsTaken: topKeyShotsTaken,
+            topKeyThreeShotsMade: topKeyThreeShotsMade,
+            topKeyThreeShotsTaken: topKeyThreeShotsTaken,
+            leftWingThreeShotsMade: leftWingThreeShotsMade,
+            leftWingThreeShotsTaken: leftWingThreeShotsTaken,
+            rightWingThreeShotsMade: rightWingThreeShotsMade,
+            rightWingThreeShotsTaken: rightWingThreeShotsTaken,
+            date: currentDate
+          };
+
+          await addDoc(collectionRef, newData);
+          console.log('Document added with ID:', documentId);
+        } catch (error) {
+          console.error('Error adding document:', error);
+        }
+        console.log(`ScoreData: ${datas}`);
+        setData(datas)
        
       } else {
         console.log('ResponseError:', response.status);
@@ -152,7 +293,7 @@ function SelectRim() {
       console.log('Error:', error);
     } finally {
       navigation.navigate('StatsPage');
-      setLoading(false); // Stop loading state
+      // setLoading(false); // Stop loading state
     }
   };
 

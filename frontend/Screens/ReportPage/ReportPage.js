@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share, ScrollView } from 'react-native';
 import axios from 'axios';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, orderBy, getDocs, limit, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, getDocs, limit, addDoc, Timestamp } from 'firebase/firestore';
 import { auth } from '../../firebase';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { captureRef } from 'react-native-view-shot';
@@ -28,23 +28,161 @@ const ReportPage = () => {
   // const {
   //   data
   // } = route.params;
-  const [reportData, setReportData] = useState(null);
+  // const [reportData, setReportData] = useState(null);
   const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
   const navigation = useNavigation();
   const chartRef = useRef();
+  const [zonesState, setZonesState] = useState(null);
+   // hotzone data
+   const [totalShotsMade, setTotalShotsMade] = useState(0);
+   const [totalShotsTaken, setTotalShotsTaken] = useState(0);
+   const [paintShotsTaken, setPaintShotsTaken] = useState(0);
+   const [paintShotsMade, setPaintShotsMade] = useState(0);
+   const [freeThrowShotsMade, setFreeThrowShotsMade] = useState(0);
+   const [freeThrowShotsTaken, setFreeThrowShotsTaken] = useState(0);
+   const [midRangeShotsMade, setMidRangeShotsMade] = useState(0);
+   const [midRangeShotsTaken, setMidRangeShotsTaken] = useState(0);
+   const [threePointShotsMade, setThreePointShotsMade] = useState(0);
+   const [threePointShotsTaken, setThreePointShotsTaken] = useState(0);
+ 
+ 
+   // sub regions
+   const [leftCornerThreeShotsMade, setLeftCornerThreeShotsMade] = useState(0);
+   const [leftCornerThreeShotsTaken, setLeftCornerThreeShotsTaken] = useState(0);
+   const [rightCornerThreeShotsMade, setRightCornerThreeShotsMade] = useState(0);
+   const [rightCornerThreeShotsTaken, setRightCornerThreeShotsTaken] = useState(0);
+   const [leftCornerShotsMade, setLeftCornerShotsMade] = useState(0);
+   const [leftCornerShotsTaken, setLeftCornerShotsTaken] = useState(0);
+   const [rightCornerShotsMade, setRightCornerShotsMade] = useState(0);
+   const [rightCornerShotsTaken, setRightCornerShotsTaken] = useState(0);
+   const [leftLowPostShotsMade, setLeftLowPostShotsMade] = useState(0);
+   const [leftLowPostShotsTaken, setLeftLowPostShotsTaken] = useState(0);
+   const [rightLowPostShotsMade, setRightLowPostShotsMade] = useState(0);
+   const [rightLowPostShotsTaken, setRightLowPostShotsTaken] = useState(0);
+   const [leftHighPostShotsMade, setLeftHighPostShotsMade] = useState(0);
+   const [leftHighPostShotsTaken, setLeftHighPostShotsTaken] = useState(0);
+   const [rightHighPostShotsMade, setRightHighPostShotsMade] = useState(0);
+   const [rightHighPostShotsTaken, setRightHighPostShotsTaken] = useState(0);
+   const [topKeyShotsMade, setTopKeyShotsMade] = useState(0);
+   const [topKeyShotsTaken, setTopKeyShotsTaken] = useState(0);
+   const [topKeyThreeShotsMade, setTopKeyThreeShotsMade] = useState(0);
+   const [topKeyThreeShotsTaken, setTopKeyThreeShotsTaken] = useState(0);
+   const [leftWingThreeShotsMade, setLeftWingThreeShotsMade] = useState(0);
+   const [leftWingThreeShotsTaken, setLeftWingThreeShotsTaken] = useState(0);
+   const [rightWingThreeShotsMade, setRightWingThreeShotsMade] = useState(0);
+   const [rightWingThreeShotsTaken, setRightWingThreeShotsTaken] = useState(0);
 
   const fetchReportData = async () => {
     try {
-      //const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
-      //const data = await response.json();
-      //setReportData(data)
-      console.log(data);
-      return data;
+      // Fetch data from Firestore
+      const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
+      const scoresQuery = query(scoresRef, orderBy('date', 'desc'), limit(1));
+      const scoresSnapshot = await getDocs(scoresQuery);
+      const scores = scoresSnapshot.docs.map((doc) => doc.data());
+  
+      // Assuming scores is an array with a single object, extract that object
+      const scoreData = scores[0]; // Modify this part based on your data structure
+  
+      console.log(`StatsData: ${scoreData}`);
+      // Set the state variables using the data from Firestore
+      // Total shots and shot attempts
+      setTotalShotsMade(scoreData.totalShotsMade);
+      setTotalShotsTaken(scoreData.totalShotsTaken);
+
+      // Paint shots
+      setPaintShotsMade(scoreData.paintShotsMade);
+      setPaintShotsTaken(scoreData.paintShotsTaken);
+
+      // Free throw shots
+      setFreeThrowShotsMade(scoreData.freeThrowShotsMade);
+      setFreeThrowShotsTaken(scoreData.freeThrowShotsTaken);
+
+      // Mid-range shots
+      setMidRangeShotsMade(scoreData.midRangeShotsMade);
+      setMidRangeShotsTaken(scoreData.midRangeShotsTaken);
+
+      // Three-point shots
+      setThreePointShotsMade(scoreData.threePointShotsMade);
+      setThreePointShotsTaken(scoreData.threePointShotsTaken);
+
+      // Left corner three-point shots
+      setLeftCornerThreeShotsMade(scoreData.leftCornerThreeShotsMade);
+      setLeftCornerThreeShotsTaken(scoreData.leftCornerThreeShotsTaken);
+
+      // Right corner three-point shots
+      setRightCornerThreeShotsMade(scoreData.rightCornerThreeShotsMade);
+      setRightCornerThreeShotsTaken(scoreData.rightCornerThreeShotsTaken);
+
+      // Left corner shots
+      setLeftCornerShotsMade(scoreData.leftCornerShotsMade);
+      setLeftCornerShotsTaken(scoreData.leftCornerShotsTaken);
+
+      // Right corner shots
+      setRightCornerShotsMade(scoreData.rightCornerShotsMade);
+      setRightCornerShotsTaken(scoreData.rightCornerShotsTaken);
+
+      // Left low post shots
+      setLeftLowPostShotsMade(scoreData.leftLowPostShotsMade);
+      setLeftLowPostShotsTaken(scoreData.leftLowPostShotsTaken);
+
+      // Right low post shots
+      setRightLowPostShotsMade(scoreData.rightLowPostShotsMade);
+      setRightLowPostShotsTaken(scoreData.rightLowPostShotsTaken);
+
+      // Left high post shots
+      setLeftHighPostShotsMade(scoreData.leftHighPostShotsMade);
+      setLeftHighPostShotsTaken(scoreData.leftHighPostShotsTaken);
+
+      // Right high post shots
+      setRightHighPostShotsMade(scoreData.rightHighPostShotsMade);
+      setRightHighPostShotsTaken(scoreData.rightHighPostShotsTaken);
+
+      // Top key shots
+      setTopKeyShotsMade(scoreData.topKeyShotsMade);
+      setTopKeyShotsTaken(scoreData.topKeyShotsTaken);
+
+      // Top key three-point shots
+      setTopKeyThreeShotsMade(scoreData.topKeyThreeShotsMade);
+      setTopKeyThreeShotsTaken(scoreData.topKeyThreeShotsTaken);
+
+      // Left wing three-point shots
+      setLeftWingThreeShotsMade(scoreData.leftWingThreeShotsMade);
+      setLeftWingThreeShotsTaken(scoreData.leftWingThreeShotsTaken);
+
+      // Right wing three-point shots
+      setRightWingThreeShotsMade(scoreData.rightWingThreeShotsMade);
+      setRightWingThreeShotsTaken(scoreData.rightWingThreeShotsTaken);
+
+      // setReportData(scoreData);
+      const zones = {
+        total: { shotsMade: totalShotsMade, shotsTaken: totalShotsTaken },
+        paint: { shotsMade: paintShotsMade, shotsTaken: paintShotsTaken },
+        freeThrow: { shotsMade: freeThrowShotsMade, shotsTaken: freeThrowShotsTaken },
+        midRange: { shotsMade: midRangeShotsMade, shotsTaken: midRangeShotsTaken },
+        threePoint: { shotsMade: threePointShotsMade, shotsTaken: threePointShotsTaken },
+        leftCornerThree: { shotsMade: leftCornerThreeShotsMade, shotsTaken: leftCornerThreeShotsTaken },
+        rightCornerThree: { shotsMade: rightCornerThreeShotsMade, shotsTaken: rightCornerThreeShotsTaken },
+        leftCorner: { shotsMade: leftCornerShotsMade, shotsTaken: leftCornerShotsTaken },
+        rightCorner: { shotsMade: rightCornerShotsMade, shotsTaken: rightCornerShotsTaken },
+        leftLowPost: { shotsMade: leftLowPostShotsMade, shotsTaken: leftLowPostShotsTaken },
+        rightLowPost: { shotsMade: rightLowPostShotsMade, shotsTaken: rightLowPostShotsTaken },
+        leftHighPost: { shotsMade: leftHighPostShotsMade, shotsTaken: leftHighPostShotsTaken },
+        rightHighPost: { shotsMade: rightHighPostShotsMade, shotsTaken: rightHighPostShotsTaken },
+        topKey: { shotsMade: topKeyShotsMade, shotsTaken: topKeyShotsTaken },
+        topKeyThree: { shotsMade: topKeyThreeShotsMade, shotsTaken: topKeyThreeShotsTaken },
+        leftWingThree: { shotsMade: leftWingThreeShotsMade, shotsTaken: leftWingThreeShotsTaken },
+        rightWingThree: { shotsMade: rightWingThreeShotsMade, shotsTaken: rightWingThreeShotsTaken },
+      };
+      setZonesState(zones);
     } catch (error) {
       console.log('Error fetching report data:', error);
       throw error;
     }
   };
+
+  useEffect(() => {
+    fetchReportData();
+  }, []);
 
   // const fetchReportData = async () => {
   //   // Simulated API response
@@ -92,16 +230,6 @@ const ReportPage = () => {
     }
   };
 
-  const calculateImprovement = (currMade, currTaken, prevMade, prevTaken) => {
-    const prevFG = calculateFieldGoalPercentage(prevMade, prevTaken);
-    const currFG = calculateFieldGoalPercentage(currMade, currTaken);
-    return (prevFG - currFG)/ prevFG * 100
-  };
-
-  const calculateFieldGoalPercentage = (shotsMade, shotsTaken) => {
-    return ((shotsMade / shotsTaken) * 100).toFixed(2);
-  };
-
   useEffect(() => {
     // fetchReportData()
     //   .catch((error) => {
@@ -111,23 +239,48 @@ const ReportPage = () => {
     fetchPreviousWorkoutScores();
   }, []);
 
+  const calculateFieldGoalPercentage = (shotsMade, shotsTaken) => {
+    if (shotsTaken === 0) {
+      return 0; // Handle division by zero error
+    }
+    return ((shotsMade / shotsTaken) * 100).toFixed(2);
+  };
+  
+  const calculateImprovement = (currMade, currTaken, prevMade, prevTaken) => {
+    const prevFG = parseFloat(calculateFieldGoalPercentage(prevMade, prevTaken));
+    const currFG = parseFloat(calculateFieldGoalPercentage(currMade, currTaken));
+  
+    if (isNaN(prevFG) || isNaN(currFG)) {
+      return 0; // Handle invalid input
+    }
+  
+    if (prevFG === 0) {
+      return (currFG * 100).toFixed(2); // Special case when prevFG is 0
+    }
+  
+    return ((prevFG - currFG) / prevFG * 100).toFixed(2);
+  };
+  
+  
+
+
   const renderWorkoutCharts = () => {
     // Ref added to the BarChart component
     const workoutLabels = previousWorkoutScores.map((workout, index) => `Workout ${index + 1}`);
     const totalScoreData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.total.shotsMade, reportData.total.shotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)
+      calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)
     );
     const paintData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.paint.shotsMade, reportData.paint.shotsTaken, workout.paintShotsMade, workout.paintShotsTaken).toFixed(2)
+      calculateImprovement(zonesState.paintShotsMade, zonesState.paintShotsTaken, workout.paintShotsMade, workout.paintShotsTaken).toFixed(2)
     );
     const midrangeData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.mid_range.shotsMade, reportData.mid_range.shotsTaken, workout.midRangeShotsMade, workout.midRangeShotsTaken).toFixed(2)
+      calculateImprovement(zonesState.midRangeShotsMade, zonesState.midRangeShotsTaken, workout.midRangeShotsMade, workout.midRangeShotsTaken).toFixed(2)
     );
     const freeThrowData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.free_throw.shotsMade, reportData.free_throw.shotsTaken, workout.freeThrowShotsMade, workout.freeThrowShotsTaken).toFixed(2)
+      calculateImprovement(zonesState.freeThrowShotsMade, zonesState.freeThrowShotsTaken, workout.freeThrowShotsMade, workout.freeThrowShotsTaken).toFixed(2)
     );
     const threePointData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(reportData.three_point.shotsMade, reportData.three_point.shotsTaken, workout.threePointShotsMade, workout.threePointShotsTaken).toFixed(2)
+      calculateImprovement(zonesState.threePointShotsMade, zonesState.threePointShotsTaken, workout.threePointShotsMade, workout.threePointShotsTaken).toFixed(2)
     );
   
     return (
@@ -329,11 +482,9 @@ const ReportPage = () => {
   };
 
   const generateDocumentContent = () => {
-    let content = 'Personal Report\n\n';
-
-    content += 'Shooting Performance:\n';
+    let content = 'Shooting Performance:\n';
     content += 'Zone FGM/FGA FG%\n';
-    Object.entries(reportData).forEach(([zone, stats]) => {
+    Object.entries(zonesState).forEach(([zone, stats]) => {
       content += `${zone}: ${stats.shotsMade}/${stats.shotsTaken}\t ${calculateFieldGoalPercentage(stats.shotsMade, stats.shotsTaken)}\n`;
     });
     content += '\n';
@@ -344,9 +495,8 @@ const ReportPage = () => {
       content += `Date: ${workout.date}\n`;
       content += `Number of Shots Made: ${workout.totalShotsMade}\n`;
       content += `Total Shots Attempted: ${workout.totalShotsTaken}\n`;
-      content += `Improvement/Deprovement: ${calculateImprovement(reportData.total.shotsMade, workout.totalShotsTaken).toFixed(2)}%\n\n`;
+      content += `Improvement/Deprovement: ${calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%\n\n`;
     });
-
     return content;
   };
 
@@ -355,7 +505,7 @@ const ReportPage = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Customizable Report</Text>
 
-        {reportData ? (
+        {zonesState ? (
           <View>
             {renderWorkoutCharts()}
             <View style={styles.tableContainer}>
@@ -367,7 +517,7 @@ const ReportPage = () => {
                   <Text style={styles.tableHeader}>Shots Taken</Text>
                   <Text style={styles.tableHeader}>Field Goal %</Text>
                 </View>
-                {Object.entries(reportData).map(([zone, stats]) => (
+                {Object.entries(zonesState).map(([zone, stats]) => (
                   <View style={styles.tableRow} key={zone}>
                     <Text style={styles.tableCell}>{zone}</Text>
                     <Text style={styles.tableCell}>{stats.shotsMade}</Text>
@@ -388,7 +538,7 @@ const ReportPage = () => {
                   <Text>Number of Shots Made: {workout.totalShotsMade}</Text>
                   <Text>Total Shots Attempted: {workout.totalShotsTaken}</Text>
                   <Text>
-                    Improvement/Deprovement: {calculateImprovement(reportData.total.shotsMade, workout.totalShotsTaken).toFixed(2)}%
+                    Improvement/Deprovement: {calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%
                   </Text>
                 </View>
               ))}
