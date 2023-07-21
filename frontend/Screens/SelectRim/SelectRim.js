@@ -300,9 +300,9 @@ function SelectRim() {
     }}
     else{ coordinates.length<18?alert("You haven't chosen enough points!"):
     alert("You have chosen too many points! Click Reset");
-}
-      // setLoading(false); // Stop loading state
     }
+      // setLoading(false); // Stop loading state
+    
   };
 
   const handleProceed = () => {
