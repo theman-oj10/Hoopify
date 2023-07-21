@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback, findNodeHandle } from 'react-native';
+import { View, Text, Image, StyleSheet, Button, TouchableWithoutFeedback, findNodeHandle, Pressable, TouchableOpacity } from 'react-native';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import { Platform } from 'react-native';
 import Instructions from './Instructions';
+import select_rim from './select_rim.png'
+import rim_img from './rim_img.png'
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, orderBy, getDocs, limit, Timestamp, setDoc, addDoc, doc } from 'firebase/firestore';
 import { auth } from '../../firebase';
@@ -21,6 +23,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 
 function SelectRim() {
   const [data, setData] = useState(null); 
@@ -137,6 +140,10 @@ function SelectRim() {
   //     console.log('Error:', error);
   //   }
   // };
+  const handleReset = async () => {
+    await setCoordinates([]);
+  }
+
 
   async function GetCurrentLocation() {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -172,13 +179,10 @@ function SelectRim() {
     }
   }
 
-  const handleSubmit = async () => {
-    try {
-      if (coordinates.length < 18) {
-        alert("You haven't chosen enough points!");
-        return;
-      }
 
+  const handleSubmit = async () => {
+   if (coordinates.length == 18) { 
+    try {
       setLoading(true); // Start loading state
 
       const response = await fetch('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis', {
@@ -293,6 +297,10 @@ function SelectRim() {
       console.log('Error:', error);
     } finally {
       navigation.navigate('StatsPage');
+    }}
+    else{ coordinates.length<18?alert("You haven't chosen enough points!"):
+    alert("You have chosen too many points! Click Reset");
+}
       // setLoading(false); // Stop loading state
     }
   };
@@ -350,7 +358,13 @@ else {
     <View style={styles.container}>
       {showInstructions ? (
         <>
-          <Text style={styles.instructions}>Instructions: Please read the following instructions before proceeding.</Text>
+          <Text style={styles.instructions}>Please select the following points in the shown order on the court. Following that, select the points around the backboard and rim as shown by the second image.
+          </Text>
+          <View>
+          <Image source={select_rim} style={styles.instructionImage} resizeMode='contain'></Image>
+          <Image source={rim_img} style={styles.instructionImage} resizeMode='contain'></Image>
+          </View>
+    
           <Button onPress={handleProceed} title="Proceed" />
         </>
       ) : (
@@ -368,6 +382,7 @@ else {
           )}
           <View style={{ transform: [{ rotate: '90deg' }] }}>
             <View style={styles.buttonContainer}>
+              <Button onPress={handleReset} title="Reset" style={styles.submitButton} />
               <Button onPress={handleSubmit} title="Submit" style={styles.submitButton} />
             </View>
           </View>
@@ -391,6 +406,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   instructions: {
+    marginLeft:30,
+    marginRight: 30,
     marginBottom: 20,
   },
   imageContainer: {
@@ -401,8 +418,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: '80%',
+    //alignItems: 'center',
+    marginLeft:20,
+    marginRight: '60%',
   },
   imageWeb: {
     width: 1000,
@@ -413,14 +431,21 @@ const styles = StyleSheet.create({
     
   },
   image: {
-    width: '80%',
+    width: '85%',
     height: 'auto',
     marginLeft: '100%',
     aspectRatio: 16 / 9,
   },
+  instructionImage: {
+    height:270,
+    width: '100%',
+    marginBottom: 20,
+    aspectRatio: 16 / 9,
+  },
   submitButton: {
     marginTop: 10,
-    marginRight: '20%',
+    padding: 50,
+    
   },
 });
 
