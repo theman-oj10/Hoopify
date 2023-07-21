@@ -11,6 +11,28 @@ const RegisterPage = () => {
   const navigation = useNavigation();
 
   const handleSignUp = () => {
+    // Password restrictions validation
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password)) {
+      alert('Password must contain both uppercase and lowercase letters.');
+      return;
+    }
+
+    if (!/\d/.test(password)) {
+      alert('Password must contain at least one number.');
+      return;
+    }
+
+    if (!/[!@#$%^&*]/.test(password)) {
+      alert('Password must contain at least one special character (!@#$%^&*).');
+      return;
+    }
+
+    // All password restrictions passed, proceed with user registration
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
         const user = userCredentials.user;

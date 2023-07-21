@@ -83,7 +83,7 @@ const StatsPage = () => {
   const [rightWingThreeFG, setRightWingThreeFG] = useState(0);
 
   const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   const formatDateTime = (timestamp) => {
@@ -133,195 +133,112 @@ const StatsPage = () => {
       console.log('Error => ', error);
     }
   };
-  async function GetCurrentLocation() {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-
-    if (status !== 'granted') {
-      Alert.alert(
-        'Permission not granted',
-        'Allow the app to use location service.',
-        [{ text: 'OK' }],
-        { cancelable: false }
-      );
-      return;
-    }
-
-    try {
-      let { coords } = await Location.getCurrentPositionAsync();
-
-      if (coords) {
-        const { latitude, longitude } = coords;
-        let response = await Location.reverseGeocodeAsync({
-          latitude,
-          longitude,
-        });
-
-        for (let item of response) {
-          let address = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-          // console.log(address);
-
-          try {
-            // Fetch the score value from the Flask web app
-            // const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
-            // const datas = await response.json();
-
-            // const totalShotsMade = datas.total.shotsMade;
-            // const totalShotsTaken = datas.total.shotsTaken;
-            // const paintShotsMade = datas.paint.shotsMade;
-            // const paintShotsTaken = datas.paint.shotsTaken;
-            // const freeThrowShotsMade = datas.free_throw.shotsMade;
-            // const freeThrowShotsTaken = datas.free_throw.shotsTaken;
-            // const midRangeShotsMade = datas.mid_range.shotsMade;
-            // const midRangeShotsTaken = datas.mid_range.shotsTaken;
-            // const threePointShotsMade = datas.three_point.shotsMade;
-            // const threePointShotsTaken = datas.three_point.shotsTaken;
-            // const leftCornerThreeShotsMade = datas.left_corner_three.shotsMade;
-            // const leftCornerThreeShotsTaken = datas.left_corner_three.shotsTaken;
-            // const rightCornerThreeShotsMade = datas.right_corner_three.shotsMade;
-            // const rightCornerThreeShotsTaken = datas.right_corner_three.shotsTaken;
-            // const leftCornerShotsMade = datas.left_corner.shotsMade;
-            // const leftCornerShotsTaken = datas.left_corner.shotsTaken;
-            // const rightCornerShotsMade = datas.right_corner.shotsMade;
-            // const rightCornerShotsTaken = datas.right_corner.shotsTaken;
-            // const leftLowPostShotsMade = datas.left_low_post.shotsMade;
-            // const leftLowPostShotsTaken = datas.left_low_post.shotsTaken;
-            // const rightLowPostShotsMade = datas.right_low_post.shotsMade;
-            // const rightLowPostShotsTaken = datas.right_low_post.shotsTaken;
-            // const leftHighPostShotsMade = datas.left_high_post.shotsMade;
-            // const leftHighPostShotsTaken = datas.left_high_post.shotsTaken;
-            // const rightHighPostShotsMade = datas.right_high_post.shotsMade;
-            // const rightHighPostShotsTaken = datas.right_high_post.shotsTaken;
-            // const topKeyShotsMade = datas.top_key.shotsMade;
-            // const topKeyShotsTaken = datas.top_key.shotsTaken;
-            // const topKeyThreeShotsMade = datas.top_key_three.shotsMade;
-            // const topKeyThreeShotsTaken = datas.top_key_three.shotsTaken;
-            // const leftWingThreeShotsMade = datas.left_wing_three.shotsMade;
-            // const leftWingThreeShotsTaken = datas.left_wing_three.shotsTaken;
-            // const rightWingThreeShotsMade = datas.right_wing_three.shotsMade;
-            // const rightWingThreeShotsTaken = datas.right_wing_three.shotsTaken;
-
-            const currentDate = Timestamp.fromDate(new Date());
-
-            const collectionRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
-            const documentId = collectionRef.id;
-            const newData = {
-              email: auth.currentUser?.email,
-              location: address,
-              totalShotsMade: totalShotsMade,
-              totalShotsTaken: totalShotsTaken,
-              paintShotsMade: paintShotsMade,
-              paintShotsTaken: paintShotsTaken,
-              freeThrowShotsMade: freeThrowShotsMade,
-              freeThrowShotsTaken: freeThrowShotsTaken,
-              midRangeShotsMade: midRangeShotsMade,
-              midRangeShotsTaken: midRangeShotsTaken,
-              threePointShotsMade: threePointShotsMade,
-              threePointShotsTaken: threePointShotsTaken,
-              leftCornerThreeShotsMade: leftCornerThreeShotsMade,
-              leftCornerThreeShotsTaken: leftCornerThreeShotsTaken,
-              rightCornerThreeShotsMade: rightCornerThreeShotsMade,
-              rightCornerThreeShotsTaken: rightCornerThreeShotsTaken,
-              leftCornerShotsMade: leftCornerShotsMade,
-              leftCornerShotsTaken: leftCornerShotsTaken,
-              rightCornerShotsMade: rightCornerShotsMade,
-              rightCornerShotsTaken: rightCornerShotsTaken,
-              leftLowPostShotsMade: leftLowPostShotsMade,
-              leftLowPostShotsTaken: leftLowPostShotsTaken,
-              rightLowPostShotsMade: rightLowPostShotsMade,
-              rightLowPostShotsTaken: rightLowPostShotsTaken,
-              leftHighPostShotsMade: leftHighPostShotsMade,
-              leftHighPostShotsTaken: leftHighPostShotsTaken,
-              rightHighPostShotsMade: rightHighPostShotsMade,
-              rightHighPostShotsTaken: rightHighPostShotsTaken,
-              topKeyShotsMade: topKeyShotsMade,
-              topKeyShotsTaken: topKeyShotsTaken,
-              topKeyThreeShotsMade: topKeyThreeShotsMade,
-              topKeyThreeShotsTaken: topKeyThreeShotsTaken,
-              leftWingThreeShotsMade: leftWingThreeShotsMade,
-              leftWingThreeShotsTaken: leftWingThreeShotsTaken,
-              rightWingThreeShotsMade: rightWingThreeShotsMade,
-              rightWingThreeShotsTaken: rightWingThreeShotsTaken,
-              date: currentDate
-            };
-
-            await addDoc(collectionRef, newData);
-            console.log('Document added with ID:', documentId);
-          } catch (error) {
-            console.error('Error adding document:', error);
-          }
-        }
-      }
-    } catch (error) {
-      console.log('Error getting location:', error);
-    }
-  }
 
   const fetchScore = async () => {
     try {
-      const response = await axios.get('https://hoopbackend-unmihbju4a-as.a.run.app/api/video-analysis');
       setIsLoading(true); // Start loading state
-      const scoreData = await response.json();
+  
+      // Fetch data from Firestore
+      const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
+      const scoresQuery = query(scoresRef, orderBy('date', 'desc'), limit(1));
+      const scoresSnapshot = await getDocs(scoresQuery);
+      const scores = scoresSnapshot.docs.map((doc) => doc.data());
+  
+      // Assuming scores is an array with a single object, extract that object
+      const scoreData = scores[0]; // Modify this part based on your data structure
+  
       console.log(`StatsData: ${scoreData}`);
-      //setStatsData(data)
-      setTotalShotsMade(scoreData.total.shotsMade);
-      setTotalShotsTaken(scoreData.total.shotsTaken);
+      // Set the state variables using the data from Firestore
+      // Total shots and shot attempts
+      setTotalShotsMade(scoreData.totalShotsMade);
+      setTotalShotsTaken(scoreData.totalShotsTaken);
 
-      setPaintShotsMade(scoreData.paint.shotsMade)
-      setPaintShotsTaken(scoreData.paint.shotsTaken)
-      setFreeThrowShotsMade(scoreData.free_throw.shotsMade);
-      setFreeThrowShotsTaken(scoreData.free_throw.shotsTaken);
-      setMidRangeShotsMade(scoreData.mid_range.shotsMade);
-      setMidRangeShotsTaken(scoreData.mid_range.shotsTaken);
-      setThreePointShotsMade(scoreData.three_point.shotsMade);
-      setThreePointShotsTaken(scoreData.three_point.shotsTaken);
+      // Paint shots
+      setPaintShotsMade(scoreData.paintShotsMade);
+      setPaintShotsTaken(scoreData.paintShotsTaken);
 
-      setLeftCornerThreeShotsMade(scoreData.left_corner_three.shotsMade);
-      setLeftCornerThreeShotsTaken(scoreData.left_corner_three.shotsTaken);
-      setRightCornerThreeShotsMade(scoreData.right_corner_three.shotsMade);
-      setRightCornerThreeShotsTaken(scoreData.right_corner_three.shotsTaken);
-      setLeftCornerShotsMade(scoreData.left_corner.shotsMade);
-      setLeftCornerShotsTaken(scoreData.left_corner.shotsTaken);
-      setRightCornerShotsMade(scoreData.right_corner.shotsMade);
-      setRightCornerShotsTaken(scoreData.right_corner.shotsTaken);
-      setLeftLowPostShotsMade(scoreData.left_low_post.shotsMade);
-      setLeftLowPostShotsTaken(scoreData.left_low_post.shotsTaken);
-      setRightLowPostShotsMade(scoreData.right_low_post.shotsMade);
-      setRightLowPostShotsTaken(scoreData.right_low_post.shotsTaken);
-      setLeftHighPostShotsMade(scoreData.left_high_post.shotsMade);
-      setLeftHighPostShotsTaken(scoreData.left_high_post.shotsTaken);
-      setRightHighPostShotsMade(scoreData.right_high_post.shotsMade);
-      setRightHighPostShotsTaken(scoreData.right_high_post.shotsTaken);
-      setTopKeyShotsMade(scoreData.top_key.shotsMade);
-      setTopKeyShotsTaken(scoreData.top_key.shotsTaken);
-      setTopKeyThreeShotsMade(scoreData.top_key_three.shotsMade);
-      setTopKeyThreeShotsTaken(scoreData.top_key_three.shotsTaken);
-      setLeftWingThreeShotsMade(scoreData.left_wing_three.shotsMade);
-      setLeftWingThreeShotsTaken(scoreData.left_wing_three.shotsTaken);
-      setRightWingThreeShotsMade(scoreData.right_wing_three.shotsMade);
-      setRightWingThreeShotsTaken(scoreData.right_wing_three.shotsTaken);
-      // setting field goal%
+      // Free throw shots
+      setFreeThrowShotsMade(scoreData.freeThrowShotsMade);
+      setFreeThrowShotsTaken(scoreData.freeThrowShotsTaken);
 
-      setPaintFG(calculateFieldGoalPercentage(scoreData.paint.shotsMade, scoreData.paint.shotsTaken))
-      setFreeThrowFG(calculateFieldGoalPercentage(scoreData.free_throw.shotsMade, scoreData.free_throw.shotsTaken))
-      setMidRangeFG(calculateFieldGoalPercentage(scoreData.mid_range.shotsMade, scoreData.mid_range.shotsTaken))
-      setThreePointFG(calculateFieldGoalPercentage(scoreData.three_point.shotsMade, scoreData.three_point.shotsTaken))
-      setLeftCornerThreeFG(calculateFieldGoalPercentage(scoreData.left_corner_three.shotsMade, scoreData.left_corner_three.shotsTaken))
-      setRightCornerThreeFG(calculateFieldGoalPercentage(scoreData.right_corner_three.shotsMade, scoreData.right_corner_three.shotsTaken))
-      setLeftCornerFG(calculateFieldGoalPercentage(scoreData.left_corner.shotsMade, scoreData.left_corner.shotsTaken))
-      setRightCornerFG(calculateFieldGoalPercentage(scoreData.right_corner.shotsMade, scoreData.right_corner.shotsTaken))
-      setLeftLowPostFG(calculateFieldGoalPercentage(scoreData.left_low_post.shotsMade, scoreData.left_low_post.shotsTaken))
-      setRightLowPostFG(calculateFieldGoalPercentage(scoreData.right_low_post.shotsMade, scoreData.right_low_post.shotsTaken))
-      setLeftHighPostFG(calculateFieldGoalPercentage(scoreData.left_high_post.shotsMade, scoreData.left_high_post.shotsTaken))
-      setRightHighPostFG(calculateFieldGoalPercentage(scoreData.right_high_post.shotsMade, scoreData.right_high_post.shotsTaken))
-      setTopKeyFG(calculateFieldGoalPercentage(scoreData.top_key.shotsMade, scoreData.top_key.shotsTaken))
-      setTopKeyThreeFG(calculateFieldGoalPercentage(scoreData.top_key_three.shotsMade, scoreData.top_key_three.shotsTaken))
-      setLeftWingThreeFG(calculateFieldGoalPercentage(scoreData.left_wing_three.shotsMade, scoreData.left_wing_three.shotsTaken))
-      setRightWingThreeFG(calculateFieldGoalPercentage(scoreData.right_wing_three.shotsMade, scoreData.right_wing_three.shotsTaken))
+      // Mid-range shots
+      setMidRangeShotsMade(scoreData.midRangeShotsMade);
+      setMidRangeShotsTaken(scoreData.midRangeShotsTaken);
+
+      // Three-point shots
+      setThreePointShotsMade(scoreData.threePointShotsMade);
+      setThreePointShotsTaken(scoreData.threePointShotsTaken);
+
+      // Left corner three-point shots
+      setLeftCornerThreeShotsMade(scoreData.leftCornerThreeShotsMade);
+      setLeftCornerThreeShotsTaken(scoreData.leftCornerThreeShotsTaken);
+
+      // Right corner three-point shots
+      setRightCornerThreeShotsMade(scoreData.rightCornerThreeShotsMade);
+      setRightCornerThreeShotsTaken(scoreData.rightCornerThreeShotsTaken);
+
+      // Left corner shots
+      setLeftCornerShotsMade(scoreData.leftCornerShotsMade);
+      setLeftCornerShotsTaken(scoreData.leftCornerShotsTaken);
+
+      // Right corner shots
+      setRightCornerShotsMade(scoreData.rightCornerShotsMade);
+      setRightCornerShotsTaken(scoreData.rightCornerShotsTaken);
+
+      // Left low post shots
+      setLeftLowPostShotsMade(scoreData.leftLowPostShotsMade);
+      setLeftLowPostShotsTaken(scoreData.leftLowPostShotsTaken);
+
+      // Right low post shots
+      setRightLowPostShotsMade(scoreData.rightLowPostShotsMade);
+      setRightLowPostShotsTaken(scoreData.rightLowPostShotsTaken);
+
+      // Left high post shots
+      setLeftHighPostShotsMade(scoreData.leftHighPostShotsMade);
+      setLeftHighPostShotsTaken(scoreData.leftHighPostShotsTaken);
+
+      // Right high post shots
+      setRightHighPostShotsMade(scoreData.rightHighPostShotsMade);
+      setRightHighPostShotsTaken(scoreData.rightHighPostShotsTaken);
+
+      // Top key shots
+      setTopKeyShotsMade(scoreData.topKeyShotsMade);
+      setTopKeyShotsTaken(scoreData.topKeyShotsTaken);
+
+      // Top key three-point shots
+      setTopKeyThreeShotsMade(scoreData.topKeyThreeShotsMade);
+      setTopKeyThreeShotsTaken(scoreData.topKeyThreeShotsTaken);
+
+      // Left wing three-point shots
+      setLeftWingThreeShotsMade(scoreData.leftWingThreeShotsMade);
+      setLeftWingThreeShotsTaken(scoreData.leftWingThreeShotsTaken);
+
+      // Right wing three-point shots
+      setRightWingThreeShotsMade(scoreData.rightWingThreeShotsMade);
+      setRightWingThreeShotsTaken(scoreData.rightWingThreeShotsTaken);
+
+      // Calculate and set field goal percentage for each shot type
+      setPaintFG(calculateFieldGoalPercentage(scoreData.paintShotsMade, scoreData.paintShotsTaken));
+      setFreeThrowFG(calculateFieldGoalPercentage(scoreData.freeThrowShotsMade, scoreData.freeThrowShotsTaken));
+      setMidRangeFG(calculateFieldGoalPercentage(scoreData.midRangeShotsMade, scoreData.midRangeShotsTaken));
+      setThreePointFG(calculateFieldGoalPercentage(scoreData.threePointShotsMade, scoreData.threePointShotsTaken));
+      setLeftCornerThreeFG(calculateFieldGoalPercentage(scoreData.leftCornerThreeShotsMade, scoreData.leftCornerThreeShotsTaken));
+      setRightCornerThreeFG(calculateFieldGoalPercentage(scoreData.rightCornerThreeShotsMade, scoreData.rightCornerThreeShotsTaken));
+      setLeftCornerFG(calculateFieldGoalPercentage(scoreData.leftCornerShotsMade, scoreData.leftCornerShotsTaken));
+      setRightCornerFG(calculateFieldGoalPercentage(scoreData.rightCornerShotsMade, scoreData.rightCornerShotsTaken));
+      setLeftLowPostFG(calculateFieldGoalPercentage(scoreData.leftLowPostShotsMade, scoreData.leftLowPostShotsTaken));
+      setRightLowPostFG(calculateFieldGoalPercentage(scoreData.rightLowPostShotsMade, scoreData.rightLowPostShotsTaken));
+      setLeftHighPostFG(calculateFieldGoalPercentage(scoreData.leftHighPostShotsMade, scoreData.leftHighPostShotsTaken));
+      setRightHighPostFG(calculateFieldGoalPercentage(scoreData.rightHighPostShotsMade, scoreData.rightHighPostShotsTaken));
+      setTopKeyFG(calculateFieldGoalPercentage(scoreData.topKeyShotsMade, scoreData.topKeyShotsTaken));
+      setTopKeyThreeFG(calculateFieldGoalPercentage(scoreData.topKeyThreeShotsMade, scoreData.topKeyThreeShotsTaken));
+      setLeftWingThreeFG(calculateFieldGoalPercentage(scoreData.leftWingThreeShotsMade, scoreData.leftWingThreeShotsTaken));
+      setRightWingThreeFG(calculateFieldGoalPercentage(scoreData.rightWingThreeShotsMade, scoreData.rightWingThreeShotsTaken));
 
       setIsLoading(false); // Stop loading state
-      GetCurrentLocation();
     } catch (error) {
       console.log('Error fetching score:', error);
+      setIsLoading(false);
     }
   };
 
@@ -386,7 +303,7 @@ const StatsPage = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('ReportPage', {statsData})}
+            onPress={() => navigation.navigate('ReportPage')}
           >
             <Text style={styles.buttonText}>Show my progress</Text>
           </TouchableOpacity>
