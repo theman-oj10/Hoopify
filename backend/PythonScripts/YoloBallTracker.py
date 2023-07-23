@@ -271,7 +271,7 @@ def yoloTrack(path_to_video, coordinates, path_to_court_img):
     shot_attempts = []
     made_shots = []
     def map_coordinate(x, y, width_ratio, height_ratio, vpoints):
-        # Top left, Top right, Free Throw line, 3 point line centre, base line 4 coordinates left to right, high ppost left to right
+        # Top left, Top right, Free Throw line, 3 point line centre, base line 4 coordinates left to right, high post left to right
         # Top left, base line 4 coordinates left to right, Top right, high post left, Free Throw line, high post right, 3 point line centre
         # video_points = np.array(
         #     [[15, 509], [187, 507], [598, 504], [951, 501], [1365, 497], [1530, 496], [511, 679],[767, 677],
@@ -353,32 +353,13 @@ def yoloTrack(path_to_video, coordinates, path_to_court_img):
                 currbBox = box.xywh[0]
                 x_center = currbBox[0]
                 y_center = currbBox[1]
-                # checking for # shots taken
-                # check if bbox of person and ball overlap => shots to be taken
                 if person_exists:
                     if check_overlap(currbBox, x_center, y_center, personbBox, x_person, y_person):
                         #print(x_person)
                         print(y_person)
-                        # print('Shot to be Taken')
-                        # print(f"x: {transformed_x}")
-                        # print(f"y: {transformed_y}")
-                        # print(f"Rx: {real_x}")
-                        # print(f"Ry: {real_y}")
-                        # curr_X = transformed_x
-                        # curr_Y = transformed_y
                         curr_X = real_x
                         curr_Y = real_y
                         shot_tobeTaken = True
-                        # bbox of person and ball no longer overlap => shot taken
-                # if shot_tobeTaken and not check_overlap(currbBox, x_center, y_center, personbBox, x_person, y_person):
-                #     shot_tobeTaken = False
-                #     print("Shot Taken")
-                #     shots_taken += 1
-                #     curr_shot = (transformed_x, transformed_y)
-                #     shot_attempts.append(curr_shot)
-                #     print(f"x-player: {transformed_x}")
-                #     print(f"y-player: {transformed_y}")
-                #     person_exists = False
                 if shot_tobeTaken and intersect(x_center, y_center, board_coordinates[0][0], board_coordinates[0][1], board_coordinates[1][0], board_coordinates[1][1], board_coordinates[2][0], board_coordinates[2][1], board_coordinates[3][0], board_coordinates[3][1]):
                     shot_tobeTaken = False
                     shot_attempted = True
@@ -392,10 +373,6 @@ def yoloTrack(path_to_video, coordinates, path_to_court_img):
                     print(f"Ry: {real_y}")
                     person_exists = False
                 ball_coordinates.append((x_center, y_center))
-                # print(ball_coordinates)
-                # checking if it crosses the rim
-                # check for y value then x
-                # Processing rim coordinates
                 leftX = min(rim_coordinates[0][0], rim_coordinates[2][0]) - 50 # Can finetune the value of 50
                 rightX = max(rim_coordinates[1][0], rim_coordinates[3][0]) + 50
                 topY = min(rim_coordinates[0][1], rim_coordinates[1][1]) - 50
