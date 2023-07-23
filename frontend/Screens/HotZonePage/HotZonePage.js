@@ -79,10 +79,22 @@ const HotZonePage = ({ route }) => {
     }
   };
 
-  const handleShare = () => {
-    // Handle the action for sharing
-    console.log('Share');
+   const handleShare = async () => {
+    const shareOptions = {
+      message: `Paint : ${paintFG}
+                Mid-Range : ${midRangeFG}
+                Free Throw : ${freeThrowFG}
+                Three-Point : ${threePointFG}
+                My 🔥 Zones: ${midRangeZones[0].name} : ${midRangeZones[0].value}
+                             ${threePointZones[0].name} : ${threePointZones[0].value}`
+    };
+    try {
+      const ShareResponse = await Share.share(shareOptions);
+    } catch (error) {
+      console.log('Error => ', error);
+    }
   };
+
 
   const renderZone = (zone) => (
     <TouchableOpacity
@@ -93,7 +105,7 @@ const HotZonePage = ({ route }) => {
       key={zone.name}
     >
       <Text style={styles.hotZoneText}>{zone.name}</Text>
-      <Text style={styles.hotZoneValue}>{`${zone.value}%`}</Text>
+      <Text style={styles.hotZoneValue}>{`${Math.round(zone.value)}%`}</Text>
     </TouchableOpacity>
   );
 
@@ -146,8 +158,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 5,
+    marginTop: 70,
+    marginBottom: 20,
   },
   logo: {
     width: '100%',
@@ -157,12 +169,13 @@ const styles = StyleSheet.create({
   },
   zoneContainer: {
     width: '100%',
+    marginBottom:-20,
   },
   midRangeZoneContainer: {
-    marginBottom: 2,
+    marginBottom: -100,
   },
   threePointZoneContainer: {
-    marginBottom: 0,
+    marginBottom: -20,
   },
   zoneTitle: {
     fontSize: 24,
@@ -187,10 +200,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   hotZoneValue: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 20,
   },
   weakZone: {
     backgroundColor: 'red',

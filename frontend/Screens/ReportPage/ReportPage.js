@@ -503,7 +503,7 @@ const ReportPage = () => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
-        <Text style={styles.title}>Customizable Report</Text>
+        <Text style={styles.title}>Report</Text>
 
         {zonesState ? (
           <View>
@@ -534,11 +534,10 @@ const ReportPage = () => {
               <Text style={styles.sectionTitle}>Previous Workouts</Text>
               {previousWorkoutScores.map((workout, index) => (
                 <View key={index} style={styles.workoutContainer}>
-                  <Text>Date: {workout.date}</Text>
-                  <Text>Number of Shots Made: {workout.totalShotsMade}</Text>
-                  <Text>Total Shots Attempted: {workout.totalShotsTaken}</Text>
+                  <Text>{workout.date}</Text>
+                  <Text>{workout.totalShotsMade} / {workout.totalShotsTaken}</Text>
                   <Text>
-                    Improvement/Deprovement: {calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%
+                    Improvement: {calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%
                   </Text>
                 </View>
               ))}
@@ -571,16 +570,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop: 80,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   tableContainer: {
-    marginBottom: 50,
+    marginBottom: 100,
     marginTop: 40
   },
   table: {
@@ -642,6 +642,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop: 20,
   }
 });
 

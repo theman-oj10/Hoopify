@@ -125,7 +125,7 @@ const StatsPage = () => {
 
   const handleShare = async () => {
     const shareOptions = {
-      message: `I made ${totalShotsMade} / ${totalShotsTaken} shots today`,
+      message: `I made ${totalShotsMade} / ${totalShotsTaken} 🏀 today on Hoopify!`,
     };
     try {
       const ShareResponse = await Share.share(shareOptions);
