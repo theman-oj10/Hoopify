@@ -567,7 +567,7 @@ const threePointData = previousWorkoutScores
                     <Text>{workout.date}</Text>
                     <Text>{workout.totalShotsMade} / {workout.totalShotsTaken}</Text>
                     <Text>
-                      Improvement: {calculateImprovement(zonesState["Total"].shotsMade, zonesState["Total"].shotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%
+                      Improvement: {calculateImprovement(zonesState["Total"].shotsMade, zonesState["Total"].shotsTaken, workout.totalShotsMade, workout.totalShotsTaken)}%
                     </Text>
                   </View>
                 ) : null
