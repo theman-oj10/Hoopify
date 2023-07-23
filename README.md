@@ -1,7 +1,7 @@
 The Readme:
 https://docs.google.com/document/d/1S0BTIQ4QMQpytQ8v_hZvGcjbfrKoIT-vESrE1p1VEwA/edit
 
-<h1>Milestone 2 Submission</h1>
+<h1>Milestone 3 Submission</h1>
 
 **Team Name**
 
@@ -42,35 +42,27 @@ Features and Progress
 
 Authentication System
 
-Objective: Have users authenticated by email and password to secure their data and allow users to access and update their data.
-Progress: It works as required.
+Objective: Have users authenticated by email and password to secure their data and allow users to access and update their data. We used Firebase to perform this authentication. We used Firebase as it offered more than authentication services as they had a FireStore database as well and thus, it was the obvious choice to use it.
+
 
 Video Analysis
 
 Objective: The app aims to analyze basketball game videos and track players' points and field goal percentages.
-Progress and Problems faced: Since the previous milestone we have been able to develop the backend script such that now we can calculate the number of shot attempts. To do this we implemented an algorithm that checks if the bounding box of the ball overlaps with the bounding box of the person. When it no longer overlaps, we track it as a shot taken.
-
-
-A problem we faced with this algorithm is that passing and even dribbling will lead to miscounting of shots attempted. While passing is not a big issue considering the fact that we are targeting single-person shooting workouts, the inaccuracy caused because of dribbling is an issue we cannot yet solve. One possible solution we have in mind is to only count shots if they reach the bounding box of the backboard behind the rim but this again is not a perfect solution because this won’t count airballs that completely miss the backboard.
-
-Another problem we faced was finding a way to allow the user to select the coordinates of the rim. In our milestone 1 submission, we were able to do it in the backend using a Python interactive GUI where the user can click on the four corners of the rim. We tried to implement this in the frontend itself as we need user input for this feature.
-
-The above code works as its own module but we are yet to integrate this into our main application. Once this is done we can already use the code used to extract the first frame of a video which is defined in the backend. After sending the first frame back to the frontend the user will select the rim coordinates, which we pass back to the backend to run the video analysis.
-
-For another improvement, we hope to use a custom-trained model. We tried to do this but were unable to secure a computer with a high-end Nvidia graphics card. Training this on a regular computer could take unreasonable amounts of time. However, we believe performance will improve tremendously if we are able to do this.
+Progress and Problems faced: Since the previous milestone, we completely redesigned the backend script as the previous solution was too inaccurate. We added user input where the user is required to select 14 additional points which are different points in the court. We used these points to then perform position tracking and received some splendid results. We also made the user select the 4 corners of the backboard and updated our algorithm to count a shot attempt only when it crosses into the backboard region. This helped with accuracy in counting shot attempts as it discounted passes for example. This also solved the issue we discussed in the previous milestone, which was user dribbling being counted as shot attempts.
+In the previous milestone, we also talked about the issue of not having a way for users to select points, however, we managed to implement that and an instructions page to help users.
 
 Hotzones
 
 Objective: Implement a detailed report which shows different shooting performances across the different regions of the court.
 
-Progress and Problems: We also managed to implement the hot zones feature in the backend. Our current backend is able to track the position of the player in the video, translate it to a position on a 2D plane and then plot that on an image of a court. We also managed to implement a way to differentiate the circles that are plotted such that green circles represent makes and red circles represent misses.
+Progress and Problems: We also managed to implement the hot zones feature in the backend. Our current backend is able to track the position of the player in the video, translate it to a position on a 2D plane and then plot that on an image of a court. We also managed to implement a way to differentiate the circles that are plotted such that green circles represent makes and red circles represent misses as shown below on a court that is customized based on our app.
 
-To extract player positions from a 3D space and plot them on a 2D image of a court, we utilized the Hough transform for line detection. The process involves analyzing a video or series of frames captured from a 3D perspective, such as a basketball game recording. First, we processed each frame to make it more suitable for line detection and then we used the to detect the court boundaries and lines using edge detection algorithms. Then, by using the Hough transform, I identified the lines representing the court lines, including the key features like sidelines, baseline, and midcourt lines. Once the court lines were extracted, I mapped these lines onto the 2D image of the court using a homography matrix, essentially projecting the 3D court onto a 2D plane. By doing this, I obtained a top-down view of the court where I could determine the positions of players relative to the court lines. Using OpenCv’s built-in image 
+We previously tried to use Hough Transform but we were unable to implement it and produce accurate results so we switched to a manual approach of making the user select point on the court and this improved our accuracy profusely. Using OpenCv’s built-in image 
 manipulation tools it was then easy to plot these points and vary their colors.
-The problem we faced was the accuracy of this approach and integrating this into the frontend. We were having trouble with writing this image to Firebase storage and retrieving it in the frontend. Once we figure this out, displaying it on the hotzones page (rendering it within a react native component) should be relatively easy. We also want to segment out the image of the court so that we can get more in-depth details about shooting efficiencies in different regions of the court and this is something we hope to achieve by milestone 3.
+
+The problem we faced was the accuracy of this approach and integrating this into the frontend. We were having trouble with writing this image to Firebase storage and retrieving it in the frontend. We deployed another backend server using Flask and fetched it from the frontend code. We also segmented out the image of the court so that we can get more in-depth details about shooting efficiencies in different regions of the court and the field goal percentages for the different regions are clearly segmented on the hotzones page.
 
 Leaderboard
-
 Objective: The objective is to create a React Native component that fetches leaderboard data from a Firestore database and displays it in a leaderboard format, with the ability to filter the data based on the user's location.
 
 Progress:
@@ -78,56 +70,62 @@ Database and Authentication Setup: The Firestore database is initialized using g
 Leaderboard Data Retrieval: Within the component's useEffect hook, the leaderboard data is fetched from the Firestore collection named 'scores'. The data is queried with filtering options to match the current user's email and location. The fetched data is stored in the component's state variable leaderboardData using setLeaderboardData.
 Render Leaderboard Items: The component defines the renderLeaderboardItem function, which takes an item's properties (such as id, score, email, and location) and renders them in a leaderboard item format. Each leaderboard item is displayed with a rank, email, and score.
 Filtering by Location: The component includes logic to filter the leaderboard data based on the user's location. This ensures that only scores from the specific location are displayed in the leaderboard.
-
-
-
 By combining the Firebase integration, leaderboard data retrieval, filtering by location, and rendering of leaderboard items, this feature aims to provide a dynamic and customizable leaderboard experience for users.
 
 Customizable Reports
 
-Objective: The app should allow users to generate customizable reports based on data collected from personal workouts or pickup games. The reports should provide insights into an individual’s progress over time and give insightful statistics using the ‘hot zones’ as well.
-Progress: The customizable reports feature has not been implemented. Further development and data such as shooting efficiency in different regions of the court is necessary to create a reporting system that analyzes the collected data and presents it in a customizable format that is downloadable. 
+Objective: The app's primary objective is to allow users to generate customizable reports based on data collected from personal workouts or pickup games. These reports should provide insights into an individual's progress over time and offer statistics using 'hot zones' as well.
+
+Progress: The app has successfully implemented the customizable reports feature, enabling users to generate reports based on their workout or pickup game data. These reports offer valuable insights into the user's progress and statistics, including shooting efficiency in different regions of the court ('hot zones'). Users can customize the content of the reports to focus on specific metrics and timeframes that are most relevant to them. However, one current limitation is that the report content is shared as text instead of being downloadable in a specific format (e.g., PDF or CSV). Despite this, the shared text-based reports serve the purpose of presenting the collected data and providing valuable insights to the users. Future development will focus on incorporating downloadable formats like PDF and CSV, data visualization, and cloud storage integration to further enhance the user experience and convenience.
+
 
 Share Feature
-
 Objective: We want to be able to share customized reports and leaderboard positions.
-Progress: We have implemented the share feature and we can currently share the workout score. Once we develop the customizable reports and fully develop the leaderboard we will integrate the share features into those as well.
+
+Progress: We have implemented the share feature and we can currently share the hotzones, report page, and stats page. They are available on all of these three pages.
 
 Location Feature
 
 Objective: Implement a feature to retrieve the user's current location and use it to fetch data from a Flask web app, store it in Firestore, and display the address.
 
 Progress:
+
 Permissions and Location Access: The function GetCurrentLocation starts by requesting foreground location permissions from the user using Location.requestForegroundPermissionsAsync. If the permission is not granted, an alert is displayed to the user.
 Obtaining Current Location: After permission is granted, the function uses Location.getCurrentPositionAsync to retrieve the user's current coordinates. The latitude and longitude values are extracted from the response.
 Reverse Geocoding: The Location.reverseGeocodeAsync function is used to obtain the address information based on the latitude and longitude values. The response is an array of address items.
 Fetching Data from Flask Web App: The function then makes a request to a Flask web app to fetch data. The response is converted to JSON format, and the totalShotsMade and totalShotsTaken values are extracted.
 Storing Data in Firestore: The function creates a document in the 'scores' collection of Firestore. The document ID is obtained from auth.currentUser?.uid, and the data to be stored includes the user's email, location (address), totalShotsMade, and totalShotsTaken. The setDoc function is used to add the document to Firestore.
 
-Overall Progress
+Biggest Weaknesses and Possible Solutions
+We have been able to implement an app that is effective in analyzing basketball videos but can be improved in the following ways.
 
-We have almost fully implemented all the features except the hotzones feature which just needs some work on the frontend and the customizable report feature. Furthermore, the algorithm used to analyze the videos needs significant improvements as the accuracy is still lacking and we do not want that to compromise users’ experience. From user testing, we have gained valuable insight on which direction we should be headed towards and it has pointed us in the right way. Hence, there is still work to be done regarding the features and overall deployment of the app before testing can be carried out.
+Currently, the model we are using is a model trained on a default COCO dataset. While we found models online specialized to track basketballs and hoops, we were unable to train them because of hardware limitations on our personal machines. This model would improve accuracy and allow us to redesign our algorithm so that we no longer need to make the user select the rim and the backboard. It will also accommodate non-stationary videos. In terms of position tracking, we also discovered an Edge Detection algorithm which along with a Hough Transform can be implemented to automatically detect the lines on the court. If we combine this with a new model, the user will no longer have to select any points which will make our user experience far better. We can also look to add GPU support on the Google Cloud Server that we deployed our backend in as that would improve loading times to a much larger extent.
 
 Tech Stack
 
 Frontend: 
 React-Native: One of the most popular frameworks in the industry and with existing experience in react we decided to use this to build a cross-platform application
+
+
 Backend: 
-Open CV: OpenCV provides a comprehensive collection of computer vision algorithms and techniques, including image filtering, feature detection, object tracking, camera calibration, and more. It covers a broad range of tasks required in computer vision applications, making it a versatile library for a wide array of projects.
+Open CV: OpenCV provides a comprehensive collection of computer vision algorithms and techniques, including image filtering, feature detection, object tracking, camera calibration, and more. It covers a broad range of tasks required in computer vision applications, making it a versatile library for a wide array of projects. OpenCV has been around for a long time and is widely used in the computer vision community. If you're working on a project that relies heavily on legacy code or requires integration with existing OpenCV-based systems, sticking with OpenCV made the most sense for us as there were also Youtube tutorials that made us learn in the limited time that we had since it was more beginner friendly. However, for future developments to improve our algorithm, we hope to indulge in other models such as TensorFlow. TensorFlow and other deep learning frameworks are well-suited for complex deep learning tasks, especially those involving large-scale datasets and sophisticated neural network architectures. If you're working on advanced computer vision projects, such as image classification with deep CNNs or semantic segmentation with complex models like Mask R-CNN, TensorFlow would be a more appropriate choice due to its extensive support for deep learning.
 
-Ultralytics: Python package that allowed us to use the Yolo model with relative ease. It offered a plug-and-play-like experience which was helpful for us as we are beginners in computer vision.
-
+Ultralytics: Python package that allowed us to use the Yolo model with relative ease. It offered a plug-and-play-like experience which was helpful for us as we are beginners in computer vision. It is built on top of PyTorch, and provides an easier and more beginner-friendly experience for using YOLO (You Only Look Once) models for object detection. YOLO is a popular real-time object detection algorithm known for its speed and accuracy. If you're new to computer vision and want to get started quickly with object detection using YOLO, Ultralytics offers a more straightforward implementation compared to setting up and training models from scratch using TensorFlow.
 
 Database: 
 FireStore: 
 Mobile and web support: Firebase is well-suited for both mobile and web applications. It provides SDKs and libraries for various platforms and frameworks, including Android, iOS, JavaScript, and Unity, making it easier to develop cross-platform applications. 
 
 Security and authentication: Firebase offers built-in authentication and security rules to protect data and user access. It supports various authentication providers, such as email/password, social login (e.g., Google, Facebook), and custom authentication methods.
+
+Serverless Architecture: Firebase supports serverless architecture, meaning developers can focus more on building the front-end and user experience without worrying about server management and infrastructure.
+
+Overall, firebase's ease of use, real-time capabilities, and extensive feature set made it an easy choice for us to work on to develop Hoopify.
+
 Others:
 Github: Version Control as it is the industry standard.
  
 Dependencies
-
     "@expo/webpack-config": "^18.0.1",
     "@react-native-firebase/app": "^18.0.0",
     "@react-native-firebase/auth": "^18.0.0",
@@ -136,26 +134,58 @@ Dependencies
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "axios": "^1.4.0",
+    "child-process-promise": "^2.2.1",
     "expo": "~48.0.15",
+    "expo-2d-context": "^0.0.3",
+    "expo-av": "~13.2.1",
+    "expo-camera": "~13.2.1",
     "expo-constants": "~14.2.1",
     "expo-document-picker": "~11.2.2",
     "expo-image-picker": "~14.1.1",
     "expo-location": "^15.1.1",
+    "expo-media-library": "~15.2.3",
+    "expo-sharing": "~11.2.2",
     "expo-status-bar": "~1.4.4",
+    "expo-updates": "~0.16.4",
     "firebase": "^9.22.2",
+    "lottie-react-native": "^5.1.4",
+    "lottie-web": "^5.12.2",
     "pyodide": "^0.23.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-fs": "^2.20.0",
+    "react-native-image-size": "^1.1.3",
     "react-native-safe-area-context": "4.5.0",
     "react-native-share": "^8.2.2",
-    "react-native-web": "~0.18.11"
+    "react-native-svg": "13.4.0",
+    "react-native-view-shot": "^3.5.0",
+    "react-native-web": "~0.18.11",
+    "react-native-webview": "11.26.0"
+  },
+
+System Testing
+We performed extensive manual unit and integration testing and recorded the results in a spreadsheet. The link is at the end of the ReadMe file.
+We also performed end-to-end testing with multiple videos, which are attached at the end of the ReadMe file, and received mostly accurate results. In the first two videos, we tested we got near-perfect results both in terms of shot tracking and position tracking. In the last video, among the two shots taken, position tracking was near perfect but shot tracking was unable to track one of the shot makes as a shot make.
+
+User Testing
+We gathered a few friends who are basketball enthusiasts and made them try out the application on our local machine. We asked them the following questions:
+
 
 User Testing
 
 Since we were unable to deploy our application, we gathered a few friends who are basketball enthusiasts and made them try out the application on our local machine. We managed to get 7 responses.
 
 Based on our limited user testing, we learned that more than implementing a myriad of features we should really work on making our core features better for milestone 2 we were ambitious and attempted to implement many features which sacrificed the accuracy of the core computer vision algorithms we were using. We also learned that the user interface is intuitive but we need to add more modern styling to make it production ready. It was great to see that a lot of these users shared the same awe we had when we started this project as we thought this is a cool application we can build.
+
+Future Developments
+Build upon the Computer Vision Technology:
+Through further development, we hope to be able to analyze pickup basketball games and allow users to track each player's points, assists, rebounds, and other statistics similar to the NBA. We can also provide auto-generated highlight reels which they can share with friends and family.
+
+Transforming Hoopify into a Basketball Social Media App:
+Implement features for users to share basketball-related content, such as photos, videos, and short clips of their gameplay or favorite moments, basically taking inspiration from the popular fitness and well-being app named Strava, which is a running platform but it also developed into this community of runners who can connect through the app. We could allow users to follow each other, like, and comment on posts, fostering a sense of community and engagement among basketball enthusiasts. Implementing a tagging system to categorize posts based on basketball-related topics, teams, players, or specific skills, making it easier for users to discover content they're interested in and we can also consider adding messaging or chat functionality, so users can have private conversations and connect on a more personal level.
+
 
 Development Plan
 
@@ -201,14 +231,23 @@ Updated poster:
 https://www.canva.com/design/DAFm1hFHDtE/VSCNmLEeHQn9Vg4_0-86yg/edit?utm_content=DAFm1hFHDtE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 A walkthrough of our technical proof of concept is available through the following YouTube link:
-https://youtu.be/c586yd6thO8
+https://youtu.be/0AsMlBGDdNY
 
-Our code for the technical proof of concept is also readily available in the following GitHub repository:
-https://github.com/theman-oj10/Hoopify
-
+Our Application:
+exp://exp.host/@adarsh1310/android-test?release-channel=default
 
 Project Log
-
 Our project log is accessible through the following Google Sheets link:
 https://docs.google.com/spreadsheets/d/18b8qSRASHw2Y0e9sfyVT8wtEs0Cr7e72yYXiXN5Q5Z4/edit#gid=1299696737
+
+Testing Log
+Our testing log is accessible through the following Google Sheets link:
+https://docs.google.com/spreadsheets/d/1wl86yRsxOhZUhuUw8adHsaCjXWl6mPQjqestK1C8vXY/edit#gid=0
+
+For Testing
+Sample Video: https://drive.google.com/file/d/1iTuGorntEi5UNsbQeP9ovZoTd6vfJ26i/view?usp=sharing
+Test Account: 
+Email: manoj123@hoopify.com
+Password: manoj123
+
 
