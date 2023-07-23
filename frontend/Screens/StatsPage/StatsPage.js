@@ -147,7 +147,7 @@ const StatsPage = () => {
       // Assuming scores is an array with a single object, extract that object
       const scoreData = scores[0]; // Modify this part based on your data structure
   
-      console.log(`StatsData: ${scoreData}`);
+      //console.log(`StatsData: ${scoreData}`);
       // Set the state variables using the data from Firestore
       // Total shots and shot attempts
       setTotalShotsMade(scoreData.totalShotsMade);

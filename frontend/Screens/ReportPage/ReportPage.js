@@ -25,10 +25,6 @@ const db = getFirestore(app);
 
 
 const ReportPage = () => {
-  // const {
-  //   data
-  // } = route.params;
-  // const [reportData, setReportData] = useState(null);
   const [previousWorkoutScores, setPreviousWorkoutScores] = useState([]);
   const navigation = useNavigation();
   const chartRef = useRef();
@@ -83,7 +79,7 @@ const ReportPage = () => {
       // Assuming scores is an array with a single object, extract that object
       const scoreData = scores[0]; // Modify this part based on your data structure
   
-      console.log(`StatsData: ${scoreData}`);
+      // console.log(`StatsData: ${scoreData}`);
       // Set the state variables using the data from Firestore
       // Total shots and shot attempts
       setTotalShotsMade(scoreData.totalShotsMade);
@@ -184,39 +180,21 @@ const ReportPage = () => {
     fetchReportData();
   }, []);
 
-  // const fetchReportData = async () => {
-  //   // Simulated API response
-  //   return {
-  //       "total": { "shotsMade" : 500, "shotsTaken": 750},
-  //       "paint": { "shotsMade" : 200, "shotsTaken": 300},
-  //       "free_throw": { "shotsMade" : 100, "shotsTaken": 120},
-  //       "mid_range" : { "shotsMade" : 150, "shotsTaken": 250},
-  //       "three_point": { "shotsMade" : 80, "shotsTaken": 200},
-  //       "left_corner_three": { "shotsMade" : 30, "shotsTaken": 50},
-  //       "right_corner_three": { "shotsMade" : 40, "shotsTaken": 60},
-  //       "left_corner": { "shotsMade" : 20, "shotsTaken": 30},
-  //       "right_corner": { "shotsMade" : 25, "shotsTaken": 35},
-  //       "left_low_post": { "shotsMade" : 60, "shotsTaken": 80},
-  //       "right_low_post": { "shotsMade" : 55, "shotsTaken": 75},
-  //       "left_high_post": { "shotsMade" : 70, "shotsTaken": 90},
-  //       "right_high_post": { "shotsMade" : 75, "shotsTaken": 95},
-  //       "top_key": { "shotsMade" : 90, "shotsTaken": 120},
-  //       "top_key_three": { "shotsMade" : 40, "shotsTaken": 70},
-  //       "left_wing_three": { "shotsMade" : 35, "shotsTaken": 60},
-  //       "right_wing_three": { "shotsMade" : 0, "shotsTaken": 0}
-  //   };
-  // };
-
   const formatDateTime = (timestamp) => {
     const date = timestamp.toDate();
     const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
     return date.toLocaleString(undefined, options);
   };
+  const formatDate = (timestamp) => {
+    const date = timestamp.toDate();
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
+    return date.toLocaleString(undefined, options);
+  }; 
 
   const fetchPreviousWorkoutScores = async () => {
     try {
       const scoresRef = collection(db, 'scores', auth.currentUser?.uid, 'workouts');
-      const scoresQuery = query(scoresRef, orderBy('date', 'desc'), limit(3));
+      const scoresQuery = query(scoresRef, orderBy('date', 'desc'), limit(4));
       const scoresSnapshot = await getDocs(scoresQuery);
 
       const scores = scoresSnapshot.docs.map((doc) => {
@@ -231,34 +209,35 @@ const ReportPage = () => {
   };
 
   useEffect(() => {
-    // fetchReportData()
-    //   .catch((error) => {
-    //     console.log('Error fetching report data:', error);
-    //   });
-
     fetchPreviousWorkoutScores();
   }, []);
 
-  const calculateFieldGoalPercentage = (shotsMade, shotsTaken) => {
-    if (shotsTaken === 0) {
-      return 0; // Handle division by zero error
+  const calculateFieldGoalPercentage = (attempts, makes) => {
+    attempts = parseInt(attempts)
+    makes = parseInt(makes)
+    if (attempts === 0) {
+      return 0;
     }
-    return ((shotsMade / shotsTaken) * 100).toFixed(2);
+    const percentage = (makes / attempts) * 100;
+    return percentage.toFixed(2);
   };
   
   const calculateImprovement = (currMade, currTaken, prevMade, prevTaken) => {
+    
+    // console.log(typeof currMade)
     const prevFG = parseFloat(calculateFieldGoalPercentage(prevMade, prevTaken));
     const currFG = parseFloat(calculateFieldGoalPercentage(currMade, currTaken));
-  
+    
     if (isNaN(prevFG) || isNaN(currFG)) {
       return 0; // Handle invalid input
     }
   
     if (prevFG === 0) {
-      return (currFG * 100).toFixed(2); // Special case when prevFG is 0
+      return (currFG); // Special case when prevFG is 0
     }
   
-    return ((prevFG - currFG) / prevFG * 100).toFixed(2);
+    return ((prevFG - currFG) / prevFG * 100);
+    //return 10;
   };
   
   
@@ -266,22 +245,72 @@ const ReportPage = () => {
 
   const renderWorkoutCharts = () => {
     // Ref added to the BarChart component
-    const workoutLabels = previousWorkoutScores.map((workout, index) => `Workout ${index + 1}`);
-    const totalScoreData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)
-    );
-    const paintData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(zonesState.paintShotsMade, zonesState.paintShotsTaken, workout.paintShotsMade, workout.paintShotsTaken).toFixed(2)
-    );
-    const midrangeData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(zonesState.midRangeShotsMade, zonesState.midRangeShotsTaken, workout.midRangeShotsMade, workout.midRangeShotsTaken).toFixed(2)
-    );
-    const freeThrowData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(zonesState.freeThrowShotsMade, zonesState.freeThrowShotsTaken, workout.freeThrowShotsMade, workout.freeThrowShotsTaken).toFixed(2)
-    );
-    const threePointData = previousWorkoutScores.map((workout) =>
-      calculateImprovement(zonesState.threePointShotsMade, zonesState.threePointShotsTaken, workout.threePointShotsMade, workout.threePointShotsTaken).toFixed(2)
-    );
+    const workoutLabels = previousWorkoutScores
+  .map((workout, index) => workout.date)
+  .slice(1)
+  .map((label) => {
+    // Split the label into date and time by space character
+    const [date, time] = label.split(', ');
+    // Combine date and time with a line break in between
+    return `${date}`;
+  });
+
+    //console.log(typeof zonesState["Total"].shotsTaken)
+    const totalScoreData = previousWorkoutScores
+  .map((workout, index) =>
+    calculateImprovement(
+      zonesState["Total"].shotsMade,
+      zonesState["Total"].shotsTaken,
+      workout.totalShotsMade,
+      workout.totalShotsTaken
+    ).toFixed(2)
+  )
+  .slice(1);
+
+const paintData = previousWorkoutScores
+  .map((workout, index) =>
+    calculateImprovement(
+      zonesState["Paint"].shotsMade,
+      zonesState["Paint"].shotsTaken,
+      workout.paintShotsMade,
+      workout.paintShotsTaken
+    ).toFixed(2)
+  )
+  .slice(1);
+
+const midrangeData = previousWorkoutScores
+  .map((workout, index) =>
+    calculateImprovement(
+      zonesState["Mid-Range"].shotsMade,
+      zonesState["Mid-Range"].shotsTaken,
+      workout.midRangeShotsMade,
+      workout.midRangeShotsTaken
+    ).toFixed(2)
+  )
+  .slice(1);
+
+const freeThrowData = previousWorkoutScores
+  .map((workout, index) =>
+    calculateImprovement(
+      zonesState["Free Throw"].shotsMade,
+      zonesState["Free Throw"].shotsTaken,
+      workout.freeThrowShotsMade,
+      workout.freeThrowShotsTaken
+    ).toFixed(2)
+  )
+  .slice(1);
+
+const threePointData = previousWorkoutScores
+  .map((workout, index) =>
+    calculateImprovement(
+      zonesState["Three Point"].shotsMade,
+      zonesState["Three Point"].shotsTaken,
+      workout.threePointShotsMade,
+      workout.threePointShotsTaken
+    ).toFixed(2)
+  )
+  .slice(1);
+
   
     return (
       <View style={styles.chartContainer}>
@@ -306,7 +335,7 @@ const ReportPage = () => {
             backgroundColor: '#f2f2f2',
             backgroundGradientFrom: '#f2f2f2',
             backgroundGradientTo: '#f2f2f2',
-            decimalPlaces: 2,
+            decimalPlaces: 0,
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 10,
@@ -335,7 +364,7 @@ const ReportPage = () => {
             backgroundColor: '#f2f2f2',
             backgroundGradientFrom: '#f2f2f2',
             backgroundGradientTo: '#f2f2f2',
-            decimalPlaces: 2,
+            decimalPlaces: 0,
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 10,
@@ -364,7 +393,7 @@ const ReportPage = () => {
             backgroundColor: '#f2f2f2',
             backgroundGradientFrom: '#f2f2f2',
             backgroundGradientTo: '#f2f2f2',
-            decimalPlaces: 2,
+            decimalPlaces: 0,
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 10,
@@ -393,7 +422,7 @@ const ReportPage = () => {
             backgroundColor: '#f2f2f2',
             backgroundGradientFrom: '#f2f2f2',
             backgroundGradientTo: '#f2f2f2',
-            decimalPlaces: 2,
+            decimalPlaces: 0,
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 10,
@@ -422,7 +451,7 @@ const ReportPage = () => {
             backgroundColor: '#f2f2f2',
             backgroundGradientFrom: '#f2f2f2',
             backgroundGradientTo: '#f2f2f2',
-            decimalPlaces: 2,
+            decimalPlaces: 0,
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 10,
@@ -495,7 +524,7 @@ const ReportPage = () => {
       content += `Date: ${workout.date}\n`;
       content += `Number of Shots Made: ${workout.totalShotsMade}\n`;
       content += `Total Shots Attempted: ${workout.totalShotsTaken}\n`;
-      content += `Improvement/Deprovement: ${calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%\n\n`;
+      content += `Improvement/Deprovement: ${calculateImprovement(zonesState["Total"].shotsMade, zonesState["Total"].shotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%\n\n`;
     });
     return content;
   };
@@ -533,13 +562,15 @@ const ReportPage = () => {
             <View style={styles.tableContainer}>
               <Text style={styles.sectionTitle}>Previous Workouts</Text>
               {previousWorkoutScores.map((workout, index) => (
-                <View key={index} style={styles.workoutContainer}>
-                  <Text>{workout.date}</Text>
-                  <Text>{workout.totalShotsMade} / {workout.totalShotsTaken}</Text>
-                  <Text>
-                    Improvement: {calculateImprovement(zonesState.totalShotsMade, zonesState.totalShotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%
-                  </Text>
-                </View>
+                index !== 0 ? (
+                  <View key={index} style={styles.workoutContainer}>
+                    <Text>{workout.date}</Text>
+                    <Text>{workout.totalShotsMade} / {workout.totalShotsTaken}</Text>
+                    <Text>
+                      Improvement: {calculateImprovement(zonesState["Total"].shotsMade, zonesState["Total"].shotsTaken, workout.totalShotsMade, workout.totalShotsTaken).toFixed(2)}%
+                    </Text>
+                  </View>
+                ) : null
               ))}
             </View>
           </View>
