@@ -235,6 +235,7 @@ https://youtu.be/0AsMlBGDdNY
 
 Our Application:
 exp://exp.host/@adarsh1310/android-test?release-channel=default
+APK build of the app: https://drive.google.com/file/d/1qxi2E68FHO2K8Xcc4n4TzCTJPF_dQ5mK/view?usp=drive_link
 
 Project Log
 Our project log is accessible through the following Google Sheets link:
