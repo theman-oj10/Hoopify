@@ -9,15 +9,7 @@ import { auth } from '../../firebase';
 
 import Logo from '../SignInScreen/Images/Logo.png';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
-  authDomain: "orbital-app-proto.firebaseapp.com",
-  projectId: "orbital-app-proto",
-  storageBucket: "orbital-app-proto.appspot.com",
-  messagingSenderId: "965591983424",
-  appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
-  measurementId: "G-JV5TKFE1BX"
-};
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -33,25 +25,6 @@ const HomePage = () => {
     console.log(currentFile);
   };
 
-  // const uploadToDatabase = async (url) => {
-  //   const email = auth.currentUser?.email;
-  //   const userId = auth.currentUser?.uid;
-
-  //   const documentId = userId; // Use the user ID as the document ID in the 'scores' collection
-
-  //   const data = {
-  //     email: email,
-  //     location: address,
-  //     score: 80,
-  //   };
-
-  //   try {
-  //     await setDoc(doc(db, 'scores', documentId), data, { merge: true });
-  //     console.log('Document updated with ID:', documentId);
-  //   } catch (error) {
-  //     console.error('Error updating document:', error);
-  //   }
-  // };
 
   const handleClick = async () => {
     try {
