@@ -4,15 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { auth } from '../../firebase';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
-  authDomain: "orbital-app-proto.firebaseapp.com",
-  projectId: "orbital-app-proto",
-  storageBucket: "orbital-app-proto.appspot.com",
-  messagingSenderId: "965591983424",
-  appId: "1:965591983424:web:759b1b999d60cfd6e6c6a5",
-  measurementId: "G-JV5TKFE1BX"
-};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
