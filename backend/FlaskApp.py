@@ -13,15 +13,6 @@ import os
 # from firebase_admin import credentials, initialize_app
 # cred = credentials.Certificate("firebase_admin")
 # initialize_app(cred)
-firebaseConfig = {
-    'apiKey': "AIzaSyCHLyLBe7Bh5Q48rUK2-x8-A6A2vxk0hdI",
-    'authDomain': "orbital-app-proto.firebaseapp.com",
-    'projectId': "orbital-app-proto",
-    'storageBucket': "orbital-app-proto.appspot.com",
-    'messagingSenderId': "965591983424",
-    'appId': "1:965591983424:web:759b1b999d60cfd6e6c6a5",
-    'measurementId': "G-JV5TKFE1BX"
-}
 # Flask Setup
 app = Flask(__name__)
 load_dotenv()
